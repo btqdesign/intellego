@@ -1367,5 +1367,5 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 /* Integrado por Saúl <saul.diaz.v@gmail.com> */
 @media only screen and (min-width:990px) {
 	.navigation > ul.navbar-nav > li > ul.sub-dropdown {left: -360% !important; width: 780px !important; transform:none !important;}
-	.navigation > ul.navbar-nav > li > ul.sub-dropdown > li {width: 33.33% !important;}
+	.navigation > ul.navbar-nav > li > ul.sub-dropdown > li {width: 33.33% !important; height: 60px;}
 }
