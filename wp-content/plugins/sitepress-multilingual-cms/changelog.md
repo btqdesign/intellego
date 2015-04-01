@@ -1,3 +1,26 @@
+**3.1.9.4**
+
+* **Fixes**
+    * Fixed WordPress 4.2 compatibility issues
+    * Fixed languages order settings retention
+    * Fixed "Catchable fatal error: Object of class stdClass could not be converted to string" when visiting the plugins page or scanning the wpml-config.xml file.
+    * Fixed "Duplicate featured image to translation" checkbox not getting automatically checked
+
+* **Other**
+    * Performance improvements when duplicating a post and synchronizing terms at the same time
+    * Updated Installer
+
+**3.1.9 - 3.1.9.3**
+
+* **Security**
+    * Security Update, Bug and Fix (purposely undisclosed)
+
+* **Fixes**
+    * Fixed an issue causing sites using WooCommerce to become inaccessible
+    * Fixed a notice occurring on duplicating WooCommerce products
+    * Fixed an issue with Menu Synchronisation and custom links that were not recognised as translated
+    * Fixed an issue with the taxonomy label translation. Label translation still necessitates the use of English as String Language as well as, as Admin Language.
+
 **3.1.8.4**
 
 * **Fixes**
