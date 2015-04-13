@@ -1104,3 +1104,86 @@ if ( ! class_exists( 'cs_contact_msg' ) ) {
 	}
 }
 add_action('widgets_init', create_function('', 'return register_widget("cs_contact_msg");'));
+
+/**
+ * @Footer_main_menu widget Class
+ *
+ *
+ */
+
+if ( ! class_exists( 'footer_main_menu' ) ) { 
+	class footer_main_menu extends WP_Widget {
+	  
+		/**
+		 * Outputs the content of the widget
+		 *
+		 * @param array $args
+		 * @param array $instance
+		 */
+ 		/**
+		 * @Footer_main_menu Module
+		 *
+		 *
+		 */
+		 function footer_main_menu(){
+				$widget_ops = array('classname' => 'footer_main_menu_widget', 'description' => 'Main menu into footer.' );
+				$this->WP_Widget('footer_main_menu', 'CS : Footer Main Menu', $widget_ops);
+		  }
+	  	  
+		/**
+		 * @Footer_main_menu html Form
+		 *
+		 *
+		 */
+		 function form($instance) {
+				$instance = wp_parse_args( (array) $instance, array( 'title' => '' ) );
+				$title = $instance['title'];
+				?>
+				<p>
+	              <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"> Title:
+	                <input class="upcoming" id="<?php echo esc_attr($this->get_field_id('title')); ?>" size='40' name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
+	              </label>
+	            </p>
+				<?php
+				
+	    }
+		
+		/**
+		 * @Footer_main_menu Update Form Data
+		 *
+		 *
+		 */
+		 function update($new_instance, $old_instance) {
+	
+			$instance = $old_instance;
+			$instance['title'] = $new_instance['title'];		
+	
+			return $instance;
+			
+		  }
+		
+		
+		/**
+		 * @Footer_main_menu Widget Display
+		 *
+		 *
+		 */
+		 function widget($args, $instance) {
+			extract($args, EXTR_SKIP);
+			$title = empty($instance['title']) ? ' ' : apply_filters('widget_title', $instance['title']);
+			
+			echo cs_allow_special_char($before_widget);	
+
+			if (!empty($title) && $title <> ' '){
+				echo cs_allow_special_char($before_title);
+				echo cs_allow_special_char($title);
+				echo cs_allow_special_char($after_title);
+			}
+			
+			cs_main_navigation('header2-nav','');
+			?><?php echo cs_allow_special_char($after_widget);
+	
+			}
+		}	
+}
+add_action( 'widgets_init', create_function('', 'return register_widget("footer_main_menu");') );
