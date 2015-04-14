@@ -31,6 +31,30 @@ function wpml_site_uses_icl() {
     return ( $site_id || $access_key || $icl_account_email );
 }
 
+function repair_el_type_collate() {
+	global $wpdb;
+
+	$correct_collate = $wpdb->get_var (
+		"SELECT collation_name
+          FROM information_schema.COLUMNS
+          WHERE TABLE_NAME = '{$wpdb->posts}'
+                AND COLUMN_NAME = 'post_type'
+                    AND table_schema = (SELECT DATABASE())
+          LIMIT 1"
+	);
+
+	// translations
+	$table_name = $wpdb->prefix . 'icl_translations';
+	$sql
+	            = "
+             ALTER TABLE `{$table_name}`
+                CHANGE `element_type` `element_type` VARCHAR( 36 ) NOT NULL DEFAULT 'post_post' COLLATE {$correct_collate}
+            ";
+	if ( $wpdb->query ( $sql ) === false ) {
+		throw new Exception( $wpdb->last_error );
+	}
+}
+
 /**
  * @param string $key
  * @param bool   $default

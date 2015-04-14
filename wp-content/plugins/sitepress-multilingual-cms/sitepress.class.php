@@ -754,7 +754,6 @@ class SitePress
 	 */
 	function set_term_filters_and_hooks(){
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 4 );
-		add_filter( 'list_terms_exclusions', array( $this, 'exclude_other_terms' ), 1, 2 );
 		add_filter( 'term_link', array( $this, 'tax_permalink_filter' ), 1, 2 );
 		add_action( 'create_term', array( $this, 'create_term' ), 1, 2 );
 		add_action( 'edit_term', array( $this, 'create_term' ), 1, 2 );
@@ -5925,87 +5924,6 @@ class SitePress
 		return $args;
 	}
 
-    function exclude_other_terms( $exclusions, $args ) {
-
-        if ( filter_input ( INPUT_GET, 'lang' ) === 'all'
-             || ( isset( $args[ '_icl_show_all_langs' ] )
-                  && $args[ '_icl_show_all_langs' ] )
-        ) {
-            return $exclusions;
-        }
-
-        global $pagenow;
-
-        $taxonomy = filter_input(INPUT_GET, 'taxonomy' );
-        $taxonomy = $taxonomy === null && isset( $args[ 'taxonomy' ] ) ? $args[ 'taxonomy' ] : $taxonomy;
-        $taxonomy = $taxonomy === null
-                    && filter_input ( INPUT_POST, 'action' ) === 'get-tagcloud'
-                    ? filter_input(INPUT_POST, 'tax' ) : $taxonomy;
-
-        if ( $taxonomy === null && in_array ( $pagenow, array( 'post-new.php', 'post.php', 'edit.php' ), true ) ) {
-            //Limit to first 4 stack frames, since 3 is the highest index we use
-            $debug_backtrace = $this->get_backtrace ( 4, false, true );
-            $taxonomy = isset( $debug_backtrace[ 3 ][ 'args' ][ 0 ] ) ? $debug_backtrace[ 3 ][ 'args' ][ 0 ]  : 'post_tag';
-        }
-
-        if ( !$taxonomy || !$this->is_translated_taxonomy ( $taxonomy ) ) {
-            return $exclusions;
-        }
-
-        global $wpdb;
-
-        if ( ( $tag_id = filter_input ( INPUT_GET, 'tag_ID' ) ) !== null ) {
-            $this_lang = $wpdb->get_var (
-                $wpdb->prepare (
-                        "SELECT language_code
-                         FROM {$wpdb->prefix}icl_translations
-                         WHERE element_id = ( SELECT term_taxonomy_id
-                                             FROM {$wpdb->term_taxonomy}
-                                             WHERE term_id = %d
-                                             AND taxonomy = %s
-                                             LIMIT 1 )
-                            AND element_type LIKE 'tax%%'
-                          LIMIT 1",
-                    $tag_id,
-                    $taxonomy
-                )
-            );
-        } elseif ( $this->this_lang !== $this->get_default_language () ) {
-            $this_lang = $this->get_current_language ();
-        } elseif ( ( $post_id = filter_input ( INPUT_GET, 'post', FILTER_SANITIZE_NUMBER_INT ) ) !== null ) {
-            $posts_lang_code = $wpdb->get_var($wpdb->prepare("SELECT language_code
-                                                              FROM {$wpdb->prefix}icl_translations i
-                                                              JOIN {$wpdb->posts} p
-                                                                ON i.element_type = CONCAT('post_', p.post_type)
-                                                              WHERE element_id = %d", $post_id));
-            $this_lang = $posts_lang_code ? $posts_lang_code : $this->get_default_language ();
-        } elseif (
-            isset( $_SERVER[ 'HTTP_REFERER' ] )
-            && in_array ( filter_input ( INPUT_POST, 'action' ), array( 'get-tagcloud', 'menu-quick-search' ), true )
-        ) {
-            $urlparts = parse_url ( $_SERVER[ 'HTTP_REFERER' ] );
-            @parse_str ( $urlparts[ 'query' ], $qvars );
-            $this_lang = isset( $qvars[ 'lang' ] ) ? $qvars[ 'lang' ] : $this->get_default_language ();
-        } else {
-            $this_lang = $this->get_default_language ();
-        }
-
-        $exclude_snippet = $wpdb->prepare ( " SELECT t.term_taxonomy_id FROM {$wpdb->term_taxonomy} t
-                                              LEFT JOIN {$wpdb->prefix}icl_translations i
-                                                ON (t.term_taxonomy_id = i.element_id
-                                                      OR i.element_id IS NULL)
-                                              WHERE i.element_type LIKE 'tax%%'
-                                                AND t.taxonomy = %s
-                                                AND i.language_code <> %s",
-                                              $taxonomy,
-                                              $this_lang );
-
-        $exclusions_add = " AND tt.term_taxonomy_id NOT IN ({$exclude_snippet})";
-        $exclusions = (bool) $exclusions === false ? $exclusions_add : $exclusions . $exclusions_add;
-
-        return $exclusions;
-    }
-
 	function terms_clauses( $clauses, $taxonomies, $args )
 	{
 		global $wpdb;
@@ -10683,15 +10601,11 @@ class SitePress
 
 		remove_filter( 'get_terms_args', array( $this, 'get_terms_args_filter' ) );
 		remove_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10 );
-		remove_filter( 'list_terms_exclusions', array( $this, 'exclude_other_terms' ), 1 );
-
 		clean_term_cache( $terms_ids, $taxonomy );
 
 		add_filter( 'get_terms_args', array( $this, 'get_terms_args_filter' ) );
 		// filters terms by language
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 4 );
-		add_filter( 'list_terms_exclusions', array( $this, 'exclude_other_terms' ), 1, 2 );
-
 	}
 	
 	/**

@@ -1,3 +1,9 @@
+**3.1.9.5**
+
+* **Fixes**
+    * "Illegal mix of collation" error ([forum thread](https://wpml.org/forums/topic/404-error-on-all-pages-with-wpml-3-1-9-4-on-wp-engine-hosting/))
+    * Categories by languages are not displayed: ([forum thread](https://wpml.org/forums/topic/missing-categories-after-upgrade/))
+    
 **3.1.9.4**
 
 * **Fixes**

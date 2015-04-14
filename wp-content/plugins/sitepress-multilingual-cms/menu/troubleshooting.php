@@ -22,6 +22,8 @@ if ( isset( $action) && wp_verify_nonce($nonce, $action) ) {
 			SitePress_Setup::fill_languages_translations();
             icl_cache_clear();
 			exit;
+		case 'icl_fix_collation':
+			repair_el_type_collate();
 		case 'reset_pro_translation_configuration':
 			$sitepress_settings = get_option( 'icl_sitepress_settings' );
 
@@ -780,7 +782,7 @@ echo '</textarea>';
 			jQuery(this).after(icl_ajxloaderimg);
 			jQuery('#icl_cms_id_fix_prgs').fadeIn();
 			_icl_sync_cms_id(0);
-		})
+		});
 
 		jQuery('#icl_sync_cancelled').click(function () {
 			jQuery(this).attr('disabled', 'disabled');
@@ -843,6 +845,16 @@ echo '</textarea>';
 
 			});
 		});
+		jQuery('#icl_fix_collation').click(function () {
+			jQuery(this).attr('disabled', 'disabled');
+			jQuery(this).after(icl_ajxloaderimg);
+			jQuery.post(location.href + '&debug_action=icl_fix_collation&nonce=<?php echo wp_create_nonce('icl_fix_collation'); ?>', function () {
+				jQuery('#icl_fix_collation').removeAttr('disabled');
+				alert('<?php echo esc_js(__('Done', 'sitepress')) ?>');
+				jQuery('#icl_fix_collation').next().fadeOut();
+
+			});
+		});
 
 		jQuery('#icl_fix_terms_count').click(function () {
 			jQuery(this).attr('disabled', 'disabled');
@@ -881,6 +893,10 @@ echo '</textarea>';
 	<p>
 		<input id="icl_clear_transients" type="button" class="button-secondary" value="<?php _e( 'Delete transient data', 'sitepress' ) ?>"/><br/>
 		<small style="margin-left:10px;"><?php _e( 'Clear all temporary data cached in transients.', 'sitepress' ) ?></small>
+	</p>
+	<p>
+		<input id="icl_fix_collation" type="button" class="button-secondary" value="<?php _e( 'Fix element_type Collation', 'sitepress' ) ?>"/><br/>
+		<small style="margin-left:10px;"><?php _e( 'Fixes the collation of the element_type column in icl_translations in case this setting changed for your posts.post_type column.', 'sitepress' ) ?></small>
 	</p>
 	<?php if ( $sitepress->get_setting('site_id') && $sitepress->get_setting('access_key') && $sitepress->get_setting('site_id') && $sitepress->get_setting('access_key') ){ ?>
 		<p>
