@@ -3028,6 +3028,7 @@ require_once (get_template_directory()  . '/include/theme-components/cs-mega-men
 require_once (get_template_directory()  . '/include/theme-components/cs-widgets/widgets.php');
 require_once (TEMPLATEPATH . '/include/theme-components/cs-widgets/widgets_keys.php');
 require_once (get_template_directory()  . '/include/theme-components/cs-header/header_functions.php');
+require_once (get_template_directory()  . '/include/theme-components/cs-footer/footer_functions.php');
 
 require_once (get_template_directory()  . '/include/shortcodes/shortcode_elements.php');
 require_once (get_template_directory()  . '/include/shortcodes/shortcode_functions.php');
