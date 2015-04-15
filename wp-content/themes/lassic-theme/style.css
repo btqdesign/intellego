@@ -1414,8 +1414,13 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 	        background-color: #71767a !important;
 	}
 	
-	footer .cs-footer-menu > .navigation {
+	footer .cs-footer-menu {
 		margin: 0 auto 0 auto !important;
+		display: block !important;
+	}
+	
+	footer .cs-footer-menu > .navigation {
+		
 	}
 }
 @media only screen and (max-width:990px) {
