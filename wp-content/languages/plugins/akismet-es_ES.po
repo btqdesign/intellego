@@ -2,13 +2,25 @@
 # This file is distributed under the same license as the Development package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2015-03-06 07:34:23+0000\n"
+"PO-Revision-Date: 2015-04-15 08:05:45+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: GlotPress/1.0-alpha-1000\n"
 "Project-Id-Version: Development\n"
+
+#: views/notice.php:91
+msgid "The connection to akismet.com cannot be established. Please refer to <a href=\"%s\" target=\"_blank\">our guide about firewalls</a> and check your server configuration."
+msgstr "No se pudo establecer la conexión con akismet.com. Por favor, ve a  <a href=\"%s\" target=\"_blank\">nuestra guía sobre cortafuegos</a> y revisa la configuración de tu servidor."
+
+#: views/notice.php:90
+msgid "The key you entered could not be verified."
+msgstr "La clave que has introducido no pudo ser verificada."
+
+#: views/config.php:92
+msgid "Akismet encountered a problem with a previous SSL request and disabled it temporarily. It will begin using SSL for requests again shortly."
+msgstr "Akismet encontró un problema con una petición SSL previa y la desactivó temporalmente. Se volverán a hacer peticiones usando SSL muy pronto."
 
 #: views/config.php:95
 msgid "All systems functional."
@@ -17,10 +29,6 @@ msgstr "Todos los sistemas funcionando."
 #: views/config.php:95
 msgid "Enabled."
 msgstr "Activado."
-
-#: views/config.php:92
-msgid "Akismet encountered a problem with a previous SSL request and disabled it temporarily. It will begin using SSL for requests again shortly."
-msgstr "Akisemt encontró un problema con la petición SSL y la desactivó temporalmente. Se volverá a utilizar usando peticiones SSL muy pronto."
 
 #: views/config.php:86
 msgid "Your Web server cannot make SSL requests; contact your Web host and ask them to add support for SSL requests."
@@ -38,7 +46,7 @@ msgstr "Desactivado."
 msgid "SSL Status"
 msgstr "Status del SSL"
 
-#: views/notice.php:96
+#: views/notice.php:97
 msgid "Your Pro subscription allows the use of Akismet on only one site. Please <a href=\"http://docs.akismet.com/billing/add-more-sites/\">purchase additional Pro subscriptions</a> or upgrade to an Enterprise subscription that allows the use of Akismet on unlimited sites.<br /><br />If you have any questions, please get in touch with our support team."
 msgstr "Tu suscripción Pro te permite el uso de Akismet en un sólo sitio. Por favor, <a href=\"http://docs.akismet.com/billing/add-more-sites/\">compra suscripciones Pro adicionales</a> o mejora tu suscripción a la Enterprise, que te permite el uso de Akismet en un número ilimitado de sitios.<br /><br />Si tienes alguna pregunta, ponte en contacto con nuestro equipo de soporte."
 
@@ -144,15 +152,15 @@ msgstr "Comentarios"
 msgid "Your subscription is missing."
 msgstr "Tu suscripción se ha perdido."
 
-#: views/notice.php:95
+#: views/notice.php:96
 msgid "You're using your Akismet key on more sites than your Pro subscription allows."
 msgstr "Estás utilizando tu clave de Akismet en más sitios de los que te permite su suscripción Pro."
 
-#: views/notice.php:98
+#: views/notice.php:99
 msgid "You're using Akismet on far too many sites for your Pro subscription."
 msgstr "Estás usando Akismet en muchos más sitios de los que permitidos por tu suscripción PRO."
 
-#: views/notice.php:99
+#: views/notice.php:100
 msgid "To continue your service, <a href=\"%s\" target=\"_blank\">upgrade to an Enterprise subscription</a>, which covers an unlimited number of sites. Please <a href=\"%s\" target=\"_blank\">contact our support team</a> with any questions."
 msgstr "Para seguir usando el servicio <a href=\"%s\" target=\"_blank\">actualiza a una suscripción de Empresa</a>, que puede usarse en un número ilimitado de sitios. Por favor, <a href=\"%s\" target=\"_blank\">contacta con nuestro equipo de soporte</a> si tienes alguna pregunta."
 
@@ -201,10 +209,6 @@ msgstr "Akismet %s necesita WordPress 3.0 o superior para funcionar."
 #: views/notice.php:86
 msgid "The key you entered is invalid. Please double-check it."
 msgstr "La clave que has introducido no es válida. Por favor compruébala."
-
-#: views/notice.php:90
-msgid "The key you entered could not be verified because a connection to akismet.com could not be established. Please check your server configuration."
-msgstr "La clave que has introducido no se ha podido verificar porque no se ha podido realizar la conexión con akismet.com. Por favor, comprueba la configuración de tu servidor."
 
 #: views/notice.php:42
 msgid "Network functions are disabled."
@@ -462,39 +466,39 @@ msgid_plural "%s approved"
 msgstr[0] "%s aprobado"
 msgstr[1] "%s aprobados"
 
-#: class.akismet.php:534
+#: class.akismet.php:537
 msgid "%s reported this comment as not spam"
 msgstr "%s no considera este comentario como spam"
 
-#: class.akismet.php:228
+#: class.akismet.php:231
 msgid "Akismet caught this comment as spam"
 msgstr "Akismet considera que este comentario es spam"
 
-#: class.akismet.php:488
+#: class.akismet.php:491
 msgid "%s reported this comment as spam"
 msgstr "%s considera que este comentario es spam"
 
-#: class.akismet.php:575
+#: class.akismet.php:578
 msgid "Akismet caught this comment as spam during an automatic retry."
 msgstr "Akismet ha realizado una revisión automática y considera que este comentario es spam."
 
-#: class.akismet.php:230 class.akismet.php:239
+#: class.akismet.php:233 class.akismet.php:242
 msgid "Comment status was changed to %s"
 msgstr "El estado del comentario se cambió a %s"
 
-#: class.akismet.php:577
+#: class.akismet.php:580
 msgid "Akismet cleared this comment during an automatic retry."
 msgstr "Akismet borró este comentario durante una revisión automática."
 
-#: class.akismet.php:234
+#: class.akismet.php:237
 msgid "Akismet cleared this comment"
 msgstr "Akismet borró este comentario"
 
-#: class.akismet.php:237
+#: class.akismet.php:240
 msgid "Comment was caught by wp_blacklist_check"
 msgstr "Comentario pillado por wp_blacklist_check"
 
-#: class.akismet.php:244
+#: class.akismet.php:247
 msgid "Akismet was unable to check this comment (response: %s), will automatically retry again later."
 msgstr "Akismet fue incapaz de revisar este comentario (respuesta: %s), se volverá a intentar más tarde."
 
@@ -502,7 +506,7 @@ msgstr "Akismet fue incapaz de revisar este comentario (respuesta: %s), se volve
 msgid "View comment history"
 msgstr "Ver historial de comentarios"
 
-#. #-#-#-#-#  akismet.pot (Akismet 3.1.1a1)  #-#-#-#-#
+#. #-#-#-#-#  akismet.pot (Akismet 3.1.2a1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: class.akismet-admin.php:76 class.akismet-admin.php:78
 #: class.akismet-admin.php:757 views/config.php:3
@@ -574,7 +578,7 @@ msgstr "¡Desde que te uniste a nosotros, Akismet te ha ahorrado %d horas!"
 msgid "Since you joined us, Akismet has saved you %d minutes!"
 msgstr "¡Desde que te uniste a nosotros, Akismet te ha ahorrado %d minutos!"
 
-#: class.akismet.php:988
+#: class.akismet.php:991
 msgid "Akismet %s requires WordPress %s or higher."
 msgstr "Akismet %s requiere tener WordPress %s o superior."
 
@@ -671,11 +675,11 @@ msgstr[1] "Ahora mismo hay <a href=\"%2$s\">%1$s comentarios</a> en tu cola de s
 msgid "There&#8217;s nothing in your <a href='%s'>spam queue</a> at the moment."
 msgstr "En este momento no hay nada en la <a href='%s'>cola de spam</a>."
 
-#: class.akismet.php:443
+#: class.akismet.php:446
 msgid "%1$s changed the comment status to %2$s"
 msgstr "%1$s ha cambiado su estado de comentario a %2$s"
 
-#: class.akismet.php:988 views/notice.php:27
+#: class.akismet.php:991 views/notice.php:27
 msgid "Please <a href=\"%1$s\">upgrade WordPress</a> to a current version, or <a href=\"%2$s\">downgrade to version 2.4 of the Akismet plugin</a>."
 msgstr "Por favor, <a href=\"%1$s\">actualiza WordPress</a> a una versión actualizada o <a href=\"%2$s\">instala la versión 2.4 del plugin Akismet</a>."
 
