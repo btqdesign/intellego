@@ -1491,7 +1491,7 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 		min-height: 28px !important;
 	}
 	
-	footer .cs-footer-menu > .col-md-12 > .navigation > .navbar-nav > li:first-child > a::before {
-		display: inline-block !important;
+	footer .cs-footer-menu > .col-md-12 > .navigation ul > li:first-child > a::before {
+		display: block !important;
 	}
 }
