@@ -3540,7 +3540,8 @@ function cs_my_admin_scripts() {
 function cs_register_my_menus() {
   register_nav_menus(
 	array(
-		'main-menu'  => __('Main Menu','lassic'),
+		'main-menu'   => __('Main Menu','lassic'),
+		'footer-menu' => __('Footer Menu','lassic'),
  	)
   );
 }
