@@ -1434,7 +1434,7 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 		margin: 0 auto 0 auto !important;
 		float: none !important;
 		position: relative !important;
-		display: inline-block !important;
+		display: table !important;
 	}
 	
 	footer .cs-footer-menu > .col-md-12 > .navigation > .navbar-nav > li:first-child{
