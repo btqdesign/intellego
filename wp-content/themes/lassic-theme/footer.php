@@ -40,7 +40,7 @@
                             <?php } ?>
                             <div class="cs-footer-menu">
 	                        <?php /* cs_footer_navigation('header2-nav',''); */ 
-	                        if (function_exists('cs_footer_navigation')) {echo 'existe'} else {echo 'no existe'}
+	                        if (function_exists('cs_footer_navigation')) {echo 'existe';} else {echo 'no existe';};
 	         	            ?>
 	                        </div>
 	                        <?php
