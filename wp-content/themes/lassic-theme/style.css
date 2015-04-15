@@ -1475,6 +1475,7 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 		float: none !important;
 		position: relative !important;
 		display: table !important;
+	}
 	
 	footer .cs-footer-menu > .col-md-12 > .navigation > .navbar-nav > li {
 		float: none !important;
