@@ -1424,6 +1424,7 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 	footer .cs-footer-menu > .navigation {
 		margin: 0 !important;
 		float: none !important;
+		width: 100% !important;
 	}
 	
 	footer .cs-footer-menu > .navigation > .navbar-nav {
@@ -1438,6 +1439,12 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 	
 	footer .cs-footer-menu > .navigation > .navbar-nav > li {
 		margin: 0 !important;
+	}
+	
+	footer .cs-footer-menu > .navigation > .navbar-nav > li > a {
+		font-size: 16px !important;
+		line-height: 16px !important;
+		min-height: 28px !important;
 	}
 }
 @media only screen and (max-width:990px) {
