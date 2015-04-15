@@ -39,7 +39,9 @@
                                 </div>
                             <?php } ?>
                             <div class="cs-footer-menu">
-	                            <?php cs_footer_navigation(); ?>
+	                            <div class="col-md-12">
+	                                 <?php cs_footer_navigation(); ?>
+	                            </div>
 	                        </div>
 	                        <?php
                             if(isset($cs_footer_widget) and $cs_footer_widget == 'on'){  
