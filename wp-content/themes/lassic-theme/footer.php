@@ -39,7 +39,7 @@
                                 </div>
                             <?php } ?>
                             <div class="cs-footer-menu">
-	                        <?php /*cs_footer_navigation('header2-nav','');*/ ?>
+	                        <?php cs_footer_navigation('header2-nav',''); ?>
 	                        </div>
 	                        <?php
                             if(isset($cs_footer_widget) and $cs_footer_widget == 'on'){  
