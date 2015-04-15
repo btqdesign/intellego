@@ -1489,6 +1489,7 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 		font-size: 16px !important;
 		line-height: 16px !important;
 		min-height: 28px !important;
+		display: table !important;
 	}
 	
 	footer .cs-footer-menu > .col-md-12 > .navigation ul > li:first-child > a::before {
