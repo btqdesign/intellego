@@ -1416,11 +1416,12 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 	
 	footer .cs-footer-menu {
 		margin: 0 auto 0 auto !important;
-		display: block !important;
+		display: inline-block !important;
+		position: relative !important;
 	}
 	
 	footer .cs-footer-menu > .navigation {
-		
+		margin: 0 auto 0 auto !important;
 	}
 }
 @media only screen and (max-width:990px) {
