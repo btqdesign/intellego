@@ -1424,6 +1424,7 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 	footer .cs-footer-menu > .navigation {
 		margin: 0 auto 0 auto !important;
 		float: none !important;
+		width: auto !important;
 	}
 	
 	footer .cs-footer-menu > .navigation > .navbar-nav > li:first-child{
