@@ -599,6 +599,45 @@ var RevSliderAdmin = new function(){
 		}
 		
 		
+		this.initNewsletterRoutine = function(){
+
+			jQuery('#subscribe-to-newsletter').click(function(){
+
+				var data = {
+					email: jQuery('input[name="rs-email"]').val()
+				}
+
+				UniteAdminRev.ajaxRequest("subscribe_to_newsletter", data); //, '#subscribe-to-newsletter'
+			});
+			
+			
+			jQuery('#activate-unsubscribe').click(function(){
+				jQuery('.subscribe-newsletter-wrap').hide();
+				jQuery('#activate-unsubscribe').hide();
+				jQuery('.unsubscribe-newsletter-wrap').show();
+				jQuery('#unsubscribe-text').show();
+				jQuery('#subscribe-text').hide();
+			});
+			jQuery('#cancel-unsubscribe').click(function(){
+				jQuery('.subscribe-newsletter-wrap').show();
+				jQuery('#activate-unsubscribe').show();
+				jQuery('.unsubscribe-newsletter-wrap').hide();
+				jQuery('#unsubscribe-text').hide();
+				jQuery('#subscribe-text').show();
+			});
+			
+			jQuery('#unsubscribe-to-newsletter').click(function(){
+
+				var data = {
+					email: jQuery('input[name="rs-email"]').val()
+				}
+
+				UniteAdminRev.ajaxRequest("unsubscribe_to_newsletter", data); //, '#unsubscribe-to-newsletter'
+			});
+			
+
+		}
+		
 		/**
 		 * init "sliders list" view 
 		 */

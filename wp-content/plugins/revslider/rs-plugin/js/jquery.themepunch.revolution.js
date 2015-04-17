@@ -1,6 +1,6 @@
 /**************************************************************************
  * jquery.themepunch.revolution.js - jQuery Plugin for Revolution Slider
- * @version: 4.6.5 (02.12.2014)
+ * @version: 4.6.8 (27.02.2015)
  * @requires jQuery v1.7 or later (tested on 1.9)
  * @author ThemePunch
 **************************************************************************/
@@ -103,6 +103,7 @@
 					simplifyAll:"on",
 					minHeight:0,
 					nextSlideOnWindowFocus:"off",
+					disableFocusListener:true,
 
 					startDelay:0		// Delay before the first Animation starts.
 
@@ -117,7 +118,7 @@
 						// REPORT SOME IMPORTAN INFORMATION ABOUT THE SLIDER
 						if (window.tplogs==true)
 						 try{
-								console.groupCollapsed("Slider Revolution 4.6.3 Initialisation on "+jQuery(this).attr('id'));
+								console.groupCollapsed("Slider Revolution 4.6.8 Initialisation on "+jQuery(this).attr('id'));
 								console.groupCollapsed("Used Options:");
 								console.info(options);
 								console.groupEnd();
@@ -798,7 +799,7 @@
 										contpar.css({display:"none"});
 									}
 
-									tabBlurringCheck(container,opt);
+									if (!opt.disableFocusListener && opt.disableFocusListener!="true" && opt.disableFocusListener!==true) tabBlurringCheck(container,opt);
 
 						}
 
@@ -3594,6 +3595,7 @@
 
 								opt.videoplaying=true;
 								container.trigger('stoptimer');
+								container.trigger('revolution.slide.onvideoplay');
 								if (nextcaption.data('volume')=="mute")
 								  froogaloop.api('setVolume',"0");
 							});
@@ -3932,7 +3934,10 @@
 										if ((videomp!=undefined || videowebm!=undefined) && nextcaption.find('video').length==0) {
 
 											if (videocontrols!="controls") videocontrols="";
-											var apptxt = '<video style="visible:hidden" class="" '+videoloop+' preload="'+videopreload+'" width="'+vidw+'" height="'+vidh+'"';
+											var ie9addon = "";
+											if (vidw==100 || vidw=="100%") ie9addon = ";width:100% !important; height:100% !important";
+											var apptxt = '<video style="visible:hidden'+ie9addon+'" class="" '+videoloop+' preload="'+videopreload+'" width="'+vidw+'" height="'+vidh+'" ';
+											
 											/*if (nextcaption.data('videoposter')!=undefined)
 												apptxt = apptxt + 'poster="'+nextcaption.data('videoposter')+'">';
 												apptxt = apptxt + '<source src="'+videomp+'" type="video/mp4" />';
@@ -3966,6 +3971,14 @@
 											autoplaywason = true;
 										}
 
+										// IF VIDEOPOSTER EXISTING
+										if (nextcaption.data('videoposter')!=undefined && nextcaption.data('videoposter').length>2 && nextcaption.data('autoplay')!=true && !internrecalled) {
+											if (nextcaption.find('.tp-thumb-image').length==0) {
+												nextcaption.append('<div class="tp-thumb-image" style="cursor:pointer; position:absolute;top:0px;left:0px;width:100%;height:100%;background-image:url('+nextcaption.data('videoposter')+'); background-size:cover; background-position:center center"></div>');
+											} else {
+											  punchgs.TweenLite.set(nextcaption.find('.tp-thumb-image'),{autoAlpha:1});
+											 }
+										}
 
 										nextcaption.find('iframe').each(function() {
 												var ifr=jQuery(this);
@@ -3981,13 +3994,7 @@
 												// START YOUTUBE HANDLING
 												opt.nextslideatend = nextcaption.data('nextslideatend');
 
-												// IF VIDEOPOSTER EXISTING
-												if (nextcaption.data('videoposter')!=undefined && nextcaption.data('videoposter').length>2 && nextcaption.data('autoplay')!=true && !internrecalled) {
-													if (nextcaption.find('.tp-thumb-image').length==0)
-														nextcaption.append('<div class="tp-thumb-image" style="cursor:pointer; position:absolute;top:0px;left:0px;width:100%;height:100%;background-image:url('+nextcaption.data('videoposter')+'); background-size:cover"></div>');
-													else
-													  punchgs.TweenLite.set(nextcaption.find('.tp-thumb-image'),{autoAlpha:1});
-												}
+												
 
 												// IF IFRAME IS A YOUTUBE FRAME
 												if (ifr.attr('src').toLowerCase().indexOf('youtube')>=0) {
@@ -4152,11 +4159,14 @@
 																if (jvideo.attr('control') == undefined ) {
 																	if (html5vid.find('.tp-video-play-button').length==0)
 																		html5vid.append('<div class="tp-video-play-button"><i class="revicon-right-dir"></i><div class="tp-revstop"></div></div>');
-																	html5vid.find('video, .tp-poster, .tp-video-play-button').click(function() {
-																		if (html5vid.hasClass("videoisplaying"))
+																	html5vid.parent().find('video, .tp-poster, .tp-thumb-image, .tp-video-play-button').click(function() {
+
+																		if (html5vid.hasClass("videoisplaying")){
 																			video.pause();
-																		else
+																		} else {
 																			video.play();
+																			punchgs.TweenLite.to(html5vid.parent().find('.tp-poster, .tp-thumb-image'),0.2,{autoAlpha:0});
+																		}
 																	})
 																}
 
@@ -4318,7 +4328,10 @@
 
 															jvideo.css({display:"block"});
 															opt.nextslideatend = nextcaption.data('nextslideatend');
-
+															
+															if (nextcaption.data('forcerewind')=="on" && !html5vid.hasClass("videoisplaying"))
+																	if (video.currentTime>0) video.currentTime=0;
+																	
 															// IF VIDEO SHOULD BE AUTOPLAYED
 															if (nextcaption.data('autoplay')==true || autoplaywason==true) {
 
@@ -5938,24 +5951,22 @@
 
 
 
-/**************************************************************************
- * Revolution Slider - PARALLAX MODULE
- * @version: 1.1 (23.06.2013)
- * @author ThemePunch
-**************************************************************************/
+//////////////////////////////////////////////////////
+// * Revolution Slider - PARALLAX MODULE
+// * @version: 1.1 (23.06.2013)
+// * @author ThemePunch
+//////////////////////////////////////////////////////
 
-		/******************************
-			-	PARALLAX EFFECT	-
-		********************************/
-		var checkForParallax = function(container,opt) {
+	//	-	PARALLAX EFFECT	-
+	var checkForParallax = function(container,opt) {
 			if (is_mobile() && opt.parallaxDisableOnMobile=="on") return false;
 
-			container.find('>ul:first-child >li').each(function() {
+			container.find('.tp-revslider-mainul >li').each(function() {
 				var li = jQuery(this);
 				for (var i = 1; i<=10;i++)
 					li.find('.rs-parallaxlevel-'+i).each(function() {
 						var pw = jQuery(this);
-						pw.wrap('<div style="position:absolute;top:0px;left:0px;width:100%;height:100%;z-index:'+pw.css('zIndex')+'" class="tp-parallax-container" data-parallaxlevel="'+opt.parallaxLevels[i-1]+'"></div>');
+						pw.wrapInner('<div style="position:relative;" class="tp-parallax-container" data-parallaxlevel="'+opt.parallaxLevels[i-1]+'"></div>');
 					});
 			})
 
@@ -5964,6 +5975,7 @@
 			if (opt.parallax=="mouse" || opt.parallax=="scroll+mouse" || opt.parallax=="mouse+scroll") {
 
 						container.mouseenter(function(event) {
+
 							var currslide = container.find('.current-sr-slide-visible');
 									var t = container.offset().top,
 										l = container.offset().left,
@@ -5975,18 +5987,22 @@
 						})
 
 						container.on('mousemove.hoverdir, mouseleave.hoverdir',function(event) {
+
 							var currslide = container.find('.current-sr-slide-visible');
 							switch (event.type) {
 
 								case "mousemove":
-
 										var	t = container.offset().top,
-											l = container.offset().left,
-											mh = currslide.data("enterx"),
+											l = container.offset().left;
+
+										if (currslide.data("enterx") ==undefined)  currslide.data("enterx",(event.pageX-l));
+										if (currslide.data("entery") ==undefined)  currslide.data("entery",(event.pageY-t));										
+											
+										var mh = currslide.data("enterx"),
 											mv = currslide.data("entery"),
 											diffh = (mh - (event.pageX  - l)),
 											diffv = (mv - (event.pageY - t));
-
+										
 										currslide.find(".tp-parallax-container").each(function() {
 											var pc = jQuery(this),
 												pl = parseInt(pc.data('parallaxlevel'),0)/100,
@@ -6053,10 +6069,9 @@
 			}
 		}
 
-		/***************************************
-			-	SET POST OF SCROLL PARALLAX	-
-		***************************************/
-		var scrollParallax = function(container,opt) {
+
+	//	-	SET POST OF SCROLL PARALLAX	-
+	var scrollParallax = function(container,opt) {
 			if (is_mobile() && opt.parallaxDisableOnMobile=="on") return false;
 			var t = container.offset().top,
 					st = jQuery(window).scrollTop(),
@@ -6081,6 +6096,8 @@
 				punchgs.TweenLite.to(container,0.2,{force3D:"auto",y:offsv,ease:punchgs.Power3.easeOut});
 			}
 		}
+
+//// END OF PARALLAX EFFECT
 
 		/**************************************************************************
 		 * Revolution Slider - THUMBNAIL MODULE

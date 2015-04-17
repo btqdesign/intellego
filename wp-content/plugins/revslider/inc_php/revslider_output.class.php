@@ -791,8 +791,11 @@
 
 
 				$text = UniteFunctionsRev::getVal($layer, "text");
-				if(function_exists('qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage')) //use qTranslate
+				if(function_exists('qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage')){ //use qTranslate
 					$text = qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage($text);
+				}elseif(function_exists('ppqtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage')){ //use qTranslate plus
+					$text = ppqtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage($text);
+				}
 
 				$htmlVideoAutoplay = "";
 				$htmlVideoAutoplayOnlyFirstTime = "";

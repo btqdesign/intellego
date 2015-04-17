@@ -36,6 +36,12 @@
 							   __("Enable Logs",REVSLIDER_TEXTDOMAIN),
 							   "off",
 							   array("description"=>__("Enable console logs for debugging.",REVSLIDER_TEXTDOMAIN)));
+	
+	$generalSettings->addRadio("enable_newschannel", 
+							   array("on"=>__("On",REVSLIDER_TEXTDOMAIN),"off"=>__("Off",REVSLIDER_TEXTDOMAIN)),
+							   __("Enable Notifications",REVSLIDER_TEXTDOMAIN),
+							   NULL,
+							   array("description"=>__("Enable/Disable ThemePunch Notifications in the Admin Notice bar.",REVSLIDER_TEXTDOMAIN)));
 	//transition
 	/*$operations = new RevOperations();
 	$arrTransitions = $operations->getArrTransition();

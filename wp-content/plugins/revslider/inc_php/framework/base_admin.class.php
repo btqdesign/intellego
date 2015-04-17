@@ -22,6 +22,7 @@
 		private static $menuRole = self::ROLE_ADMIN;
 		private static $arrMetaBoxes = "";		//option boxes that will be added to post
 		
+		private static $allowed_views = array('master-view', 'system/validation', 'system/video_dialog', 'system/update_dialog', 'system/general_settings_dialog', 'sliders', 'slider', 'slider_template', 'slides', 'slide', 'navigation-editor', 'slide-editor', 'slide-overview', 'slide-editor', 'slider-overview', 'themepunch-google-fonts');
 		
 		/**
 		 * 
@@ -300,6 +301,7 @@
 		 */
 		protected static function requireView($view){
 			try{
+				
 				//require master view file, and 
 				if(!empty(self::$master_view) && !isset(self::$tempVars["is_masterView"]) ){
 					$masterViewFilepath = self::$path_views.self::$master_view.".php";
@@ -307,8 +309,10 @@
 					
 					self::$tempVars["is_masterView"] = true;
 					require $masterViewFilepath;
-				}
-				else{		//simple require the view file.
+				}else{		//simple require the view file.
+					
+					if(!in_array($view, self::$allowed_views)) UniteFunctionsRev::throwError(__('Wrong Request', REVSLIDER_TEXTDOMAIN));
+				
 					$viewFilepath = self::$path_views.$view.".php";
 					
 					UniteFunctionsRev::validateFilepath($viewFilepath,"View");
@@ -316,7 +320,7 @@
 				}
 				
 			}catch (Exception $e){
-				echo "<br><br>View ($view) Error: <b>".$e->getMessage()."</b>";
+				echo "<br><br>View (".esc_attr($view).") Error: <b>".$e->getMessage()."</b>";
 				
 				if(self::$debugMode == true)
 					dmp($e->getTraceAsString());
@@ -377,6 +381,7 @@
 		 * add admin menus from the list.
 		 */
 		public static function addAdminMenu(){
+			global $revslider_screens;
 			
 			$role = "manage_options";
 			
@@ -396,11 +401,11 @@
 			foreach(self::$arrMenuPages as $menu){
 				$title = $menu["title"];
 				$pageFunctionName = $menu["pageFunction"];
-				add_menu_page( $title, $title, $role, self::$dir_plugin, array(self::$t, $pageFunctionName), 'dashicons-update' );
+				$revslider_screens[] = add_menu_page( $title, $title, $role, self::$dir_plugin, array(self::$t, $pageFunctionName), 'dashicons-update' );
 			}
 			
 			if(!isset($GLOBALS['admin_page_hooks']['themepunch-google-fonts'])){ //only add if menu is not already registered
-				add_menu_page(__('Punch Fonts', REVSLIDER_TEXTDOMAIN), __('Punch Fonts', REVSLIDER_TEXTDOMAIN), $role, 'themepunch-google-fonts', array(self::$t, 'display_plugin_submenu_page_google_fonts'), 'dashicons-editor-textcolor');
+				$revslider_screens[] = add_menu_page(__('Punch Fonts', REVSLIDER_TEXTDOMAIN), __('Punch Fonts', REVSLIDER_TEXTDOMAIN), $role, 'themepunch-google-fonts', array(self::$t, 'display_plugin_submenu_page_google_fonts'), 'dashicons-editor-textcolor');
 			}
 		}
 		
@@ -410,7 +415,7 @@
 		 * add menu page
 		 */
 		protected static function addMenuPage($title,$pageFunctionName){
-						
+			
 			self::$arrMenuPages[] = array("title"=>$title,"pageFunction"=>$pageFunctionName);
 			
 		}
@@ -544,140 +549,6 @@
 			self::ajaxResponse(true,$message,$arrData,true);
 		}
 		
-
-		/**
-		 * 
-		 * Enter description here ...
-		 */
-		protected static function updatePlugin($viewBack = false){
-			$linkBack = self::getViewUrl($viewBack);
-			$htmlLinkBack = UniteFunctionsRev::getHtmlLink($linkBack, "Go Back");
-			
-			//check if css table exist, if not, we need to verify that the current captions.css can be parsed
-			if(UniteFunctionsWPRev::isDBTableExists(GlobalsRevSlider::TABLE_CSS_NAME)){
-				$captions = RevOperations::getCaptionsCssContentArray();
-				if($captions === false){
-					$message = "CSS parse error! Please make sure your captions.css is valid CSS before updating the plugin!";
-					echo "<div style='color:#B80A0A;font-size:18px;'><b>Update Error: </b> $message</div><br>";
-					echo $htmlLinkBack;
-					exit();
-				}
-			}
-			
-			$zip = new UniteZipRev();
-						
-			try{
-				
-				if(function_exists("unzip_file") == false){					
-					if( UniteZipRev::isZipExists() == false)
-						UniteFunctionsRev::throwError("The ZipArchive php extension not exists, can't extract the update file. Please turn it on in php ini.");
-				}
-				
-				dmp("Update in progress...");
-				
-				$arrFiles = UniteFunctionsRev::getVal($_FILES, "update_file");
-				if(empty($arrFiles))
-					UniteFunctionsRev::throwError("Update file don't found.");
-					
-				$filename = UniteFunctionsRev::getVal($arrFiles, "name");
-				
-				if(empty($filename))
-					UniteFunctionsRev::throwError("Update filename not found.");
-				
-				$fileType = UniteFunctionsRev::getVal($arrFiles, "type");
-				
-				/*				
-				$fileType = strtolower($fileType);
-				
-				if($fileType != "application/zip")
-					UniteFunctionsRev::throwError("The file uploaded is not zip.");
-				*/
-				
-				$filepathTemp = UniteFunctionsRev::getVal($arrFiles, "tmp_name");
-				if(file_exists($filepathTemp) == false)
-					UniteFunctionsRev::throwError("Can't find the uploaded file.");	
-
-				//crate temp folder
-				UniteFunctionsRev::checkCreateDir(self::$path_temp);
-
-				//create the update folder
-				$pathUpdate = self::$path_temp."update_extract/";				
-				UniteFunctionsRev::checkCreateDir($pathUpdate);
-								
-				//remove all files in the update folder
-				if(is_dir($pathUpdate)){ 
-					$arrNotDeleted = UniteFunctionsRev::deleteDir($pathUpdate,false);
-					if(!empty($arrNotDeleted)){
-						$strNotDeleted = print_r($arrNotDeleted,true);
-						UniteFunctionsRev::throwError("Could not delete those files from the update folder: $strNotDeleted");
-					}
-				}
-				
-				//copy the zip file.
-				$filepathZip = $pathUpdate.$filename;
-				
-				$success = move_uploaded_file($filepathTemp, $filepathZip);
-				if($success == false)
-					UniteFunctionsRev::throwError("Can't move the uploaded file here: ".$filepathZip.".");
-				
-				if(function_exists("unzip_file") == true){
-					WP_Filesystem();
-					$response = unzip_file($filepathZip, $pathUpdate);
-				}
-				else					
-					$zip->extract($filepathZip, $pathUpdate);
-				
-				//get extracted folder
-				$arrFolders = UniteFunctionsRev::getFoldersList($pathUpdate);
-				if(empty($arrFolders))
-					UniteFunctionsRev::throwError("The update folder is not extracted");
-				
-				if(count($arrFolders) > 1)
-					UniteFunctionsRev::throwError("Extracted folders are more then 1. Please check the update file.");
-					
-				//get product folder
-				$productFolder = $arrFolders[0];
-				if(empty($productFolder))
-					UniteFunctionsRev::throwError("Wrong product folder.");
-					
-				if($productFolder != self::$dir_plugin)
-					UniteFunctionsRev::throwError("The update folder don't match the product folder, please check the update file.");
-				
-				$pathUpdateProduct = $pathUpdate.$productFolder."/";				
-				
-				//check some file in folder to validate it's the real one:
-				$checkFilepath = $pathUpdateProduct.$productFolder.".php";
-				if(file_exists($checkFilepath) == false)
-					UniteFunctionsRev::throwError("Wrong update extracted folder. The file: ".$checkFilepath." not found.");
-				
-				//copy the plugin without the captions file.
-				//$pathOriginalPlugin = $pathUpdate."copy/";
-				$pathOriginalPlugin = self::$path_plugin;
-				
-				$arrBlackList = array();
-				$arrBlackList[] = "rs-plugin/css/captions.css";
-				$arrBlackList[] = "rs-plugin/css/dynamic-captions.css";
-				$arrBlackList[] = "rs-plugin/css/static-captions.css";
-				
-				UniteFunctionsRev::copyDir($pathUpdateProduct, $pathOriginalPlugin,"",$arrBlackList);
-				
-				//delete the update
-				UniteFunctionsRev::deleteDir($pathUpdate);
-				
-				dmp("Updated Successfully, redirecting...");
-				echo "<script>location.href='$linkBack'</script>";
-				
-			}catch(Exception $e){
-				$message = $e->getMessage();
-				$message .= " <br> Please update the plugin manually via the ftp";
-				echo "<div style='color:#B80A0A;font-size:18px;'><b>Update Error: </b> $message</div><br>";
-				echo $htmlLinkBack;
-				exit();
-			}
-			
-		}
-		
- 	
  }
  
  ?>

@@ -4476,6 +4476,8 @@ var UniteLayersRev = new function(){
 					ft = g_slideTime;
 					if (objLayer.realEndTime=="undefined" || objLayer.realEndTime==undefined)
 						objLayer = getLayerExtendedParams(objLayer);
+						
+					//console.log(objLayer);
 
 					dragfull.css({width:((objLayer.realEndTime - objLayer.time) / ft)*100+"%",
 								  left: ((objLayer.time) / ft) *100+"%"});

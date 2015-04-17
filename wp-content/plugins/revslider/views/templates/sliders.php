@@ -148,7 +148,35 @@
 			<?php
 		}
 		?>
+		
+		<div style="width:100%;height:50px"></div>
 
+		<!-- NEWSLETTER PART -->
+		<div class="title_line nobgnopd">
+			<div class="view_title"><span style="margin-right:10px"><?php _e('Newsletter', REVSLIDER_TEXTDOMAIN); ?></span><a style="vertical-align:middle" class='button-primary revred' href='#' id="why-subscribe"><?php _e("Why subscribe?", REVSLIDER_TEXTDOMAIN); ?></a></div>
+		</div>		
+
+		<div id="eg-newsletter-wrapper">		
+			<div class="revred" style="left:0px;top:0px;position:absolute;height:100%;padding:27px 10px;"><i style="font-size:25px" class="iconttowhite eg-icon-mail"></i></div>
+			<div style="margin-top:65px; margin-bottom:5px;">
+				<span id="unsubscribe-text" style="display: none;"><?php _e("Unsubscribe our newsletter", REVSLIDER_TEXTDOMAIN); ?></span><span id="subscribe-text"><?php _e("Subscribe to our newsletter", REVSLIDER_TEXTDOMAIN); ?></span>: <input type="text" value="" placeholder="<?php _e('Enter your E-Mail here', REVSLIDER_TEXTDOMAIN); ?>" name="rs-email" />
+				<span class="subscribe-newsletter-wrap"><a href="javascript:void(0);" class="button-primary revgreen" id="subscribe-to-newsletter"><?php _e('Subscribe', REVSLIDER_TEXTDOMAIN); ?></a></span>
+				<span class="unsubscribe-newsletter-wrap" style="display: none;">
+					<a href="javascript:void(0);" class="button-primary revred" id="unsubscribe-to-newsletter"><?php _e('Unsubscribe', REVSLIDER_TEXTDOMAIN); ?></a>
+					<a href="javascript:void(0);" class="button-primary revgreen" id="cancel-unsubscribe"><?php _e('Cancel', REVSLIDER_TEXTDOMAIN); ?></a>
+				</span>
+			</div>
+			<a href="javascript:void(0);" id="activate-unsubscribe" style="font-size: 12px; color: #999; text-decoration: none;"><?php _e('unsubscibe from newsletter', REVSLIDER_TEXTDOMAIN); ?></a>
+			<div id="why-subscribe-wrapper" style="display: none;">
+				<div class="star_red"><strong style="font-weight:700"><?php _e('Perks of subscribing to our Newsletter', REVSLIDER_TEXTDOMAIN); ?></strong></div>
+				<ul>
+					<li><?php _e('Receive info on the latest ThemePunch product updates', REVSLIDER_TEXTDOMAIN); ?></li>
+					<li><?php _e('Be the first to know about new products by ThemePunch and their partners', REVSLIDER_TEXTDOMAIN); ?></li>
+					<li><?php _e('Participate in polls and customer surveys that help us increase the quality of our products and services', REVSLIDER_TEXTDOMAIN); ?></li>
+				</ul>
+			</div>
+		</div>
+		
 		<!-- THE UPDATE HISTORY OF SLIDER REVOLUTION -->
 		<div style="width:100%;height:50px"></div>	
 		
@@ -195,11 +223,19 @@
 	<script type="text/javascript">
 		jQuery(document).ready(function(){
 			RevSliderAdmin.initSlidersListView();
+			RevSliderAdmin.initNewsletterRoutine();
+			
 			jQuery('#benefitsbutton').hover(function() {
 				jQuery('#benefitscontent').slideDown(200);
 			}, function() {
 				jQuery('#benefitscontent').slideUp(200);				
-			})
+			});
+			
+			jQuery('#why-subscribe').hover(function() {
+				jQuery('#why-subscribe-wrapper').slideDown(200);
+			}, function() {
+				jQuery('#why-subscribe-wrapper').slideUp(200);				
+			});
 			
 			jQuery('#tp-validation-box').click(function() {
 				jQuery(this).css({cursor:"default"});
@@ -207,7 +243,7 @@
 					jQuery('#tp-before-validation').hide();
 					jQuery('#rs-validation-wrapper').slideDown(200);
 				}
-			})
+			});
 		});
 	</script>
 	

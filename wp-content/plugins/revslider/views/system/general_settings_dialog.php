@@ -11,11 +11,13 @@ $pages_for_includes = $generalSettings->getSettingValue("pages_for_includes",'')
 $js_to_footer = $generalSettings->getSettingValue("js_to_footer",'off');
 $show_dev_export = $generalSettings->getSettingValue("show_dev_export",'off');
 
+$enable_newschannel = apply_filters('revslider_set_notifications', 'on');
+$enable_newschannel = $generalSettings->getSettingValue("enable_newschannel",$enable_newschannel);
+
 $enable_logs = $generalSettings->getSettingValue("enable_logs",'off');
 ?>
 
 <div id="dialog_general_settings" title="<?php _e("General Settings",REVSLIDER_TEXTDOMAIN)?>" style="display:none;">
-
 	<div class="settings_wrapper unite_settings_wide">
 		<form name="form_general_settings" id="form_general_settings">
 				<script type="text/javascript">
@@ -118,6 +120,28 @@ $enable_logs = $generalSettings->getSettingValue("enable_logs",'off');
 						
 						<tr id="use_hammer_js_row" valign="top">
 							<th scope="row">
+								<?php _e("Enable Notifications:",REVSLIDER_TEXTDOMAIN); ?>
+							</th>
+							<td>
+								<span id="enable_logs_wrapper" class="radio_settings_wrapper">
+									<div class="radio_inner_wrapper">
+										<input type="radio" id="" value="on" name="enable_newschannel" <?php checked($enable_newschannel, 'on'); ?>>
+										<label for="" style="cursor:pointer;"><?php _e("On",REVSLIDER_TEXTDOMAIN); ?></label>
+									</div>
+					
+									<div class="radio_inner_wrapper">
+										<input type="radio" id="" value="off" name="enable_newschannel" <?php checked($enable_newschannel, 'off'); ?>>
+										<label for="" style="cursor:pointer;"><?php _e("Off",REVSLIDER_TEXTDOMAIN); ?></label>
+									</div>
+								</span>
+								<div class="description_container">
+									<span class="description"><?php _e("Enable/Disable ThemePunch Notifications in the Admin Notice bar.",REVSLIDER_TEXTDOMAIN)?></span>				
+								</div>
+							</td>
+						</tr>
+						
+						<tr id="use_hammer_js_row" valign="top">
+							<th scope="row">
 								<?php _e("Enable Logs:",REVSLIDER_TEXTDOMAIN); ?>
 							</th>
 							<td>
@@ -128,8 +152,8 @@ $enable_logs = $generalSettings->getSettingValue("enable_logs",'off');
 									</div>
 					
 									<div class="radio_inner_wrapper">
-										<input type="radio" id="use_hammer_js_2" value="off" name="enable_logs" <?php checked($enable_logs, 'off'); ?>>
-										<label for="use_hammer_js_2" style="cursor:pointer;"><?php _e("Off",REVSLIDER_TEXTDOMAIN); ?></label>
+										<input type="radio" id="enable_logs_2" value="off" name="enable_logs" <?php checked($enable_logs, 'off'); ?>>
+										<label for="enable_logs_2" style="cursor:pointer;"><?php _e("Off",REVSLIDER_TEXTDOMAIN); ?></label>
 									</div>
 								</span>
 								<div class="description_container">

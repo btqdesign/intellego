@@ -1,5 +1,6 @@
 html	{	background: #ddd !important}
 
+
 /******************************
 	-	GENERAL SETTINGS	-
 ********************************/
@@ -2432,3 +2433,33 @@ line-height:30px;
 
 
 #tp-validation-box i.revicon-info-circled.redrevicon:before		{  color: #bdc3c7 !important}
+
+
+
+
+/********************************
+	-	NEWSLETTER STYLING		-
+********************************/
+
+#eg-newsletter-wrapper{
+	border:1px solid #e5e5e5;
+	padding:15px 15px 15px 80px;
+	border-radius:0px;
+	-moz-border-radius:0px;
+	-webkit-border-radius:0px;
+	position:relative;
+	overflow:hidden;
+	background:url(../images/tp_newsletter_bg.png) no-repeat 75px 10px #FFFFFF;
+}
+
+div.star_red { font-size:13px; font-weight:700; color:#222;line-height:18px;margin-top:30px;margin-bottom:10px;font-family: "Open Sans",sans; text-transform: uppercase;}
+div.star_red:before { content: '\f155'; font-family: "dashicons"; color:#e03301; font-size:17px;margin-right:10px; vertical-align: middle;}
+
+#why-subscribe-wrapper li {
+	list-style-type: disc;
+	margin-left: 20px;
+}
+
+.iconttowhite[class^="eg-icon-"]::before, .iconttowhite[class*=" eg-icon-"]::before, .iconttowhite::before {
+    color: #fff;
+}

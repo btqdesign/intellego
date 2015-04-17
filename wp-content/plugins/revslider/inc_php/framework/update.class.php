@@ -170,6 +170,10 @@ class UniteUpdateClassRev {
 			if(isset($version_info->version)){
 				update_option('revslider-latest-version', $version_info->version);
 			}
+			
+			if(isset($version_info->notices)){
+				update_option('revslider-notices', $version_info->notices);
+			}
 		}
 		
 	}

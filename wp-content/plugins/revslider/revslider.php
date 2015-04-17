@@ -4,7 +4,7 @@ Plugin Name: Revolution Slider
 Plugin URI: http://www.themepunch.com/revolution/
 Description: Revolution Slider - Premium responsive slider
 Author: ThemePunch
-Version: 4.6.5
+Version: 4.6.8
 Author URI: http://themepunch.com
 */
 
@@ -26,10 +26,11 @@ if(isset($_GET['revSliderAsTheme'])){
 }
 
 
-$revSliderVersion = "4.6.5";
+$revSliderVersion = "4.6.9";
 $currentFile = __FILE__;
 $currentFolder = dirname($currentFile);
 $revSliderAsTheme = false;
+$revslider_screens = array();
 
 //set the RevSlider Plugin as a Theme. This hides the activation notice and the activation area in the Slider Overview
 function set_revslider_as_theme(){
@@ -140,7 +141,7 @@ try{
 	if(is_admin()){		//load admin part
 	
 		require_once $currentFolder . '/inc_php/framework/update.class.php';
-
+		require_once $currentFolder . '/inc_php/framework/newsletter.class.php';
 		require_once $currentFolder."/revslider_admin.php";
 
 		$productAdmin = new RevSliderAdmin($currentFile);

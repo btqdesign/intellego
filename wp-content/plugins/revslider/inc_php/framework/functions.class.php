@@ -177,7 +177,7 @@
 				return(false);
 			if($errorPrefix == null)
 				$errorPrefix = "File";
-			$message = $errorPrefix." $filepath not exists!";
+			$message = $errorPrefix." ".esc_attr($filepath)." not exists!";
 			self::throwError($message);
 		}
 		
@@ -748,7 +748,7 @@
 				$full_dest = $dest."/".$rel_path;
 						
 			if(!is_dir($full_source))
-				self::throwError("The source directroy: '$full_source' not exists.");
+				self::throwError("The source directroy: '".esc_attr($full_source)."' not exists.");
 			
 			if(!is_dir($full_dest))
 				mkdir($full_dest);

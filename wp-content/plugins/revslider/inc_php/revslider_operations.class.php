@@ -410,7 +410,7 @@
 			if(trim($rawID) != '') {
 				$db = new UniteDBRev();
 				$id = str_replace(array('customin-', 'customout'), array('', ''), $rawID);
-				$db->delete(GlobalsRevSlider::$table_layer_anims, "id = '".mysqli_real_escape_string($id)."'");
+				$db->delete(GlobalsRevSlider::$table_layer_anims, "id = '".intval($id)."'");
 			}
 
 			$arrAnims['customin'] = RevOperations::getCustomAnimations();
