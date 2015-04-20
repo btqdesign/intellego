@@ -178,8 +178,10 @@ if ( ! function_exists( 'cs_theme_option' ) ) {
 			if($mailchimp_option <> ''){
 				$mc_list = cs_mailchimp_list($mailchimp_option);
 				if($mc_list <> ''){
+					if(isset($mc_list['data'])){
 					foreach($mc_list['data'] as $list){
 						$mail_chimp_list[$list['id']]=$list['name'];
+					}
 					}
 				}
 		 	}
