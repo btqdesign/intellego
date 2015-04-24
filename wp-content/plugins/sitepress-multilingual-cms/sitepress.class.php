@@ -7804,15 +7804,13 @@ class SitePress
 			// Adjust page name
 			if ( isset( $q->query_vars[ 'pagename' ] ) && !empty( $q->query_vars[ 'pagename' ] ) ) {
 				// find the page with the page name in the current language.
-				$pagename = explode ( '/', $q->query_vars[ 'pagename' ] );
-				$pagename = array_pop ( $pagename );
 				$pid = $wpdb->get_var( $wpdb->prepare( "
 								SELECT ID
 								FROM $wpdb->posts p
 								JOIN {$wpdb->prefix}icl_translations t
-								ON p.ID = t.element_id AND t.element_type='post_page'
+								ON p.ID = t.element_id AND element_type='post_page'
 								WHERE p.post_name=%s AND t.language_code = %s
-								", $pagename, $current_language ) );
+								", $q->query_vars[ 'pagename' ], $current_language ) );
 
 				if ( $pid ) {
 					$q->query_vars[ 'page_id' ] = $pid;
