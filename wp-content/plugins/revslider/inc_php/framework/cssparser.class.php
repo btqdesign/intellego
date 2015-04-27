@@ -95,12 +95,13 @@
 				$end = strpos($css, '*/') + 2;
 				$css = str_replace(substr($css, $start, $end - $start), '', $css);
 			}
-			
-			preg_match_all( '/(?ims)([a-z0-9\s\.\:#_\-@]+)\{([^\}]*)\}/', $css, $arr);
+			//preg_match_all( '/(?ims)([a-z0-9\s\.\:#_\-@]+)\{([^\}]*)\}/', $css, $arr);
+			preg_match_all( '/(?ims)([a-z0-9\,\s\.\:#_\-@]+)\{([^\}]*)\}/', $css, $arr);
 
 			$result = array();
 			foreach ($arr[0] as $i => $x){
 				$selector = trim($arr[1][$i]);
+				
 				if(strpos($selector, '{') !== false || strpos($selector, '}') !== false) return false;
 				$rules = explode(';', trim($arr[2][$i]));
 				$result[$selector] = array();
@@ -117,7 +118,8 @@
 						$result[$selector][trim($key)] = trim(str_replace("'", '"', $values));
 					}
 				}
-			}   
+			}
+			
 			return($result);
 		}
 		

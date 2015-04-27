@@ -800,11 +800,18 @@
 					//overwrite/create dynamic-captions.css
 					//parse css to classes
 					$dynamicCss = UniteCssParserRev::parseCssToArray($dynamic);
-					
+
 					if(is_array($dynamicCss) && $dynamicCss !== false && count($dynamicCss) > 0){
 						foreach($dynamicCss as $class => $styles){
 							//check if static style or dynamic style
 							$class = trim($class);
+							
+							if(strpos($class, ',') !== false && strpos($class, '.tp-caption') !== false){ //we have something like .tp-caption.redclass, .redclass
+								$class_t = explode(',', $class);
+								foreach($class_t as $k => $cl){
+									if(strpos($cl, '.tp-caption') !== false) $class = $cl;
+								}
+							}
 							
 							if((strpos($class, ':hover') === false && strpos($class, ':') !== false) || //before, after
 								strpos($class," ") !== false || // .tp-caption.imageclass img or .tp-caption .imageclass or .tp-caption.imageclass .img
@@ -840,7 +847,10 @@
 					}
 				}
 				
-				$content = preg_replace('!s:(\d+):"(.*?)";!e', "'s:'.strlen('$2').':\"$2\";'", $content); //clear errors in string
+				//$content = preg_replace('!s:(\d+):"(.*?)";!e', "'s:'.strlen('$2').':\"$2\";'", $content); //clear errors in string
+				$content = preg_replace_callback('!s:(\d+):"(.*?)";!', function ($m){
+					return 's:'.strlen($m[2]).':"'.$m[2].'";';
+				}, $content); //clear errors in string
 				
 				$arrSlider = @unserialize($content);
 					if(empty($arrSlider))

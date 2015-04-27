@@ -156,7 +156,7 @@ if(!$no_sliders){
 			
 			
 			$page_links = paginate_links( array(
-				'base' => add_query_arg( $param, '%#%' ),
+				'base' => add_query_arg( $param, '%#%', '' ),
 				'format' => '',
 				'add_args' => array('limit' => $limit),
 				'prev_text' => __( '&laquo;', REVSLIDER_TEXTDOMAIN ),
