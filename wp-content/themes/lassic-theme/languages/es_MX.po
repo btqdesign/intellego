@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Awaken v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-27 11:17-0600\n"
+"PO-Revision-Date: 2015-04-27 11:22-0600\n"
 "Last-Translator: lms-admin <dum1@chimpgroup.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgid "Posted On "
 msgstr "Publicado en"
 
 msgid "BY "
-msgstr ""
+msgstr "Por"
 
 msgid "0"
 msgstr ""
@@ -361,7 +361,7 @@ msgid " Posted On "
 msgstr ""
 
 msgid "Read More"
-msgstr ""
+msgstr "Leer Más"
 
 #, php-format
 msgid "%d seconds ago"
