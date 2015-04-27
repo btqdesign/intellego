@@ -797,7 +797,7 @@ msgid "Project Detail"
 msgstr ""
 
 msgid "View All"
-msgstr ""
+msgstr "Ver Todo"
 
 msgid "Continue Reading"
 msgstr ""
