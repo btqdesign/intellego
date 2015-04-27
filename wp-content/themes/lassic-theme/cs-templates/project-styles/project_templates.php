@@ -127,7 +127,7 @@ if ( !class_exists('ProjectTemplates') ) {
                                           <a href="<?php esc_url(the_permalink()); ?>">
                                               <i class="icon-plus8"></i>
                                           </a>
-                                          <a href="<?php esc_url(the_permalink()); ?>"><?php echo esc_attr('View','lassic');?><br> <?php echo esc_attr('Project','lassic');?></a>
+                                          <a href="<?php esc_url(the_permalink()); ?>"><?php echo esc_attr(__('View','lassic'),'lassic');?><br> <?php echo esc_attr(__('Project','lassic'),'lassic');?></a>
                                       </div>
                                   </div>
                               </figcaption>
