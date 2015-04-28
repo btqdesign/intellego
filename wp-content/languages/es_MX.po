@@ -6150,7 +6150,7 @@ msgstr "Por favor, accede de nuevo."
 msgid "Sidebar %d"
 msgstr "Barra lateral %d"
 
-#: wp-includes/wp-db.php:2835
+#: wp-includes/wp-db.php:2949
 msgid "<strong>ERROR</strong>: WordPress %1$s requires MySQL %2$s or higher"
 msgstr "<strong>ERROR</strong>: WordPress %1$s necesita MySQL %2$s o superior."
 
