@@ -328,7 +328,7 @@ switch($request){
             $iclsettings['icl_post_availability_text'] = $_POST['icl_post_availability_text'];
 
         $iclsettings['icl_widget_title_show'] = (isset($_POST['icl_widget_title_show'])) ? 1 : 0;
-        $iclsettings['icl_additional_css'] = $_POST['icl_additional_css'];
+        $iclsettings['icl_additional_css'] = (isset($_POST['icl_additional_css'])) ? $_POST['icl_additional_css'] : null;
 
         $iclsettings['display_ls_in_menu'] = @intval($_POST['display_ls_in_menu']);
         $iclsettings['menu_for_ls'] = @intval($_POST['menu_for_ls']);
