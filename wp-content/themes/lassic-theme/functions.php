@@ -2619,6 +2619,16 @@ $font_atts_int = array	(
 	update_option('cs_font_attribute', $font_atts_int);
 }
 
+/* Idioma en español mexicano */
+/*
+add_filter( 'locale', 'change_locale' );
+function change_locale(){ return 'es_MX'; }
+
+load_default_textdomain();
+
+load_textdomain('responsive', get_template_directory().'/languages/es_MX.mo');
+*/
+
 add_action( 'after_setup_theme', 'cs_theme_setup' );
 function cs_theme_setup() {
 	global $wpdb;
