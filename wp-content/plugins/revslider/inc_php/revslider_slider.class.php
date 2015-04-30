@@ -847,10 +847,9 @@
 					}
 				}
 				
+				
 				//$content = preg_replace('!s:(\d+):"(.*?)";!e', "'s:'.strlen('$2').':\"$2\";'", $content); //clear errors in string
-				$content = preg_replace_callback('!s:(\d+):"(.*?)";!', function ($m){
-					return 's:'.strlen($m[2]).':"'.$m[2].'";';
-				}, $content); //clear errors in string
+				$content = preg_replace_callback('!s:(\d+):"(.*?)";!', array('RevSlider', 'clear_error_in_string'), $content); //clear errors in string
 				
 				$arrSlider = @unserialize($content);
 					if(empty($arrSlider))
@@ -1961,6 +1960,9 @@
 			}
 		}
 		
+		public static function clear_error_in_string($m){
+			return 's:'.strlen($m[2]).':"'.$m[2].'";';
+		}
 	}
 
 ?>
