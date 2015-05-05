@@ -1,0 +1,559 @@
+#: include/traits/admin_menu.php:158
+#, php-format
+msgid "A list of custom post types that have broadcasting enabled. The default value is %s."
+msgstr ""
+
+#: include/traits/admin_menu.php:328
+msgid "Action to take when attachments with the same filename already exist on the child blog."
+msgstr ""
+
+#: include/traits/admin_menu.php:313
+msgid "Blogs to hide"
+msgstr ""
+
+#: include/traits/admin_menu.php:208 include/traits/admin_menu.php:519
+#: include/traits/meta_boxes.php:29 include/traits/post_actions.php:60
+msgid "Broadcast"
+msgstr ""
+
+#: include/traits/admin_menu.php:262
+msgid "Broadcast all fields, including those beginning with underscores."
+msgstr ""
+
+#: include/traits/admin_menu.php:232
+msgid "Broadcast as draft"
+msgstr ""
+
+#: include/traits/admin_menu.php:220
+msgid "Broadcast custom fields"
+msgstr ""
+
+#: include/traits/admin_menu.php:470
+msgid "Broadcast information"
+msgstr ""
+
+#: include/traits/admin_menu.php:263
+msgid "Broadcast internal custom fields"
+msgstr ""
+
+#: include/traits/meta_boxes.php:99
+msgid "Broadcast is in debug mode. More information than usual will be shown."
+msgstr ""
+
+#: include/traits/meta_boxes.php:104
+msgid "Broadcast is not preparing the meta box because it has already been applied."
+msgstr ""
+
+#: include/ThreeWP_Broadcast.php:90
+msgid "Broadcast requires a Wordpress network to function."
+msgstr ""
+
+#: include/traits/admin_menu.php:238
+msgid "Broadcast scheduled posts"
+msgstr ""
+
+#: include/traits/admin_menu.php:226
+msgid "Broadcast taxonomies"
+msgstr ""
+
+#: include/traits/meta_boxes.php:191
+msgid "Broadcast to"
+msgstr ""
+
+#: include/traits/post_actions.php:70
+msgid "Broadcasted"
+msgstr ""
+
+#: include/traits/admin_menu.php:252
+msgid "Canonical URL"
+msgstr ""
+
+#: include/traits/admin_menu.php:251
+msgid "Child posts have their canonical URLs pointed to the URL of the parent post. This automatically disables the canonical URL from Yoast's Wordpress SEO plugin."
+msgstr ""
+
+#: include/traits/admin_menu.php:300
+msgid "Clear POST"
+msgstr ""
+
+#: include/traits/post_actions.php:149
+msgid "Click to modify the post's linkage"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:910
+msgid "Could not parse date"
+msgstr ""
+
+#: include/traits/meta_boxes.php:146
+msgid "Create a link to the children, which will be updated when this post is updated, trashed when this post is trashed, etc."
+msgstr ""
+
+#: include/traits/admin_menu.php:255
+msgid "Custom field handling"
+msgstr ""
+
+#: include/traits/meta_boxes.php:159
+msgid "Custom fields"
+msgstr ""
+
+#: include/traits/admin_menu.php:398
+msgid "Custom post types"
+msgstr ""
+
+#: include/traits/admin_menu.php:173
+msgid "Custom post types must be specified using their internal Wordpress names on a new line each. It is not possible to automatically make a list of available post types on the whole network because of a limitation within Wordpress (the current blog knows only of its own custom post types)."
+msgstr ""
+
+#: include/traits/admin_menu.php:170
+msgid "Custom post types saved!"
+msgstr ""
+
+#: include/traits/admin_menu.php:156
+msgid "Custom post types to broadcast"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:397
+msgid "DD"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:402
+msgid "Date format"
+msgstr ""
+
+#: include/traits/admin_menu.php:428
+msgid "Delete all child posts"
+msgstr ""
+
+#: include/traits/admin_menu.php:429
+msgid "Delete all children"
+msgstr ""
+
+#: include/traits/admin_menu.php:424
+msgid "Delete child"
+msgstr ""
+
+#: include/traits/post_actions.php:127
+msgid "Delete children"
+msgstr ""
+
+#: include/traits/admin_menu.php:423
+msgid "Delete the child post"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:369
+msgid "Description"
+msgstr ""
+
+#: include/traits/admin_menu.php:321
+msgid "Display in overview"
+msgstr ""
+
+#: include/traits/admin_menu.php:329
+msgid "Existing attachments"
+msgstr ""
+
+#: include/traits/admin_menu.php:433 include/traits/admin_menu.php:434
+msgid "Find orphans"
+msgstr ""
+
+#: include/traits/post_actions.php:128
+msgid "Find unlinked children"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:398
+msgid "HH"
+msgstr ""
+
+#: include/traits/admin_menu.php:320
+msgid "How many children to display in the overview before making the list into a summary."
+msgstr ""
+
+#: include/traits/admin_menu.php:312
+msgid "In the broadcast meta box, after how many blogs the list should be auto-hidden."
+msgstr ""
+
+#: include/traits/admin_menu.php:270
+msgid "Internal field blacklist"
+msgstr ""
+
+#: include/traits/admin_menu.php:279
+msgid "Internal field protectlist"
+msgstr ""
+
+#: include/traits/admin_menu.php:288
+msgid "Internal field whitelist"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:917
+msgid "Invalid date"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:900
+msgid "Invalid email address"
+msgstr ""
+
+#: include/traits/meta_boxes.php:179
+msgid "Invert selection"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:405
+msgid "Latest valid date"
+msgstr ""
+
+#: include/traits/meta_boxes.php:145
+msgid "Link this post to its children"
+msgstr ""
+
+#: include/traits/admin_menu.php:214
+msgid "Link to child posts"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:396 vendor/plainview/sdk/form.php:399
+msgid "MM"
+msgstr ""
+
+#: include/traits/admin_menu.php:399
+msgid "Maintenance"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:391
+msgid "Minimum length"
+msgstr ""
+
+#: include/traits/admin_menu.php:296
+msgid "Miscellaneous"
+msgstr ""
+
+#: include/traits/post_actions.php:466
+msgid "No change"
+msgstr ""
+
+#: vendor/plainview/sdk/form2/inputs/radios.php:59
+#: vendor/plainview/sdk/form2/inputs/traits/validation.php:182
+#, php-format
+msgid "Please fill in %s."
+msgstr ""
+
+#: include/traits/meta_boxes.php:259
+msgid "Plugins that have hooked into save_post:"
+msgstr ""
+
+#: include/traits/post_actions.php:61
+msgid "Post actions"
+msgstr ""
+
+#: include/traits/admin_menu.php:490
+msgid "Premium Pack"
+msgstr ""
+
+#: include/traits/admin_menu.php:489
+msgid "Premium Pack info"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:326
+msgid "Required field"
+msgstr ""
+
+#: include/traits/admin_menu.php:444
+msgid "Restore all"
+msgstr ""
+
+#: include/traits/admin_menu.php:443
+msgid "Restore all of the child posts from the trash"
+msgstr ""
+
+#: include/traits/admin_menu.php:439
+msgid "Restore child"
+msgstr ""
+
+#: include/traits/post_actions.php:129
+msgid "Restore children"
+msgstr ""
+
+#: include/traits/admin_menu.php:438
+msgid "Restore the child post from the trash"
+msgstr ""
+
+#: include/traits/admin_menu.php:203
+msgid "Roles"
+msgstr ""
+
+#: include/traits/admin_menu.php:242
+msgid "SEO"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:400
+msgid "SS"
+msgstr ""
+
+#: include/traits/admin_menu.php:339
+msgid "Save settings"
+msgstr ""
+
+#: include/traits/admin_menu.php:162
+msgid "Save the broadcastable custom post types"
+msgstr ""
+
+#: include/traits/meta_boxes.php:180
+msgid "Select / deselect all"
+msgstr ""
+
+#: include/traits/admin_menu.php:397
+msgid "Settings"
+msgstr ""
+
+#: include/traits/post_actions.php:70
+msgid "Shows which blogs have posts linked to this one"
+msgstr ""
+
+#: include/traits/admin_menu.php:258
+msgid "Some custom fields start with underscores. They are generally Wordpress internal fields and therefore not broadcasted. Some plugins store their information as underscored custom fields. If you wish them, or some of them, to be broadcasted, use either of the options below."
+msgstr ""
+
+#: vendor/plainview/sdk/wordpress/base.php:541
+msgid "Super admin"
+msgstr ""
+
+#: include/traits/meta_boxes.php:169
+msgid "Taxonomies"
+msgstr ""
+
+#: include/traits/admin_menu.php:299
+msgid "The POST PHP variable is data sent when updating posts. Most plugins are fine if the POST is cleared before broadcasting, while others require that the data remains intact. Uncheck this setting if you notice that child posts are not being treated the same on the child blogs as they are on the parent blog."
+msgstr ""
+
+#: include/traits/admin_menu.php:207
+msgid "The broadcast access role is the user role required to use the broadcast function at all."
+msgstr ""
+
+#: include/traits/admin_menu.php:176
+#, php-format
+msgid "The custom post types registered on <em>this</em> blog are: <code>%s</code>"
+msgstr ""
+
+#: include/traits/admin_menu.php:293
+#, php-format
+msgid "The default whitelist is: %s"
+msgstr ""
+
+#: vendor/plainview/sdk/form2/inputs/email.php:29
+#, php-format
+msgid "The e-mail address in %s is not valid!"
+msgstr ""
+
+#: vendor/plainview/sdk/wordpress/base.php:368
+#, php-format
+msgid "The plugin and all associated settings and database tables have been removed. Please %sfollow this link to complete the uninstallation procedure%s."
+msgstr ""
+
+#: include/traits/admin_menu.php:304
+msgid "The priority for the save_post hook. Should be after all other plugins have finished modifying the post. Default is 640."
+msgstr ""
+
+#: vendor/plainview/sdk/form2/inputs/traits/maxlength.php:31
+#, php-format
+msgid "The text in %s is too long!"
+msgstr ""
+
+#: vendor/plainview/sdk/form2/inputs/traits/minlength.php:42
+#, php-format
+msgid "The text in %s is too short!"
+msgstr ""
+
+#: vendor/plainview/sdk/form2/inputs/traits/max.php:34
+#, php-format
+msgid "The value in %s (%s) is larger than the allowed maximum of %s."
+msgstr ""
+
+#: vendor/plainview/sdk/form2/inputs/traits/min.php:34
+#, php-format
+msgid "The value in %s (%s) is smaller than the allowed minimum of %s."
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:385
+msgid "The value must be larger than or equal to"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:387
+msgid "The value must be smaller or equal to"
+msgstr ""
+
+#: vendor/plainview/sdk/wordpress/base.php:369
+msgid "This link will take you to the index page"
+msgstr ""
+
+#: vendor/plainview/sdk/wordpress/base.php:344
+msgid "This page will remove all the plugin tables and settings from the database and then deactivate the plugin."
+msgstr ""
+
+#: include/traits/post_actions.php:492
+msgid "This post has no broadcast links."
+msgstr ""
+
+#: include/traits/meta_boxes.php:111
+msgid "This post is a broadcasted child post. It cannot be broadcasted further."
+msgstr ""
+
+#: include/traits/admin_menu.php:518
+msgid "ThreeWP Broadcast"
+msgstr ""
+
+#: include/traits/admin_menu.php:189
+msgid "ThreeWP Broadcast Premium Pack info"
+msgstr ""
+
+#: include/traits/admin_menu.php:453
+msgid "Trash all child posts"
+msgstr ""
+
+#: include/traits/admin_menu.php:454
+msgid "Trash all children"
+msgstr ""
+
+#: include/traits/admin_menu.php:449
+msgid "Trash child"
+msgstr ""
+
+#: include/traits/post_actions.php:130
+msgid "Trash children"
+msgstr ""
+
+#: include/traits/admin_menu.php:448
+msgid "Trash the child post"
+msgstr ""
+
+#: include/traits/admin_menu.php:400
+msgid "Uninstall"
+msgstr ""
+
+#: vendor/plainview/sdk/wordpress/base.php:351
+msgid "Uninstall plugin"
+msgstr ""
+
+#: include/traits/post_actions.php:131
+msgid "Unlink"
+msgstr ""
+
+#: include/traits/admin_menu.php:464
+msgid "Unlink all child posts"
+msgstr ""
+
+#: include/traits/admin_menu.php:465
+msgid "Unlink all children"
+msgstr ""
+
+#: include/traits/admin_menu.php:459
+msgid "Unlink child"
+msgstr ""
+
+#: include/traits/admin_menu.php:458
+msgid "Unlink the child post"
+msgstr ""
+
+#: include/traits/post_actions.php:454
+msgid "Unlink this post from its parent."
+msgstr ""
+
+#: include/traits/admin_menu.php:247
+msgid "Use parent permalink"
+msgstr ""
+
+#: include/traits/admin_menu.php:246
+msgid "Use the parent post's permalink for the children. If checked, child posts will link back to the parent post."
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:389
+msgid "Valid values"
+msgstr ""
+
+#: include/traits/admin_menu.php:213
+msgid "When a post is linked with broadcasted posts, the child posts are updated / deleted when the parent is updated."
+msgstr ""
+
+#: include/traits/admin_menu.php:278
+msgid "When broadcasting internal custom fields, do not overwrite the following fields on the child blogs."
+msgstr ""
+
+#: include/traits/admin_menu.php:269
+msgid "When broadcasting internal custom fields, override and do not broadcast these fields."
+msgstr ""
+
+#: include/traits/admin_menu.php:287
+msgid "When not broadcasting internal custom fields, override and broadcast these fields."
+msgstr ""
+
+#: include/traits/admin_menu.php:219
+msgid "Which role is needed to allow custom field broadcasting?"
+msgstr ""
+
+#: include/traits/admin_menu.php:225
+msgid "Which role is needed to allow taxonomy broadcasting? The taxonomies must have the same slug on all blogs."
+msgstr ""
+
+#: include/traits/admin_menu.php:231
+msgid "Which role is needed to broadcast drafts?"
+msgstr ""
+
+#: include/traits/admin_menu.php:237
+msgid "Which role is needed to broadcast scheduled (future) posts?"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:401
+msgid "YYYY"
+msgstr ""
+
+#: vendor/plainview/sdk/wordpress/base.php:347
+msgid "Yes, I'm sure I want to remove all the plugin tables and settings."
+msgstr ""
+
+#: vendor/plainview/sdk/wordpress/base.php:359
+msgid "You have to check the checkbox in order to uninstall the plugin."
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:391
+msgid "characters"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:927
+msgid "characters long"
+msgstr ""
+
+#: include/traits/meta_boxes.php:178
+msgid "hide all"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:957
+msgid "may not be empty"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:951
+msgid "may not be larger than"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:939
+msgid "may not be smaller than"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:927
+msgid "must be at least"
+msgstr ""
+
+#: vendor/plainview/sdk/wordpress/base.php:2041
+msgid "no"
+msgstr ""
+
+#: include/traits/admin_menu.php:305
+msgid "save_post priority"
+msgstr ""
+
+#: include/traits/meta_boxes.php:181
+msgid "show all"
+msgstr ""
+
+#: vendor/plainview/sdk/form.php:389
+msgid "to"
+msgstr ""
+
+#: vendor/plainview/sdk/wordpress/base.php:2041
+msgid "yes"
+msgstr ""
