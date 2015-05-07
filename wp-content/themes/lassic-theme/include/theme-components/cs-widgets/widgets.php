@@ -639,8 +639,6 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
               <option value="" >All</option>
               <?php
 				$args = array(
-					'orderby' => 'name',
-					'parent' => 0,
 					'taxonomy' => 'project-category'
 				);
 				$categories = get_categories($args);
