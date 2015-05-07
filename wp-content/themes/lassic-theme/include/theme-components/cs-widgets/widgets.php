@@ -641,10 +641,9 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
 				$args = array(
 					'orderby' => 'name',
 					'parent' => 0,
-					'type' => 'project'
+					'taxonomy' => 'project-category'
 				);
 				$categories = get_categories($args);
-				printf($categories);
 				if($categories <> ""){
 					foreach ( $categories as $category ) {?>
 					  <option <?php if($select_category == $category->slug){echo 'selected';}?> value="<?php echo cs_allow_special_char($category->slug);?>" ><?php echo cs_allow_special_char($category->name);?></option>
