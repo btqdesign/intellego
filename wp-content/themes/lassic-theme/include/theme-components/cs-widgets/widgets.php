@@ -612,8 +612,8 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
 	 *
 	 */
 	 function recentpostsproj(){
-		$widget_ops = array('classname' => 'widget-recent-blog widget_latest_post', 'description' => 'Recent Posts from category.' );
-		$this->WP_Widget('recentpostsproj', 'CS : Recent Posts Proj', $widget_ops);
+		$widget_ops = array('classname' => 'widget-recentproj-blog widget_latestproj_post', 'description' => 'Recent Project from category.' );
+		$this->WP_Widget('recentpostsproj', 'CS : Recent Projects', $widget_ops);
 	 }
 	 
 	 /**
