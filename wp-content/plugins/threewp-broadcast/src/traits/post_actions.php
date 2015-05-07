@@ -73,7 +73,7 @@ trait post_actions
 
 	public function manage_posts_custom_column( $column_name, $parent_post_id )
 	{
-		echo $column_name.'-'.$parent_post_id;
+		echo '*-*'.$column_name.'-'.$parent_post_id.'*-*';
 		if ( $column_name != '3wp_broadcast' )
 			return;
 
