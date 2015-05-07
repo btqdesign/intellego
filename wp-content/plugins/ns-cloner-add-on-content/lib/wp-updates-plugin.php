@@ -42,7 +42,7 @@ if( !class_exists('WPUpdatesPluginUpdater_601') ) {
     		$request_args = array(
     		    'id' => $this->plugin_id,
     		    'slug' => $this->plugin_slug,
-    			'version' => $transient->checked[$this->plugin_path]
+    		    'version' => isset($transient->checked[$this->plugin_path]) ? $transient->checked[$this->plugin_path] : null
     		);
     		if ($this->license_key) $request_args['license'] = $this->license_key;
     		
