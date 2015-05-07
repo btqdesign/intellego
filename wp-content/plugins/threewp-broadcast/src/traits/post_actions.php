@@ -26,6 +26,8 @@ trait post_actions
 				$this->add_filter( 'manage_posts_columns' );
 				$this->add_filter( 'manage_pages_columns', 'manage_posts_columns' );
 
+				$this->add_filter( 'manage_project_posts_columns', 'manage_posts_custom_column' );
+
 				$this->add_action( 'manage_posts_custom_column', 10, 2 );
 				$this->add_action( 'manage_pages_custom_column', 'manage_posts_custom_column', 10, 2 );
 			}
