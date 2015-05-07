@@ -29,8 +29,9 @@ trait post_actions
 				$this->add_action( 'manage_posts_custom_column', 10, 2 );
 				$this->add_action( 'manage_pages_custom_column', 'manage_posts_custom_column', 10, 2 );
 
-				$post_type = isset( $_REQUEST[ 'post_type' ] ) ? $_REQUEST[ 'post_type' ] : 'post';
-				echo '*********??*******'.$post_type;
+				if ( $pagenow == 'post.php' || $pagenow == 'post-new.php' || $pagenow == 'edit.php' ) {
+					add_action( 'admin_head', 'manage_posts_columns' );
+				}
 			}
 
 			// Hook into the actions so that we can keep track of the broadcast data.
