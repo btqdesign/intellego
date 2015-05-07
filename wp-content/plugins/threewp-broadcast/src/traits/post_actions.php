@@ -31,7 +31,7 @@ trait post_actions
 				
 				global $pagenow;
 				if ( $pagenow == 'post.php' || $pagenow == 'post-new.php' || $pagenow == 'edit.php' ) {
-					add_action( 'admin_head', 'manage_posts_columns' );
+					add_action( 'admin_head', 'manage_posts_columns', 10, 2  );
 				}
 			}
 
