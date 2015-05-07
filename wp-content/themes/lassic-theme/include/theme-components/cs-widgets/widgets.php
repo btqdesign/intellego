@@ -638,7 +638,12 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
             <select id="<?php echo cs_allow_special_char($this->get_field_id('select_category')); ?>" name="<?php echo cs_allow_special_char($this->get_field_name('select_category')); ?>" style="width:225px">
               <option value="" >All</option>
               <?php
-				$categories = get_categories();
+				$args = array(
+					'orderby' => 'name',
+					'parent' => 0,
+					'type' => 'project'
+				);
+				$categories = get_categories($args);
 				if($categories <> ""){
 					foreach ( $categories as $category ) {?>
 					  <option <?php if($select_category == $category->slug){echo 'selected';}?> value="<?php echo cs_allow_special_char($category->slug);?>" ><?php echo cs_allow_special_char($category->name);?></option>
