@@ -21,6 +21,7 @@ trait post_actions
 	{
 		if ( is_super_admin() || static::user_has_roles( $this->get_site_option( 'role_link' ) ) )
 		{
+			echo "****//****";
 			if (  $this->display_broadcast_columns )
 			{
 				$this->add_filter( 'manage_posts_columns' );
