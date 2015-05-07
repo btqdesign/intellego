@@ -172,6 +172,43 @@
 	float: left;
 	margin-bottom: 5px;
 }
+/* Widget RecentProj Blog Style */
+
+.widget_latestproj_post figure {
+	width: 70px;
+	float: left;
+	margin: 0px;
+	height: 70px;
+}
+.widget_latestproj_post figure ~ .infotext{
+	padding:0 0 0 85px;
+}
+.widget_latestproj_post .infotext h2{
+	line-height: 20px!important;
+	margin-bottom: 4px;
+}
+.widget_latestproj_post .infotext h2 a {
+	text-transform: uppercase;
+	font-size: 16px;
+}
+.widget_latestproj_post .infotext .post-option li time{
+	color: #999;
+}
+.widget_latestproj_post .infotext .post-option li {
+	list-style: none;
+} 
+.widget_latestproj_post article {
+	margin-bottom: 20px;
+	float: left;
+}
+.widget_latestproj_post article:last-child{
+	margin-bottom: 0px;
+}
+.widget_latestproj_post ul li h2{
+	width: 100%;
+	float: left;
+	margin-bottom: 5px;
+}
 /* Widget Gallery Style */
 .widget.widget-gallery .gallery-list {
 	margin: 0 0 0 -11px;
