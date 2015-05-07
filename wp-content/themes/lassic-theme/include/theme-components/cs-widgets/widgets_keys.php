@@ -137,21 +137,21 @@ if(!function_exists('cs_activate_widget')){
 		
 		 /* ---- Blog Sidebar Recent Posts Projects --- */
 		/*----------------------------*/
-			$blog_recent_post = array();
-			$blog_recent_post = get_option('widget_recentpostsproj');
-			$blog_recent_post[2] = array(
+			$blog_recent_postp = array();
+			$blog_recent_postp = get_option('widget_recentpostsproj');
+			$blog_recent_postp[2] = array(
 					"title"		=>	'Latest News',
 					"select_category" 	=> 'blogs',
 					"showcount" => '4',
 					"thumb" => true
 					);					
-			$blog_recent_post['_multiwidget'] = '1';
-			update_option('widget_recentpostsproj',$blog_recent_post);
-			$blog_recent_post = get_option('widget_recentpostsproj');
-			krsort($blog_recent_post);
-			foreach($blog_recent_post as $key1=>$val1){
-				$blog_recent_post_key = $key1;
-				if(is_int($blog_recent_post_key)){
+			$blog_recent_postp['_multiwidget'] = '1';
+			update_option('widget_recentpostsproj',$blog_recent_postp);
+			$blog_recent_postp = get_option('widget_recentpostsproj');
+			krsort($blog_recent_postp);
+			foreach($blog_recent_postp as $key1=>$val1){
+				$blog_recent_postp_key = $key1;
+				if(is_int($blog_recent_postp_key)){
 					break;
 				}
 			}
@@ -394,7 +394,7 @@ if(!function_exists('cs_activate_widget')){
 	/* ----  Add widgets in sidebars  --- */
 	/* ---------------------------------- */
 		$sidebars_widgets['default_pages'] = array("search-$search_key","categories-$categories_key","facebook_module-$facebook_module_key","cs_flickr-$blog_flickr_key");
-		$sidebars_widgets['blogs_sidebar'] = array("search-$search_key","categories-$categories_key","recentposts-$blog_recent_post_key","recentpostsproj-$blog_recent_post_key","cs_flickr-$blog_flickr_key","cs_twitter_widget-$cs_twitter_widget2_key");
+		$sidebars_widgets['blogs_sidebar'] = array("search-$search_key","categories-$categories_key","recentposts-$blog_recent_post_key","recentpostsproj-$blog_recent_postp_key","cs_flickr-$blog_flickr_key","cs_twitter_widget-$cs_twitter_widget2_key");
 		$sidebars_widgets['contact'] = array("text-$text_contact_key","text-$text_contact_key1");
  		$sidebars_widgets['footer-widget-1'] = array("contactinfo-$footer_contactinfo_key","cs_twitter_widget-$cs_twitter_widget_key","cs_contact_msg-$footer_contact_form_key");
 		
