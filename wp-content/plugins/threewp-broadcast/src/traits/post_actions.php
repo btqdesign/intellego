@@ -28,7 +28,8 @@ trait post_actions
 
 				$this->add_action( 'manage_posts_custom_column', 10, 2 );
 				$this->add_action( 'manage_pages_custom_column', 'manage_posts_custom_column', 10, 2 );
-
+				
+				global $pagenow;
 				if ( $pagenow == 'post.php' || $pagenow == 'post-new.php' || $pagenow == 'edit.php' ) {
 					add_action( 'admin_head', 'manage_posts_columns' );
 				}
