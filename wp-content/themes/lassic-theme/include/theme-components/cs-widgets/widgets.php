@@ -926,23 +926,16 @@ if ( ! class_exists( 'relatedposts' ) ) {
 
 				$posttags = get_the_tags();
 				if ($posttags) {
+					$c_tagslug = "o";
 					foreach($posttags as $tag) {
-						array_push($taxArr, array(
-							'taxonomy' => "$typo_post-tag",
-							'field'    => 'slug',
-							'terms'    => $tag->slug,
-						));
+						$c_tagslug += ','.$tag->slug;
 					}
 				}
 
 				if($category_post){
+					$c_catgpost = "o";
 					foreach($category_post as $category) {
-						$ntypo_post = $typo_post=='post'?"category":"$typo_post-category";
-						array_push($taxArr, array(
-							'taxonomy' => "$ntypo_post",
-							'field'    => 'slug',
-							'terms'    => $category->slug,
-						));
+						$c_catgpost += ','.$category->slug;
 					}
 
 				}
@@ -959,13 +952,25 @@ if ( ! class_exists( 'relatedposts' ) ) {
 								'ignore_sticky_posts' => 1
 				);
 
-
+				$ntypo_post = $typo_post=='post'?"category":"$typo_post-category";
 				$args = array(
 					'posts_per_page' => "$showcount",
 					'post_type' => "$typo_post",
 					'post_status' => 'publish',
 					'orderby' => 'DESC',
-					'tax_query' => $taxArr,
+					'tax_query' => array(
+						'relation' => 'OR',
+						array(
+							'taxonomy' => "$typo_post-tag",
+							'field'    => 'slug',
+							'terms'    => $c_tagslug,
+						),
+						array(
+							'taxonomy' => "$ntypo_post",
+							'field'    => 'slug',
+							'terms'    => $c_catgpost,
+						),
+					),
 					'post__not_in' => array ($id_post_id),
 				);
 
