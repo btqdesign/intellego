@@ -917,6 +917,13 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				$category_post  = get_the_category($id_post_id);
 				$taxArr		= array();
 
+
+				echo $id_post_id.".-1<br>";
+				echo $typo_post.".-2<br>";
+				echo $category_post.".-3<br>";
+
+
+
 				$posttags = get_the_tags();
 				if ($posttags) {
 					foreach($posttags as $tag) {
