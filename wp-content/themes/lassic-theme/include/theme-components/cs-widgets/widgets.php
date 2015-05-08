@@ -712,7 +712,8 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
 				 *
 				 */
 				if(isset($select_category) and $select_category <> ' ' and $select_category <> ''){
-					$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','ignore_sticky_posts' => 1);
+					$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','category_name' => "$select_category",'ignore_sticky_posts' => 1);
+					printf($args);
 				}else{
 					$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','ignore_sticky_posts' => 1);
 				}
