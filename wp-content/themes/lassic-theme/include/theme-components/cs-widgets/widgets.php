@@ -930,7 +930,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				$posttags = get_the_tags();
 				if ($posttags) {
 					foreach($posttags as $tag) {
-						echo $tag->name . '<br>'; 
+						echo $tag->name . '*--<br>'; 
 					}
 				}
 				$args = array(
