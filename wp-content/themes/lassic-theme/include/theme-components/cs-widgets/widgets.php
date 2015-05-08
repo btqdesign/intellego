@@ -926,16 +926,16 @@ if ( ! class_exists( 'relatedposts' ) ) {
 
 				$posttags = get_the_tags();
 				if ($posttags) {
-					$c_tagslug = "o";
+					$c_tagslug = "'o'";
 					foreach($posttags as $tag) {
-						$c_tagslug = $c_tagslug.','.$tag->slug;
+						$c_tagslug = $c_tagslug.",'$tag->slug'";
 					}
 				}
 
 				if($category_post){
-					$c_catgpost = "o";
+					$c_catgpost = "'o'";
 					foreach($category_post as $category) {
-						$c_catgpost = $c_catgpost.','.$category->slug;
+						$c_catgpost = $c_catgpost.",'$category->slug'";
 					}
 
 				}
@@ -963,12 +963,12 @@ if ( ! class_exists( 'relatedposts' ) ) {
 						array(
 							'taxonomy' => "$typo_post-tag",
 							'field'    => 'slug',
-							'terms'    => $c_tagslug,
+							'terms'    => explode(',',$c_tagslug),
 						),
 						array(
 							'taxonomy' => "$ntypo_post",
 							'field'    => 'slug',
-							'terms'    => $c_catgpost,
+							'terms'    => explode(',',$c_catgpost),
 						),
 					),
 					'post__not_in' => array ($id_post_id),
