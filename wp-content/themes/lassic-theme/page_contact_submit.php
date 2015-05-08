@@ -23,6 +23,16 @@
 			<td width="100"><strong>Name:</strong></td>
 			<td>'.$contact_name.'</td>
 		  </tr>
+		';
+	if (isset($contact_lastname)) {
+		$message .= '
+		 <tr>
+			<td width="100"><strong>Last Name:</strong></td>
+			<td>'.$contact_lastname.'</td>
+		  </tr>
+		';
+	}
+	$message .= '
 		  <tr>
 			<td><strong>Email:</strong></td>
 			<td>'.$contact_email.'</td>

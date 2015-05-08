@@ -3739,6 +3739,16 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 					<td width="100"><strong>Name:</strong></td>
 					<td>'.esc_attr($contact_name).'</td>
 				  </tr>
+				';
+			if (isset($contact_lastname)) {
+				$message .= '
+				 <tr>
+					<td width="100"><strong>Last Name:</strong></td>
+					<td>'.sanitize_email($contact_lastname).'</td>
+				  </tr>
+				';
+			}
+			$message .= '
 				  <tr>
 					<td><strong>Email:</strong></td>
 					<td>'.sanitize_email($contact_email).'</td>
@@ -3748,7 +3758,56 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 					<td><strong>Phone:</strong></td>
 					<td>'.cs_allow_special_char($cs_contact_number).'</td>
 				  </tr>
-				  
+				';
+			if (isset($contact_birthdate)) {
+				$message .= '
+				 <tr>
+					<td width="100"><strong>Birt Date:</strong></td>
+					<td>'.sanitize_email($contact_birthdate).'</td>
+				  </tr>
+				';
+			}
+			if (isset($contact_city)) {
+				$message .= '
+				 <tr>
+					<td width="100"><strong>City:</strong></td>
+					<td>'.sanitize_email($contact_city).'</td>
+				  </tr>
+				';
+			}
+			if (isset($contact_country)) {
+				$message .= '
+				 <tr>
+					<td width="100"><strong>Country:</strong></td>
+					<td>'.sanitize_email($contact_country).'</td>
+				  </tr>
+				';
+			}
+			if (isset($contact_interest)) {
+				$message .= '
+				 <tr>
+					<td width="100"><strong>Interest:</strong></td>
+					<td>'.sanitize_email($contact_interest).'</td>
+				  </tr>
+				';
+			}
+			if (isset($contact_education)) {
+				$message .= '
+				 <tr>
+					<td width="100"><strong>Education:</strong></td>
+					<td>'.sanitize_email($contact_education).'</td>
+				  </tr>
+				';
+			}
+			if (isset($contact_studies)) {
+				$message .= '
+				 <tr>
+					<td width="100"><strong>Studies:</strong></td>
+					<td>'.sanitize_email($contact_studies).'</td>
+				  </tr>
+				';
+			}
+			$message .= '
 				  <tr>
 					<td><strong>'.$subject_name.':</strong></td>
 					<td>'.esc_attr($subject).'</td>

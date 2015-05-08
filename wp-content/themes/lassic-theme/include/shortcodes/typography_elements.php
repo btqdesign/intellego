@@ -1777,6 +1777,17 @@ if ( ! function_exists( 'cs_pb_contactus' ) ) {
         </ul>
         <ul class="form-elements">
           <li class="to-label">
+            <label>Job vacancies</label>
+          </li>
+          <li class="to-field select-style">
+            <select class="cs_contactus_vacancies" id="cs_contactus_vacancies" name="cs_contactus_vacancies[]">
+              <option <?php if($cs_contactus_vacancies == "on")echo "selected";?> value="on">ON</option>
+              <option <?php if($cs_contactus_vacancies == "off")echo "selected";?> value="off">OFF</option>
+            </select>
+          </li>
+        </ul>
+        <ul class="form-elements">
+          <li class="to-label">
             <label>View</label>
           </li>
           <li class="to-field select-style">
