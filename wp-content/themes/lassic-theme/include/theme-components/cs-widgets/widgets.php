@@ -819,7 +819,7 @@ add_action( 'widgets_init', create_function('', 'return register_widget("recentp
  */
 
 if ( ! class_exists( 'relatedposts' ) ) { 
-	class recentpostsproj extends WP_Widget{
+	class relatedposts extends WP_Widget{
 	
 	/**
 	 * Outputs the content of the widget
@@ -833,7 +833,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 	 *
 	 *
 	 */
-	 function recentpostsproj(){
+	 function relatedposts(){
 		$widget_ops = array('classname' => 'widget-recentproj-blog widget_latestproj_post', 'description' => 'Related posts from category and tags.' );
 		$this->WP_Widget('relatedposts', 'CS : Related Posts', $widget_ops);
 	 }
