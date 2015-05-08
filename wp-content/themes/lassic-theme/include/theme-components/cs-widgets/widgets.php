@@ -644,7 +644,7 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
 				$categories = get_categories($args);
 				if($categories <> ""){
 					foreach ( $categories as $category ) {?>
-					  <option <?php if($select_category == $category->term_id){echo 'selected';}?> value="<?php echo cs_allow_special_char($category->term_id);?>" ><?php echo cs_allow_special_char($category->name);?></option>
+					  <option <?php if($select_category == $category->slug){echo 'selected';}?> value="<?php echo cs_allow_special_char($category->slug);?>" ><?php echo cs_allow_special_char($category->name);?></option>
 					<?php 
 					}
 				}?>
@@ -712,7 +712,7 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
 				 *
 				 */
 				if(isset($select_category) and $select_category <> ' ' and $select_category <> ''){
-					$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','cat' => 61,'ignore_sticky_posts' => 1);
+					$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','category_name' => "$select_category",'ignore_sticky_posts' => 1);
 				}else{
 					$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','ignore_sticky_posts' => 1);
 				}
