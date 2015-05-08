@@ -718,8 +718,9 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
 				}
 			  
 			  $custom_query = new WP_Query($args);
+			  $wpdb->last_query;
 			  if ( $custom_query->have_posts() <> "" ) {
-				  echo "entra1";
+
 				  $cs_title_limit = '20';
 				  if($thumb <> true) echo '<ul>';
 				  while ( $custom_query->have_posts()) : $custom_query->the_post();
