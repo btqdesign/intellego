@@ -940,18 +940,6 @@ if ( ! class_exists( 'relatedposts' ) ) {
 
 				}
 
-				$args = array( 'posts_per_page' => "$showcount",
-								'post_type' => 'project',
-								'tax_query' => array(
-									array(
-										'taxonomy' => 'project-category',
-										'field'    => 'slug',
-										'terms'    => '',
-									),
-								),
-								'ignore_sticky_posts' => 1
-				);
-
 				$ntypo_post = $typo_post=='post'?"category":"$typo_post-category";
 				$args = array(
 					'posts_per_page' => "$showcount",
