@@ -455,7 +455,7 @@ if (!function_exists('cs_list_item_shortcode')) {
 //=====================================================================
 if (!function_exists('cs_contactus_shortcode')) {
 	function cs_contactus_shortcode($cs_atts, $content = "") {
-		$cs_defaults = array( 'column_size' => '1/1', 'cs_contactus_section_title' => '', 'cs_contactus_label' => '', 'cs_contactus_view' => '','cs_contactus_send' => '','cs_success' => '','cs_error' => '','cs_contact_class' => '','cs_contact_animation' => '','cs_contact_animation_duration'=>'1');
+		$cs_defaults = array( 'column_size' => '1/1', 'cs_contactus_section_title' => '', 'cs_contactus_label' => '', 'cs_contactus_vacancies' => '', 'cs_contactus_view' => '','cs_contactus_send' => '','cs_success' => '','cs_error' => '','cs_contact_class' => '','cs_contact_animation' => '','cs_contact_animation_duration'=>'1');
 		extract( shortcode_atts( $cs_defaults, $cs_atts ) );
 		$cs_column_class	= cs_custom_column_class($column_size);
 		$cs_email_counter 	= cs_generate_random_string(3);
