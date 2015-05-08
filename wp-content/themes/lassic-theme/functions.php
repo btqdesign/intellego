@@ -3154,6 +3154,7 @@ if ( ! function_exists( 'cs_front_scripts_enqueue' ) ) {
 			if ( isset($cs_theme_options['cs_style_rtl']) and $cs_theme_options['cs_style_rtl'] == "on"){
 				cs_rtl();
 			}
+			wp_enqueue_script('recaptcha', 'https://www.google.com/recaptcha/api.js', '', '', true);
 		 }
 	}
 }
