@@ -617,6 +617,9 @@ if ( isset($_POST['page_builder_form']) and $_POST['page_builder_form'] == 1 ) {
 												if(isset($_POST['cs_contactus_section_title'][$cs_counter_contactus]) && $_POST['cs_contactus_section_title'][$cs_counter_contactus] != ''){
 													$shortcode .= 	'cs_contactus_section_title="'.htmlspecialchars($_POST['cs_contactus_section_title'][$cs_counter_contactus], ENT_QUOTES).'" ';
 												}
+												if(isset($_POST['cs_contactus_vacancies'][$cs_counter_contactus]) && $_POST['cs_contactus_vacancies'][$cs_counter_contactus] != ''){
+													$shortcode .= 	'cs_contactus_vacancies="'.htmlspecialchars($_POST['cs_contactus_vacancies'][$cs_counter_contactus], ENT_QUOTES).'" ';
+												}
 												if(isset($_POST['cs_contactus_label'][$cs_counter_contactus]) && $_POST['cs_contactus_label'][$cs_counter_contactus] != ''){
 													$shortcode .= 	'cs_contactus_label="'.htmlspecialchars($_POST['cs_contactus_label'][$cs_counter_contactus], ENT_QUOTES).'" ';
 												}
