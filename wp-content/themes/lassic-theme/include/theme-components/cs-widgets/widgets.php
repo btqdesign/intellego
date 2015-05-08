@@ -915,12 +915,12 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				$id_post_id = get_the_ID();
 				$typo_post	= get_post_type($id_post_id);
 				
-				$tagArr		= array();
+				$taxArr		= array();
 
 				$posttags = get_the_tags();
 				if ($posttags) {
 					foreach($posttags as $tag) {
-						array_push($cart, array(
+						array_push($taxArr, array(
 										'taxonomy' => 'project-tag',
 										'field'    => 'slug',
 										'terms'    => $tag->slug,
