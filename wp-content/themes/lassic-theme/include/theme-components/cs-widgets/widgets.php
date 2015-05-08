@@ -914,21 +914,33 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				 */
 				$id_post_id = get_the_ID();
 				$typo_post	= get_post_type($id_post_id);
-				
+				$category_post  = get_the_category($id_post_id);
+				if($typo_post == )
+
 				$taxArr		= array();
 
 				$posttags = get_the_tags();
 				if ($posttags) {
 					foreach($posttags as $tag) {
 						array_push($taxArr, array(
-										'taxonomy' => 'project-tag',
-										'field'    => 'slug',
-										'terms'    => $tag->slug,
-									));
+							'taxonomy' => "$typo_post-tag",
+							'field'    => 'slug',
+							'terms'    => $tag->slug,
+						));
 					}
 				}
 
+				if($category_post){
+					foreach($category_post as $category) {
+						$ntypo_post = $typo_post=='post'?"category":"$typo_post-category";
+						array_push($taxArr, array(
+							'taxonomy' => "$ntypo_post",
+							'field'    => 'slug',
+							'terms'    => $category->slug,
+						));
+					}
 
+				}
 
 				$args = array( 'posts_per_page' => "$showcount",
 								'post_type' => 'project',
@@ -944,28 +956,17 @@ if ( ! class_exists( 'relatedposts' ) ) {
 
 
 				$args = array(
+					'posts_per_page' => "$showcount",
 					'post_type' => $typo_post,
 					'post_status' => 'publish',
 					'orderby' => 'DESC',
-					'tax_query' => array(
-						'relation' => 'OR',
-						array(
-							'taxonomy' => 'project-tag',
-							'field' => 'id',
-							'terms' => $custom_taxterms
-						),
-						array(
-							'taxonomy' => $cs_categories_name,
-							'field' => 'id',
-							'terms' => $custom_taxterms
-						)
-					),
+					'tax_query' => $taxArr,
 					'post__not_in' => array ($id_post_id),
 				);
 
-				$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','ignore_sticky_posts' => 1);
+				//$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','ignore_sticky_posts' => 1);
 
-			  
+			  print_r($args);
 			  $custom_query = new WP_Query($args);
 			  //echo $wpdb->last_query;
 			  if ( $custom_query->have_posts() <> "" ) {
