@@ -928,14 +928,14 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				if ($posttags) {
 					$c_tagslug = "o";
 					foreach($posttags as $tag) {
-						$c_tagslug += ','.$tag->slug;
+						$c_tagslug = $c_tagslug.','.$tag->slug;
 					}
 				}
 
 				if($category_post){
 					$c_catgpost = "o";
 					foreach($category_post as $category) {
-						$c_catgpost += ','.$category->slug;
+						$c_catgpost = $c_catgpost.','.$category->slug;
 					}
 
 				}
