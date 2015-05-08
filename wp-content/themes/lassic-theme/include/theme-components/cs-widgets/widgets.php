@@ -976,7 +976,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 
 				//$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','ignore_sticky_posts' => 1);
 
-			  print_r($args);
+			  //print_r($args);
 			  $custom_query = new WP_Query($args);
 			  //echo $wpdb->last_query;
 			  if ( $custom_query->have_posts() <> "" ) {
