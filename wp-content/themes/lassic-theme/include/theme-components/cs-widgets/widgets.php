@@ -728,7 +728,7 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
 				}
 			  
 			  $custom_query = new WP_Query($args);
-			  echo $wpdb->last_query;
+			  //echo $wpdb->last_query;
 			  if ( $custom_query->have_posts() <> "" ) {
 
 				  $cs_title_limit = '20';
