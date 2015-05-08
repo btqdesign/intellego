@@ -921,6 +921,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				echo $id_post_id.".-1<br>";
 				echo $typo_post.".-2<br>";
 
+				array_push($taxArr, array('relation' => 'OR'));
 
 
 				$posttags = get_the_tags();
