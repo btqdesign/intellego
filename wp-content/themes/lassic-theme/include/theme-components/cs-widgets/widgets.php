@@ -812,6 +812,227 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
 }
 add_action( 'widgets_init', create_function('', 'return register_widget("recentpostsproj");') );
 
+/**
+ * @Related Posts widget Class
+ *
+ *
+ */
+
+if ( ! class_exists( 'relatedposts' ) ) { 
+	class recentpostsproj extends WP_Widget{
+	
+	/**
+	 * Outputs the content of the widget
+	 *
+	 * @param array $args
+	 * @param array $instance
+	 */
+		 
+	/**
+	 * @init Recent posts Module
+	 *
+	 *
+	 */
+	 function recentpostsproj(){
+		$widget_ops = array('classname' => 'widget-recentproj-blog widget_latestproj_post', 'description' => 'Related posts from category and tags.' );
+		$this->WP_Widget('relatedposts', 'CS : Related Posts', $widget_ops);
+	 }
+	 
+	 /**
+	 * @Recent posts html form
+	 *
+	 *
+	 */
+	 function form($instance){
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '' ) );
+		$title = $instance['title'];
+		$select_category = isset( $instance['select_category'] ) ? esc_attr( $instance['select_category'] ) : '';
+		$showcount = isset( $instance['showcount'] ) ? esc_attr( $instance['showcount'] ) : '';	
+		$thumb = isset( $instance['thumb'] ) ? esc_attr( $instance['thumb'] ) : '';
+	?>
+        <p>
+          <label for="<?php echo cs_allow_special_char($this->get_field_id('title')); ?>"> Title:
+            <input class="upcoming" id="<?php echo cs_allow_special_char($this->get_field_id('title')); ?>" size="40" name="<?php echo cs_allow_special_char($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
+          </label>
+        </p>
+        <p>
+          <label for="<?php echo cs_allow_special_char($this->get_field_id('select_category')); ?>"> Select Category:
+            <select id="<?php echo cs_allow_special_char($this->get_field_id('select_category')); ?>" name="<?php echo cs_allow_special_char($this->get_field_name('select_category')); ?>" style="width:225px">
+              <option value="" >All</option>
+              <?php
+				$args = array(
+					'taxonomy' => 'project-category'
+				);
+				$categories = get_categories($args);
+				if($categories <> ""){
+					foreach ( $categories as $category ) {?>
+					  <option <?php if($select_category == $category->slug){echo 'selected';}?> value="<?php echo cs_allow_special_char($category->slug);?>" ><?php echo cs_allow_special_char($category->name);?></option>
+					<?php 
+					}
+				}?>
+            </select>
+          </label>
+        </p>
+        <p>
+          <label for="<?php echo cs_allow_special_char($this->get_field_id('showcount')); ?>"> Number of Posts To Display:
+            <input class="upcoming" id="<?php echo cs_allow_special_char($this->get_field_id('showcount')); ?>" size='2' name="<?php echo cs_allow_special_char($this->get_field_name('showcount')); ?>" type="text" value="<?php echo esc_attr($showcount); ?>" />
+          </label>
+        </p>
+        <p>
+          <label for="<?php echo cs_allow_special_char($this->get_field_id('thumb')); ?>"> Display Thumbinals:
+            <input class="upcoming" id="<?php echo cs_allow_special_char($this->get_field_id('thumb')); ?>" size='2' name="<?php echo cs_allow_special_char($this->get_field_name('thumb')); ?>" value="true" type="checkbox"  <?php if(isset($instance['thumb']) && $instance['thumb']=='true' ) echo 'checked="checked"'; ?> />
+          </label>
+        </p>
+        <?php
+        }
+		
+		/**
+		 * @Recent posts update form data
+		 *
+		 *
+		 */
+		 function update($new_instance, $old_instance){
+			  $instance = $old_instance;
+			  $instance['title'] = $new_instance['title'];
+			  $instance['select_category'] = $new_instance['select_category'];
+			  $instance['showcount'] = $new_instance['showcount'];
+			  $instance['thumb'] = $new_instance['thumb'];
+			
+			  return $instance;
+		 }
+
+		 /**
+		 * @Display Recent posts widget
+		 *
+		 *
+		 */
+		 function widget($args, $instance){
+			  global $cs_node;
+		
+			  extract($args, EXTR_SKIP);
+			  $title = empty($instance['title']) ? ' ' : apply_filters('widget_title', $instance['title']);
+			  $select_category = empty($instance['select_category']) ? ' ' : apply_filters('widget_title', $instance['select_category']);			
+			  $showcount = empty($instance['showcount']) ? ' ' : apply_filters('widget_title', $instance['showcount']);	
+			  $thumb = isset( $instance['thumb'] ) ? esc_attr( $instance['thumb'] ) : '';						
+			  if($instance['showcount'] == ""){$instance['showcount'] = '-1';}
+		
+			  echo cs_allow_special_char($before_widget);	
+		
+			  if (!empty($title) && $title <> ' '){
+				  echo cs_allow_special_char($before_title);
+				  echo cs_allow_special_char($title);
+				  echo cs_allow_special_char($after_title);
+			  }
+		
+		global $wpdb, $post;?>
+		<?php
+			  wp_reset_query();
+			  
+			   /**
+				 * @Display Recent posts
+				 *
+				 *
+				 */
+				if(isset($select_category) and $select_category <> ' ' and $select_category <> ''){
+					$args = array( 'posts_per_page' => "$showcount",
+									'post_type' => 'project',
+									'tax_query' => array(
+										array(
+											'taxonomy' => 'project-category',
+											'field'    => 'slug',
+											'terms'    => "$select_category",
+										),
+									),
+									'ignore_sticky_posts' => 1
+					);
+				}else{
+					$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','ignore_sticky_posts' => 1);
+				}
+			  
+			  $custom_query = new WP_Query($args);
+			  //echo $wpdb->last_query;
+			  if ( $custom_query->have_posts() <> "" ) {
+
+				  $cs_title_limit = '20';
+				  if($thumb <> true) echo '<ul>';
+				  while ( $custom_query->have_posts()) : $custom_query->the_post();
+				  $post_xml = get_post_meta($post->ID, "post", true);	
+				  $cs_xmlObject = new stdClass();
+				  $cs_noimage = '';
+				  if ( $post_xml <> "" ) {
+					  $cs_xmlObject = new SimpleXMLElement($post_xml);
+
+				  }//43
+				  
+				  if($thumb <> true){
+						?>
+						 <li> 
+                        	<span style="color:#999; font-size:12px; display:inline-block; border-bottom:1px dotted; margin-bottom:5px; text-transform:uppercase">
+								<?php  
+                                      $categories_list = get_the_term_list( get_the_id(), 'category', '', ',', '' );
+									  $cs_terms = get_the_terms(get_the_id(), 'category' );
+ 									  $cs_terms = limit_terms($cs_terms);
+ 									 	foreach($cs_terms as $cs_term){
+									  		$cs_link = get_term_link( $cs_term,'category' );
+				  							echo '<a href="'.esc_url($cs_link).'">'.$cs_term->name.'</a>';
+										}	
+                                ?>
+                            </span>
+                          	<h5>
+                            	<a class="cs-colrhvr" href="<?php the_permalink();?>">
+									<?php cs_get_title($cs_title_limit); ?>
+                            	</a>
+                            </h5>
+                          	<p><?php echo date_i18n('F d, Y',strtotime(get_the_date()));?></p>
+                        </li>
+						  <?php
+				  }
+				  else{
+				  $cs_noimage = '';
+				  $width = 150;
+				  $height = 150;
+				  $image_id = get_post_thumbnail_id( $post->ID );
+				  $image_url = cs_attachment_image_src($image_id, $width, $height);
+				  if($image_id == ''){
+					  $cs_noimage = ' class="cs-noimage"';	
+				  }
+				  ?>
+                  <article<?php echo cs_allow_special_char($cs_noimage); ?>>
+                    <?php 
+					if($image_id <> ''){
+					?>
+                    <figure><a href="<?php esc_url(the_permalink());?>">
+                    	<img alt="<?php the_title();?>" width="70" height="70" src="<?php echo esc_url($image_url);?>"></a></figure>
+                    <?php 
+					}
+					?>
+                    <div class="infotext">
+                      	<h5>
+                      		<a class="cs-colrhvr" href="<?php esc_url(the_permalink());?>">
+					  			<?php cs_get_title($cs_title_limit); ?>
+					  		</a>
+                      	</h5>
+                      	<ul class="post-option">
+                        	<li>
+                           	<?php echo date_i18n(get_option('date_format'), strtotime(get_the_date()));?>
+                        	</li>
+                      </ul>
+                    </div>
+                  </article>
+                  <?php
+				  }
+				endwhile; 
+				 if($thumb <> true) echo '</ul>';
+                  }
+                  else {
+                      if ( function_exists( 'cs_no_result_found' ) ) { cs_no_result_found(false); }
+
+                  }
+			    echo cs_allow_special_char($after_widget);
+			  }
+		  }
+}
+add_action( 'widgets_init', create_function('', 'return register_widget("relatedposts");') );
 
 /**
  * @Twitter Tweets widget Class
