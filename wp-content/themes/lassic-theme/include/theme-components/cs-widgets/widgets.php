@@ -918,7 +918,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 									array(
 										'taxonomy' => 'project-category',
 										'field'    => 'slug',
-										'terms'    => "$select_category",
+										'terms'    => '',
 									),
 								),
 								'ignore_sticky_posts' => 1
