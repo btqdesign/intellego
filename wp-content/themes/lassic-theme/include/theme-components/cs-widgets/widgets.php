@@ -713,12 +713,12 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
 				 */
 				if(isset($select_category) and $select_category <> ' ' and $select_category <> ''){
 					$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','category_name' => "$select_category",'ignore_sticky_posts' => 1);
-					print_r($args);
 				}else{
 					$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','ignore_sticky_posts' => 1);
 				}
-
+									
 			  $custom_query = new WP_Query($args);
+			  print_r($custom_query);
 			  if ( $custom_query->have_posts() <> "" ) {
 				  $cs_title_limit = '20';
 				  if($thumb <> true) echo '<ul>';
