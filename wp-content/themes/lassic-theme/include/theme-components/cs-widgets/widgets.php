@@ -920,14 +920,13 @@ if ( ! class_exists( 'relatedposts' ) ) {
 
 				echo $id_post_id.".-1<br>";
 				echo $typo_post.".-2<br>";
-				echo $category_post.".-3<br>";
 
 
 
 				$posttags = get_the_tags();
 				if ($posttags) {
 					foreach($posttags as $tag) {
-						array_push($taxArr, array(
+						array_push($taxArr, (
 							'taxonomy' => "$typo_post-tag",
 							'field'    => 'slug',
 							'terms'    => $tag->slug,
@@ -938,7 +937,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				if($category_post){
 					foreach($category_post as $category) {
 						$ntypo_post = $typo_post=='post'?"category":"$typo_post-category";
-						array_push($taxArr, array(
+						array_push($taxArr, (
 							'taxonomy' => "$ntypo_post",
 							'field'    => 'slug',
 							'terms'    => $category->slug,
@@ -962,7 +961,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 
 				$args = array(
 					'posts_per_page' => "$showcount",
-					'post_type' => $typo_post,
+					'post_type' => "$typo_post",
 					'post_status' => 'publish',
 					'orderby' => 'DESC',
 					'tax_query' => $taxArr,
