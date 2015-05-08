@@ -1143,7 +1143,7 @@ if ( ! class_exists( 'cs_twitter_widget' ) ) {
  					$connection = new TwitterOAuth($consumerkey, $consumersecret, $accesstoken, $accesstokensecret);
 					
 					$tweets = $connection->get("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=".$username."&count=".$numoftweets);
-					echo "***entra***";
+					print_r($tweets);
 					if(!is_wp_error($tweets) and is_array($tweets)){
 						
 						set_transient($transName, $tweets, 60 * $cacheTime);
