@@ -3723,16 +3723,33 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 		foreach ($_REQUEST as $keys=>$values) {
 			$$keys = esc_attr($values);
 		}
-		if(isset($phone) && $phone <> ''){
-			$subject_name = 'Phone';
-			 $subject = $phone;
-		}
-		if(isset($contact_number) && $contact_number <> ''){
-			$cs_contact_number = $contact_number;
- 		}else{
-			$cs_contact_number = '';
-		}
-		$bloginfo 	= get_bloginfo();
+		
+		/* Carga de reCAPTCHA */
+        require_once( 'recaptchalib.php' );
+        
+        /* Verificamos el reCAPTCHA*/
+        $resp = null;
+        if (isset($_POST['g-recaptcha-response'])) {
+                $reCaptcha = new ReCaptcha('6Le7lgYTAAAAAGocKBoAewkGkElJE2Hsp6qjM2xH');
+            $resp = $reCaptcha->verifyResponse(
+                $_SERVER['REMOTE_ADDR'],
+                $_POST['g-recaptcha-response']
+            );
+        }
+		
+		/* Verificamos el reCAPTCHA */
+        if ($resp != null && $resp->success) {
+	        
+			if(isset($phone) && $phone <> ''){
+				$subject_name = 'Phone';
+				 $subject = $phone;
+			}
+			if(isset($contact_number) && $contact_number <> ''){
+				$cs_contact_number = $contact_number;
+	 		}else{
+				$cs_contact_number = '';
+			}
+			$bloginfo 	= get_bloginfo();
 			$subjecteEmail = "(" . $bloginfo . ") Contact Form Received";
 			$message = '
 				<table width="100%" border="1">
@@ -3836,6 +3853,12 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 				$json['type']    = "error";
 				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_error_msg).'</p>';
 			};
+		
+		}
+		else {
+			$json['type']    = "error";
+			$json['message'] = '<p>Invalid ReCAPCHA</p>';
+		}
 			
 		echo json_encode( $json );
 		die();	
