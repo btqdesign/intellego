@@ -162,7 +162,6 @@ if(!function_exists('cs_activate_widget')){
 			$blog_recent_postp = get_option('widget_relatedposts');
 			$blog_recent_postp[2] = array(
 					"title"		=>	'Latest News',
-					"select_category" 	=> 'blogs',
 					"showcount" => '4',
 					"thumb" => true
 					);					
@@ -310,7 +309,6 @@ if(!function_exists('cs_activate_widget')){
 			$news_recent_post = get_option('widget_relatedposts');
 			$news_recent_post[4] = array(
 					"title"		=>	'Latest Posts',
-					"select_category" 	=> 'news',
 					"showcount" => '5',
 					"thumb" => true
 					);					
