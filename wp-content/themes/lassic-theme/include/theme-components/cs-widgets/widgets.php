@@ -914,6 +914,22 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				 */
 				$id_post_id = get_the_ID();
 				$typo_post	= get_post_type($id_post_id);
+				
+				$tagArr		= array();
+
+				$posttags = get_the_tags();
+				if ($posttags) {
+					foreach($posttags as $tag) {
+						array_push($cart, array(
+										'taxonomy' => 'project-tag',
+										'field'    => 'slug',
+										'terms'    => $tag->slug,
+									));
+					}
+				}
+
+
+
 				$args = array( 'posts_per_page' => "$showcount",
 								'post_type' => 'project',
 								'tax_query' => array(
@@ -927,12 +943,6 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				);
 
 
-				$posttags = get_the_tags();
-				if ($posttags) {
-					foreach($posttags as $tag) {
-						echo $tag->name . '*--<br>'; 
-					}
-				}
 				$args = array(
 					'post_type' => $typo_post,
 					'post_status' => 'publish',
