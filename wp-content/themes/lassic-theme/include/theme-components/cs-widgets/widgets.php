@@ -912,6 +912,8 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				 *
 				 *
 				 */
+				$id_post_id = get_the_ID();
+				$typo_post	= get_post_type($id_post_id);
 				$args = array( 'posts_per_page' => "$showcount",
 								'post_type' => 'project',
 								'tax_query' => array(
@@ -922,6 +924,33 @@ if ( ! class_exists( 'relatedposts' ) ) {
 									),
 								),
 								'ignore_sticky_posts' => 1
+				);
+
+
+				$posttags = get_the_tags();
+				if ($posttags) {
+					foreach($posttags as $tag) {
+						echo $tag->name . '<br>'; 
+					}
+				}
+				$args = array(
+					'post_type' => $typo_post,
+					'post_status' => 'publish',
+					'orderby' => 'DESC',
+					'tax_query' => array(
+						'relation' => 'OR',
+						array(
+							'taxonomy' => 'project-tag',
+							'field' => 'id',
+							'terms' => $custom_taxterms
+						),
+						array(
+							'taxonomy' => $cs_categories_name,
+							'field' => 'id',
+							'terms' => $custom_taxterms
+						)
+					),
+					'post__not_in' => array ($id_post_id),
 				);
 
 				$args = array( 'posts_per_page' => "$showcount",'post_type' => 'project','ignore_sticky_posts' => 1);
