@@ -926,7 +926,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				$posttags = get_the_tags();
 				if ($posttags) {
 					foreach($posttags as $tag) {
-						array_push($taxArr, (
+						array_push($taxArr, array(
 							'taxonomy' => "$typo_post-tag",
 							'field'    => 'slug',
 							'terms'    => $tag->slug,
@@ -937,7 +937,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				if($category_post){
 					foreach($category_post as $category) {
 						$ntypo_post = $typo_post=='post'?"category":"$typo_post-category";
-						array_push($taxArr, (
+						array_push($taxArr, array(
 							'taxonomy' => "$ntypo_post",
 							'field'    => 'slug',
 							'terms'    => $category->slug,
