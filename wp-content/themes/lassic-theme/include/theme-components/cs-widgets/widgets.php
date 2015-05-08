@@ -915,8 +915,6 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				$id_post_id = get_the_ID();
 				$typo_post	= get_post_type($id_post_id);
 				$category_post  = get_the_category($id_post_id);
-				if($typo_post == )
-
 				$taxArr		= array();
 
 				$posttags = get_the_tags();
