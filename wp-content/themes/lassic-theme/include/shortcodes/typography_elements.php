@@ -1736,7 +1736,7 @@ if ( ! function_exists( 'cs_pb_contactus' ) ) {
 			$cs_parseObject 	= new ShortcodeParse();
 			$cs_output = $cs_parseObject->cs_shortcodes( $cs_output, $cs_shortcode_str , true , $CS_PREFIX );
 		}
-		$cs_defaults = array( 'cs_contactus_section_title' => '', 'cs_contactus_label' => '', 'cs_contactus_view' => '','cs_contactus_send' => '','cs_success' => '','cs_error' => '','cs_contact_class' => '','cs_contact_animation' => '');
+		$cs_defaults = array( 'cs_contactus_section_title' => '', 'cs_contactus_label' => '', 'cs_contactus_view' => '', 'cs_contactus_vacancies' => '', 'cs_contactus_send' => '','cs_success' => '','cs_error' => '','cs_contact_class' => '','cs_contact_animation' => '');
 		if(isset($cs_output['0']['atts']))
 			$cs_atts = $cs_output['0']['atts'];
 		else 
