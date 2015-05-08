@@ -561,7 +561,12 @@ if (!function_exists('cs_contactus_shortcode')) {
 		
 		if ( isset( $cs_contactus_label ) && $cs_contactus_label == 'on' ) {
 			$html	.= '';
-			$html	.= '<label class="textaera-sec"> <i class="icon-quote4"></i> <textarea placeholder="'.__('Message', 'lassic').'" class="'.sanitize_html_class($cs_class).' '.sanitize_html_class($cs_view_class).'" name="contact_msg" required></textarea></label>';
+			if ( isset( $cs_contactus_vacancies ) && $cs_contactus_vacancies == 'on' ) {
+				$html	.= '<label class="textaera-sec"> <i class="icon-quote4"></i> <textarea placeholder="'.__('CV', 'lassic').'" class="'.sanitize_html_class($cs_class).' '.sanitize_html_class($cs_view_class).'" name="contact_msg" style="height: 754px !important;" required></textarea></label>';
+			}
+			else {
+				$html	.= '<label class="textaera-sec"> <i class="icon-quote4"></i> <textarea placeholder="'.__('Message', 'lassic').'" class="'.sanitize_html_class($cs_class).' '.sanitize_html_class($cs_view_class).'" name="contact_msg" required></textarea></label>';
+			}
 		}
 		else{
 			$html	.= '<label class="textaera-sec"><i class="icon-comments-o"></i><textarea placeholder="'.__('Message', 'lassic').'" class="'.sanitize_html_class($cs_class).' '.sanitize_html_class($cs_view_class).'" name="contact_msg" required></textarea></label>';
