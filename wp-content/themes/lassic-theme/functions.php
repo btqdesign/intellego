@@ -3854,7 +3854,7 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_succ_msg).'</p>';
 			} else {
 				$json['type']    = "error";
-				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_error_msg).'</p><pre>'.print_r($send_mail, true).'</pre>';
+				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_error_msg).'</p><pre>'.var_dump($send_mail)."\n".'Contact email: '.sanitize_email($cs_contact_email)."\n".'Subject: '.$subjecteEmail."\n".'Message: '.$message."\n".'Headers: '.$headers.'</pre>';
 			};
 		
 		}
