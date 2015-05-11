@@ -3845,13 +3845,15 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 			$headers .= "MIME-Version: 1.0" . "\r\n";
 			$attachments = '';
 			
-			if(	wp_mail( sanitize_email($cs_contact_email), $subjecteEmail, $message, $headers, $attachments ) ) {
+			$send_mail = wp_mail( sanitize_email($cs_contact_email), $subjecteEmail, $message, $headers, $attachments );
+			
+			if(	$send_mail ) {
 				$json	= array();
 				$json['type']    = "success";
 				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_succ_msg).'</p>';
 			} else {
 				$json['type']    = "error";
-				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_error_msg).'</p>';
+				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_error_msg).'</p><pre>'.var_dump($send_mail).'</pre>';
 			};
 		
 		}
