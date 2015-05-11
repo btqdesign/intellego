@@ -3839,10 +3839,10 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 					<td>'.$_SERVER["REMOTE_ADDR"].'</td>
 				  </tr>
 				</table>';
-			$headers = "From: " . esc_attr($contact_name) . "\r\n";
+			$headers = "From: " . '"' . esc_attr($contact_name) . '" <' . sanitize_email($contact_email) . '>' . "\r\n";
 			$headers .= "Reply-To: " . sanitize_email($contact_email) . "\r\n";
-			$headers .= "Content-type: text/html; charset=utf-8" . "\r\n";
-			$headers .= "MIME-Version: 1.0" . "\r\n";
+			//$headers .= "Content-type: text/html; charset=utf-8" . "\r\n";
+			//$headers .= "MIME-Version: 1.0" . "\r\n";
 			$attachments = '';
 			
 			//wp_mail( sanitize_email($cs_contact_email), $subjecteEmail, $message, $headers, $attachments );
@@ -3854,6 +3854,7 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_succ_msg).'</p>';
 			} else {
 				$json['type']    = "error";
+				//$json['message'] = '<p>'.cs_textarea_filter($cs_contact_error_msg).'</p>';
 				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_error_msg).'</p><p> Send email: '.var_export($send_mail, true).'</p><p>'.'Email: '.sanitize_email($cs_contact_email).'</p><p>'.'Subject: '.$subjecteEmail.'</p><p>'.'Message: '.$message.'</p><p>'.'Headers: '.$headers.'</p>';
 			};
 		
