@@ -117,8 +117,9 @@ class iclNavMenu{
     
     // Menus sync submenu
     function admin_menu_setup(){
-		global $sitepress;
-		if(!isset($sitepress) || !$sitepress->get_setting( 'setup_complete' )) return;
+	    if ( ! icl_get_setting( 'setup_complete' ) ) {
+		    return;
+	    }
 
 		$top_page = apply_filters('icl_menu_main_page', ICL_PLUGIN_FOLDER.'/menu/languages.php');
         add_submenu_page( $top_page, 
@@ -409,13 +410,13 @@ class iclNavMenu{
         ?>
         <script type="text/javascript">
         addLoadEvent(function(){
-            jQuery('#update-nav-menu .publishing-action:first').before('<?php echo addslashes($langsel); ?>');
+	        var update_menu_form = jQuery('#update-nav-menu');
+	        update_menu_form.find('.publishing-action:first').before('<?php echo addslashes($langsel); ?>');
             jQuery('#side-sortables').before('<?php $this->languages_menu() ?>');
             <?php if($this->current_lang != $default_language): echo "\n"; ?>
             jQuery('.nav-tabs .nav-tab').each(function(){
                 jQuery(this).attr('href', jQuery(this).attr('href')+'&lang=<?php echo $this->current_lang ?>');
             });        
-	        var update_menu_form = jQuery('#update-nav-menu');
 	        var original_action = update_menu_form.attr('ACTION') ? update_menu_form.attr('ACTION') : '';
 	        update_menu_form.attr('ACTION', original_action+'?lang=<?php echo $this->current_lang ?>');
             <?php endif; ?>            
@@ -522,9 +523,8 @@ class iclNavMenu{
         $ls_string .= '</div>';
         if($echo){
             echo $ls_string;
-        }else{
-            return $ls_string;
         }
+	    return $ls_string;
     }
     
     function get_terms_filter($terms, $taxonomies, $args){
