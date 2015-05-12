@@ -4,7 +4,7 @@ Plugin Name: Revolution Slider
 Plugin URI: http://www.themepunch.com/revolution/
 Description: Revolution Slider - Premium responsive slider
 Author: ThemePunch
-Version: 4.6.92
+Version: 4.6.93
 Author URI: http://themepunch.com
 */
 
@@ -26,7 +26,7 @@ if(isset($_GET['revSliderAsTheme'])){
 }
 
 
-$revSliderVersion = "4.6.92";
+$revSliderVersion = "4.6.93";
 $currentFile = __FILE__;
 $currentFolder = dirname($currentFile);
 $revSliderAsTheme = false;
