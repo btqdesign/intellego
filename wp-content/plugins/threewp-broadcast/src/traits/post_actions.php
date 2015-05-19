@@ -28,7 +28,6 @@ trait post_actions
 
 				$this->add_action( 'manage_posts_custom_column', 10, 2 );
 				$this->add_action( 'manage_pages_custom_column', 'manage_posts_custom_column', 10, 2 );
-				
 			}
 
 			// Hook into the actions so that we can keep track of the broadcast data.
