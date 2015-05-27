@@ -3839,14 +3839,14 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 					<td>'.$_SERVER["REMOTE_ADDR"].'</td>
 				  </tr>
 				</table>';
-			$headers = "From: " . '"' . esc_attr($contact_name) . '" <' . sanitize_email($contact_email) . '>' . "\r\n";
-			$headers .= "Reply-To: " . sanitize_email($contact_email) . "\r\n";
-			//$headers .= "Content-type: text/html; charset=utf-8" . "\r\n";
-			//$headers .= "MIME-Version: 1.0" . "\r\n";
+			$headers  = 'From: Servidor Web <info@intellego.com.mx>' . "\r\n";
+			$headers .= 'Reply-To: ' . sanitize_email($contact_email) . "\r\n";
+			$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+			$headers .= 'MIME-Version: 1.0' . "\r\n";
 			$attachments = '';
 			
 			//wp_mail( sanitize_email($cs_contact_email), $subjecteEmail, $message, $headers, $attachments );
-			$send_mail = wp_mail( sanitize_email($cs_contact_email), /*$subjecteEmail*/ 'Asunto sin caracteres especiales', $message, $headers );
+			$send_mail = wp_mail( sanitize_email($cs_contact_email), $subjecteEmail, $message, $headers );
 			
 			if(	$send_mail ) {
 				$json	= array();
