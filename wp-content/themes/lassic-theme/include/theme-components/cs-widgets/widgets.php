@@ -969,7 +969,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 			  //echo $wpdb->last_query;
 			  if ( $custom_query->have_posts() <> "" ) {
 
-				  $cs_title_limit = '20';
+				  $cs_title_limit = '200';
 				  if($thumb <> true) echo '<ul>';
 				  while ( $custom_query->have_posts()) : $custom_query->the_post();
 				  $post_xml = get_post_meta($post->ID, "post", true);	
