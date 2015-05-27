@@ -152,7 +152,7 @@ if ( !class_exists('cs_blog_templates') ) {
 			global $post;
 			$width = '358';
 			$height = '202';
-			$cs_title_limit = 22;
+			$cs_title_limit = 40;
 			 
 			if ( $query->have_posts() ) {  
 				$postCounter	= 0;
@@ -212,7 +212,7 @@ if ( !class_exists('cs_blog_templates') ) {
 			global $post;
 			$width = '358';
 			$height = '202';
-			$cs_title_limit = 22;
+			$cs_title_limit = 40;
 			 
 			if ( $query->have_posts() ) {
 				cs_owl_carousel();
