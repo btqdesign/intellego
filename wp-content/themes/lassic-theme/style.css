@@ -167,7 +167,7 @@ body.logged-in.admin-bar {margin-top: 32px;}
 .rich_editor_text p, .rich_editor_text ul, .rich_editor_text ol {margin-bottom: 10px;}
 .rich_editor_text ul { float: none; list-style: disc; margin-left: 0px; padding-left: 25px; }
 /*Cambios para adaptar la fecha sin autor*/
-.cs-blog-text .cs-post-options{ padding-left: auto !important }
+.cs-blog-text .cs-post-options{ padding-left: 0 !important }
 .cs-blog-text .cs-post-options li{   margin: auto !important }
 .rich_editor_text .liststyle ul {padding-left: 0px;}
 .rich_editor_text ol { list-style-type: decimal; margin-left: 0px; padding-left: 25px; }
