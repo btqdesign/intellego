@@ -3750,7 +3750,7 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 				$cs_contact_number = '';
 			}
 			$bloginfo 	= get_bloginfo();
-			$subjecteEmail = "(" . $bloginfo . ") Contact Form Received";
+			$subjecteEmail = "(" . $bloginfo . ") Contact Form";
 			$message = '
 				<table width="100%" border="1">
 				  <tr>
@@ -3758,11 +3758,16 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 					<td>'.esc_attr($contact_name).'</td>
 				  </tr>
 				';
+			$message .= '
+				  <tr>
+					<td><strong>'.$subject_name.':</strong></td>
+					<td>'.esc_attr($subject).'</td>
+				  </tr>';
 			if (isset($contact_lastname)) {
 				$message .= '
 				 <tr>
 					<td width="100"><strong>Last Name:</strong></td>
-					<td>'.sanitize_email($contact_lastname).'</td>
+					<td>'.esc_attr($contact_lastname).'</td>
 				  </tr>
 				';
 			}
@@ -3781,7 +3786,7 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 				$message .= '
 				 <tr>
 					<td width="100"><strong>Birt Date:</strong></td>
-					<td>'.sanitize_email($contact_birthdate).'</td>
+					<td>'.esc_attr($contact_birthdate).'</td>
 				  </tr>
 				';
 			}
@@ -3789,7 +3794,7 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 				$message .= '
 				 <tr>
 					<td width="100"><strong>City:</strong></td>
-					<td>'.sanitize_email($contact_city).'</td>
+					<td>'.esc_attr($contact_city).'</td>
 				  </tr>
 				';
 			}
@@ -3797,7 +3802,7 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 				$message .= '
 				 <tr>
 					<td width="100"><strong>Country:</strong></td>
-					<td>'.sanitize_email($contact_country).'</td>
+					<td>'.esc_attr($contact_country).'</td>
 				  </tr>
 				';
 			}
@@ -3805,7 +3810,7 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 				$message .= '
 				 <tr>
 					<td width="100"><strong>Interest:</strong></td>
-					<td>'.sanitize_email($contact_interest).'</td>
+					<td>'.esc_attr($contact_interest).'</td>
 				  </tr>
 				';
 			}
@@ -3813,7 +3818,7 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 				$message .= '
 				 <tr>
 					<td width="100"><strong>Education:</strong></td>
-					<td>'.sanitize_email($contact_education).'</td>
+					<td>'.esc_attr($contact_education).'</td>
 				  </tr>
 				';
 			}
@@ -3821,18 +3826,14 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 				$message .= '
 				 <tr>
 					<td width="100"><strong>Studies:</strong></td>
-					<td>'.sanitize_email($contact_studies).'</td>
+					<td>'.esc_attr($contact_studies).'</td>
 				  </tr>
 				';
 			}
 			$message .= '
 				  <tr>
-					<td><strong>'.$subject_name.':</strong></td>
-					<td>'.esc_attr($subject).'</td>
-				  </tr>
-				  <tr>
 					<td><strong>Message:</strong></td>
-					<td>'.balanceTags($contact_msg, true).'</td>
+					<td><pre>'.balanceTags($contact_msg, true).'</pre></td>
 				  </tr>
 				  <tr>
 					<td><strong>IP Address:</strong></td>
@@ -3854,8 +3855,10 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_succ_msg).'</p>';
 			} else {
 				$json['type']    = "error";
-				//$json['message'] = '<p>'.cs_textarea_filter($cs_contact_error_msg).'</p>';
-				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_error_msg).'</p><p> Send email: '.var_export($send_mail, true).'</p><p>'.'Email: '.sanitize_email($cs_contact_email).'</p><p>'.'Subject: '.$subjecteEmail.'</p><p>'.'Message: '.$message.'</p><p>'.'Headers: '.$headers.'</p>';
+				$json['message'] = '<p>'.cs_textarea_filter($cs_contact_error_msg).'</p>';
+				var_export($send_mail, true)
+				// Debug Mail Send
+				//$json['message'] = '<p>'.cs_textarea_filter($cs_contact_error_msg).'</p><p> Send email: '.var_export($send_mail, true).'</p><p>'.'Email: '.sanitize_email($cs_contact_email).'</p><p>'.'Subject: '.$subjecteEmail.'</p><p>'.'Message: '.$message.'</p><p>'.'Headers: '.$headers.'</p>';
 			};
 		
 		}
