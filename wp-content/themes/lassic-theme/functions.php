@@ -3754,14 +3754,12 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 			$message = '
 				<table width="100%" border="1">
 				  <tr>
-					<td width="100"><strong>Name:</strong></td>
-					<td>'.esc_attr($contact_name).'</td>
-				  </tr>
-				';
-			$message .= '
-				  <tr>
 					<td><strong>'.$subject_name.':</strong></td>
 					<td>'.esc_attr($subject).'</td>
+				  </tr>
+				  <tr>
+					<td width="100"><strong>Name:</strong></td>
+					<td>'.esc_attr($contact_name).'</td>
 				  </tr>';
 			if (isset($contact_lastname)) {
 				$message .= '
