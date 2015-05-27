@@ -263,7 +263,7 @@
                                       $custom_taxterms='';
                                       $width  = 358;
                                       $height = 202;
-                                      $cs_title_limit  = 25 ;
+                                      $cs_title_limit  = 200 ;
                                       $custom_taxterms = wp_get_object_terms( $post->ID, array($cs_categories_name, $cs_tags_name), array('fields' => 'ids') );
                                       $args = array(
                                           'post_type' => $postname,
