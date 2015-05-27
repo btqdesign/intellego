@@ -86,7 +86,7 @@ if ( !class_exists('cs_blog_templates') ) {
 			global $post;
 			$width = '382';
 			$height = '286';
-			$cs_title_limit = 42;
+			$cs_title_limit = 200;
  			if ( $query->have_posts() ) {  
  				while ( $query->have_posts() )  : $query->the_post();
 				 	$cs_thumbnail = cs_get_post_img_src( $post->ID, $width, $height );
@@ -152,7 +152,7 @@ if ( !class_exists('cs_blog_templates') ) {
 			global $post;
 			$width = '358';
 			$height = '202';
-			$cs_title_limit = 40;
+			$cs_title_limit = 200;
 			 
 			if ( $query->have_posts() ) {  
 				$postCounter	= 0;
@@ -212,7 +212,7 @@ if ( !class_exists('cs_blog_templates') ) {
 			global $post;
 			$width = '358';
 			$height = '202';
-			$cs_title_limit = 40;
+			$cs_title_limit = 200;
 			 
 			if ( $query->have_posts() ) {
 				cs_owl_carousel();
