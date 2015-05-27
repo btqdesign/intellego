@@ -175,7 +175,7 @@
                             ?>
                         </ul> 
                         <ul class="cs-post-options">
-                            <li><i class="icon-user9"></i><a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>"><?php the_author(); ?></a></li>
+                            <!--<li><i class="icon-user9"></i><a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>"><?php the_author(); ?></a></li>-->
                             <li><i class=" icon-calendar11"></i><time datetime="<?php echo date_i18n('Y-m-d',strtotime(get_the_date()));?>">
                                 <?php echo date_i18n('F d,Y',strtotime(get_the_date()));?></time>
                             </li>
