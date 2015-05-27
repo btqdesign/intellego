@@ -296,10 +296,12 @@
                                                 <div class="cs-blog-text">
                                                     <ul class="cs-post-options">
                                                         <li>
+                                                        <!--
                                                             <i class="icon-user9"></i>
                                                             <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>">
                                                                 <?php the_author(); ?>
                                                             </a>
+                                                        -->
                                                         </li>                               
                                                     </ul>
                                                 </div>
