@@ -3846,7 +3846,7 @@ if ( ! function_exists( 'cs_contact_form_submit' ) ) :
 			$attachments = '';
 			
 			//wp_mail( sanitize_email($cs_contact_email), $subjecteEmail, $message, $headers, $attachments );
-			$send_mail = wp_mail( sanitize_email($cs_contact_email), $subjecteEmail, $message, $headers );
+			$send_mail = wp_mail( sanitize_email($cs_contact_email), /*$subjecteEmail*/ 'Asunto sin caracteres especiales', $message, $headers );
 			
 			if(	$send_mail ) {
 				$json	= array();
