@@ -293,18 +293,19 @@
                                             <?php cs_post_image($cs_thumbnail); ?>
                                             <div class="cs-bloginfo-sec">
                                                 <h4><a href="<?php esc_url(the_permalink());?>"><?php cs_get_title($cs_title_limit); ?></a></h4>
+                                                <!--
                                                 <div class="cs-blog-text">
                                                     <ul class="cs-post-options">
                                                         <li>
-                                                        <!--
                                                             <i class="icon-user9"></i>
                                                             <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>">
                                                                 <?php the_author(); ?>
                                                             </a>
-                                                        -->
+                                                        
                                                         </li>                               
                                                     </ul>
                                                 </div>
+                                                -->
                                             </div>
                                         </article>
                                     <?php endwhile; wp_reset_postdata(); ?>
