@@ -166,6 +166,9 @@ body.logged-in.admin-bar {margin-top: 32px;}
 .rich_editor_text h1, .rich_editor_text h2, .rich_editor_text h3, .rich_editor_text h4, .rich_editor_text h5 {margin-bottom: 10px;}
 .rich_editor_text p, .rich_editor_text ul, .rich_editor_text ol {margin-bottom: 10px;}
 .rich_editor_text ul { float: none; list-style: disc; margin-left: 0px; padding-left: 25px; }
+/*Cambios para adaptar la fecha sin autor*/
+.cs-blog-text .cs-post-options{ padding-left: auto !important }
+.cs-blog-text .cs-post-options li{   margin: auto !important }
 .rich_editor_text .liststyle ul {padding-left: 0px;}
 .rich_editor_text ol { list-style-type: decimal; margin-left: 0px; padding-left: 25px; }
 .rich_editor_text li {float: none;}
@@ -444,6 +447,7 @@ body.category .cs-category li { width:100%;}
 	.cs-blog-medium .cs-media ~ .cs-bloginfo-sec { padding: 0 0 0 350px; float: none; width: auto; }
 .cs-blog-medium p {margin-bottom: 20px;}
 /* Blog Grid Style */
+
 .cs-blog.cs-blog-grid .cs-media,.cs-blog.cs-blog-crousel .cs-media {margin-bottom: 16px;}
 .cs-blog.cs-blog-grid h4 {margin-bottom: 10px;}
 .cs-blog.cs-blog-crousel .cs-post-options li {margin: 0px 14px;}
