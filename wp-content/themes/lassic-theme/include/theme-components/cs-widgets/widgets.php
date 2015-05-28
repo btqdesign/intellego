@@ -916,7 +916,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				$typo_post	= get_post_type($id_post_id);
 				$category_post  = get_the_category($id_post_id);
 				$taxArr		= array();
-
+				$c_catgpost = "";
 
 				//echo $id_post_id.".-1<br>";
 				//echo $typo_post.".-2<br>";
