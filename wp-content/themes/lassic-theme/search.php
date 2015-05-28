@@ -40,6 +40,7 @@
                    while ( have_posts() ) : the_post();
                  ?>	
                     <li>
+                    !**********!
                     <?php 
                         if ( is_sticky() ){  echo '<span>'.__('Featured : ', 'lassic').'</span>';}
                          echo '<h5>'.date_i18n(get_option( 'date_format' ),strtotime(get_the_date())); ?>, <?php  echo cs_get_the_excerpt('50',false);?></h5>
@@ -58,9 +59,7 @@
     
 					if ( isset($_GET['s']) ) $qrystr = "&amp;s=".$_GET['s'];
 					if ( isset($_GET['page_id']) ) $qrystr .= "&amp;page_id=".$_GET['page_id'];
-					echo "**!!<br>";
 					echo cs_pagination($wp_query->found_posts,get_option('posts_per_page'), $qrystr);
-					echo "**!!<br>";
                 }
             ?>
            </div>                  
