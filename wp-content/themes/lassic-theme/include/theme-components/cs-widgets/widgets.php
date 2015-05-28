@@ -792,7 +792,7 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
                       	</h5>
                       	<ul class="post-option">
                         	<li>
-                           	<?php echo date_i18n(get_option('date_format'), strtotime(get_the_date('d/m/Y',$post->ID));?>
+                           	<?php echo date_i18n(get_option('date_format'), strtotime(get_the_date('d/m/Y',$post->ID)));?>
                         	</li>
                       </ul>
                     </div>
