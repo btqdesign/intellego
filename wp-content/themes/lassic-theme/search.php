@@ -33,6 +33,7 @@
             	
    			<div class="<?php echo esc_attr($cs_layout); ?>">
 				<?php
+				print_r(have_posts());
                 if ( have_posts() ) : 
 				  echo '<div class="relevant-search">';
                   echo '<div class="cs-section-title"><h3>'.__('Showing result for "'.get_search_query().'"','lassic').'</h3></div>';
@@ -40,7 +41,6 @@
                    while ( have_posts() ) : the_post();
                  ?>	
                     <li>
-                    !**********!
                     <?php 
                         if ( is_sticky() ){  echo '<span>'.__('Featured : ', 'lassic').'</span>';}
                          echo '<h5>'.date_i18n(get_option( 'date_format' ),strtotime(get_the_date())); ?>, <?php  echo cs_get_the_excerpt('50',false);?></h5>
