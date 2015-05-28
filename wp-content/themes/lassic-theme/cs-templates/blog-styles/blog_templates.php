@@ -196,7 +196,7 @@ if ( !class_exists('cs_blog_templates') ) {
                                     	</a>
                                     </li>                               
                                     -->
-                                    <li><i class=" icon-calendar11"></i>--<time datetime="<?php echo date_i18n('Y-m-d',strtotime(get_the_date('d/m/Y',get_the_id())));?>">
+                                    <li><i class=" icon-calendar11"></i><time datetime="<?php echo date_i18n('Y-m-d',strtotime(get_the_date('d/m/Y',get_the_id())));?>">
                                         <?php echo date_i18n('F d,Y',strtotime(get_the_date('d/m/Y',get_the_id())));?></time>
                                     </li>
 								</ul>
@@ -260,7 +260,7 @@ if ( !class_exists('cs_blog_templates') ) {
                                     	</a>
                                     </li>                               
                                     -->
-                                    <li><i class=" icon-calendar11"></i>---<time datetime="<?php echo date_i18n('Y-m-d',strtotime(get_the_date('d/m/Y',get_the_id())));?>">
+                                    <li><i class=" icon-calendar11"></i><time datetime="<?php echo date_i18n('Y-m-d',strtotime(get_the_date('d/m/Y',get_the_id())));?>">
                                         <?php echo date_i18n('F d,Y',strtotime(get_the_date('d/m/Y',get_the_id())));?></time>
                                     </li>
 								</ul>
