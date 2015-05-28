@@ -1042,6 +1042,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				 if($thumb <> true) echo '</ul>';
                   }
                   else {
+					  ?>No hay resultados<?php
                       if ( function_exists( 'cs_no_result_found' ) ) { cs_no_result_found(false); }
 
                   }
