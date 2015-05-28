@@ -68,6 +68,7 @@ if ( ! function_exists( 'cs_header_strip' ) ) {
         </aside>
         <!-- Right Side -->
         <aside class="cs-right-side">
+			<?php get_bloginfo('name'); ?>!--!
 			 <?php if(isset($cs_socail_icon_switch) and $cs_socail_icon_switch=='on'){ 
                   echo '<div class="sg-socialmedia">';
                     cs_social_network();
