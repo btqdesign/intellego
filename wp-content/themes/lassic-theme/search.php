@@ -43,7 +43,7 @@
                     <li>
                     <?php 
                         if ( is_sticky() ){  echo '<span>'.__('Featured : ', 'lassic').'</span>';}
-                         echo '<h5>'.date_i18n(get_option( 'date_format' ),strtotime(get_the_date())); ?>, <?php  echo cs_get_the_excerpt('50',false);?></h5>
+                         echo '<h5>'.date_i18n(get_option( 'date_format' ),strtotime(the_date())); ?>, <?php  echo cs_get_the_excerpt('50',false);?></h5>
                         <a href="<?php esc_url(the_permalink()); ?>"><?php esc_url(the_permalink()); ?></a>
                     </li>
                 <?php  
