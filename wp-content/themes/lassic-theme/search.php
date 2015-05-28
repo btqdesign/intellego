@@ -58,7 +58,9 @@
     
 					if ( isset($_GET['s']) ) $qrystr = "&amp;s=".$_GET['s'];
 					if ( isset($_GET['page_id']) ) $qrystr .= "&amp;page_id=".$_GET['page_id'];
+					echo "**!!<br>";
 					echo cs_pagination($wp_query->found_posts,get_option('posts_per_page'), $qrystr);
+					echo "**!!<br>";
                 }
             ?>
            </div>                  
