@@ -983,7 +983,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				);	
 				$custom_query = new WP_Query($args);  
 				  
-				if ( $custom_query->have_posts() <> "" ) {
+				if ( $custom_query->have_posts() == "" ) {
 					$cumple='0';
 				}
 
