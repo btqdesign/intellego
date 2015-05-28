@@ -33,7 +33,7 @@
             	
    			<div class="<?php echo esc_attr($cs_layout); ?>">
 				<?php
-				print_r($wp_query);
+				//print_r($wp_query);
                 if ( have_posts() ) : 
 				  echo '<div class="relevant-search">';
                   echo '<div class="cs-section-title"><h3>'.__('Showing result for "'.get_search_query().'"','lassic').'</h3></div>';

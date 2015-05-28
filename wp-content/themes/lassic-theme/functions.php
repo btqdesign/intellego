@@ -3273,7 +3273,7 @@ function cs_get_search_results($query) {
 
 	if ( !is_admin() and (is_search())) {
 
-		$query->set( 'post_type', array('post','team','cs-events') );
+		$query->set( 'post_type', array('post','team','cs-events','page') );
 
 		remove_action( 'pre_get_posts', 'cs_get_search_results' );
 
