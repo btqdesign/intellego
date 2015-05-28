@@ -968,8 +968,29 @@ if ( ! class_exists( 'relatedposts' ) ) {
 			  //print_r($args);
 			  $custom_query = new WP_Query($args);
 			  //echo $wpdb->last_query;
-			  if ( $custom_query->have_posts() <> "" ) {
+			$cumple = '';
+			if($custom_query->have_posts() <> "") {
+				$cumple='1';
+			} else {
+				
+				$cumple='1';	  
+				$args = array(
+					'posts_per_page' => "$showcount",
+					'post_type' => "$typo_post",
+					'post_status' => 'publish',
+					'orderby' => 'rand',
+					'post__not_in' => array ($id_post_id),
+				);	
+				$custom_query = new WP_Query($args);  
+				  
+				if ( $custom_query->have_posts() <> "" ) {
+					$cumple='0';
+				}
 
+
+			}
+			
+			if($cumple == '1'){
 				  $cs_title_limit = '200';
 				  if($thumb <> true) echo '<ul>';
 				  while ( $custom_query->have_posts()) : $custom_query->the_post();
@@ -1040,24 +1061,8 @@ if ( ! class_exists( 'relatedposts' ) ) {
 				  }
 				endwhile; 
 				 if($thumb <> true) echo '</ul>';
-			} else {
-				
-					  
-				$args = array(
-					'posts_per_page' => "$showcount",
-					'post_type' => "$typo_post",
-					'post_status' => 'publish',
-					'orderby' => 'rand',
-					'post__not_in' => array ($id_post_id),
-				);	
-				$custom_query = new WP_Query($args);  
-				  
-				if ( $custom_query->have_posts() <> "" ) {
-					?>Aleatorio<?
-				}else{
-					if ( function_exists( 'cs_no_result_found' ) ) { cs_no_result_found(false); }
-				}
-
+			}else{
+				if ( function_exists( 'cs_no_result_found' ) ) { cs_no_result_found(false); }
 			}
 			echo cs_allow_special_char($after_widget);
 		}
