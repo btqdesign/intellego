@@ -263,7 +263,7 @@ Based on Hybrid theme
 .top-bar p i { float: left; margin: 2px 5px 0 0; }
 .top-bar p:before, #lang_sel ul li:before { position: absolute; left: -12px; top: 6px; width: 5px; height: 5px; content: ""; background: url(assets/images/bg-topbar.png) no-repeat; }
 .top-bar p:first-child:before, #lang_sel ul li:first-child:before {display: none;}
-.blog_name{  color: #fff !important;  font-size: 12px;  float: left;}
+.blog_name{  color: #fff !important;  font-size: 12px;  float: left;  padding-right: 10px;}
 .cs-right-side {float: right;}
 .top-bar #lang_sel { float: left; height: 0px; }
 #lang_sel ul li { float: left; position: relative; margin: 0 20px 0 0; width: auto; }
