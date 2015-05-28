@@ -538,7 +538,7 @@ if ( ! class_exists( 'recentposts' ) ) {
 									<?php cs_get_title($cs_title_limit); ?>
                             	</a>
                             </h5>
-                          	<p><?php echo date_i18n('F d, Y',strtotime(get_the_date('d/m/Y',$post->ID)));?></p>
+                          	<p><?php echo get_the_date('F d, Y',$post->ID);?></p>
                         </li>
 						  <?php
 				  }
@@ -761,7 +761,7 @@ if ( ! class_exists( 'recentpostsproj' ) ) {
 									<?php cs_get_title($cs_title_limit); ?>
                             	</a>
                             </h5>
-                          	<p><?php echo date_i18n('F d, Y',strtotime(get_the_date('d/m/Y',$post->ID)));?></p>
+                          	<p><?php echo get_the_date('F d, Y',$post->ID);?></p>
                         </li>
 						  <?php
 				  }
@@ -1021,7 +1021,7 @@ if ( ! class_exists( 'relatedposts' ) ) {
 									<?php cs_get_title($cs_title_limit); ?>
                             	</a>
                             </h5>
-                          	<p><?php echo date_i18n('F d, Y',strtotime(get_the_date('d/m/Y',$post->ID)));?></p>
+                          	<p><?php echo get_the_date('F d, Y',$post->ID);?></p>
                         </li>
 						  <?php
 				  }
