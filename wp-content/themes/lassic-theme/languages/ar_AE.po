@@ -1272,7 +1272,7 @@ msgstr ""
 
 #: include/theme-components/cs-header/header_functions.php:278
 #@ lassic
-msgid "EEnter your search"
+msgid "Enter your search"
 msgstr ""
 
 #: include/theme-components/cs-header/header_functions.php:299

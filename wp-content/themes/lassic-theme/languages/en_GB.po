@@ -873,7 +873,7 @@ msgstr[1] ""
 msgid "Return to the dashboard"
 msgstr ""
 
-msgid "EEnter your search"
+msgid "Enter your search"
 msgstr ""
 
 msgid "Contribute Now"
