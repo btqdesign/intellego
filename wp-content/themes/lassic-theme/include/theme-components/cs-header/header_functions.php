@@ -293,7 +293,7 @@ if ( ! function_exists( 'cs_search' ) ) {
               <div class="modal-body">
                 <div class="cssearch">
                         <form id="searchform" method="get" action="<?php echo home_url()?>"  role="search"> 
-                            <input type="text" name="s" id="searchinput" value="<?php _e('Escribe una palabra','lassic'); ?>" onblur="if(this.value == '') { this.value ='<?php _e('Escribe una palabra','lassic'); ?>'; }" onfocus="if(this.value =='<?php _e('Escribe una palabra','lassic'); ?>') { this.value = ''; }"  >
+                            <input type="text" name="s" id="searchinput" value="<?php _e('Buscar','lassic'); ?>" onblur="if(this.value == '') { this.value ='<?php _e('Buscar','lassic'); ?>'; }" onfocus="if(this.value =='<?php _e('Buscar','lassic'); ?>') { this.value = ''; }"  >
                             <span>Escribe una palabra clave y pulsa ENTER</span> 
                             <label>
           <input type="submit" value="" name="submit">
