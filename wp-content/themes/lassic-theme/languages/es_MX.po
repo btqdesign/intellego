@@ -762,7 +762,7 @@ msgid "Installing Plugin %1$s (%2$d/%3$d)"
 msgstr ""
 
 #: include/theme-components/cs-header/header_functions.php:293
-msgid "EEnter your search"
+msgid "Enter your search"
 msgstr ""
 
 #: include/theme-components/cs-header/header_functions.php:314
