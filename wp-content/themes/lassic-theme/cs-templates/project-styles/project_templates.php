@@ -61,6 +61,7 @@ if ( !class_exists('ProjectTemplates') ) {
 		}
 		
 		$query = new WP_Query( $args );
+		print_r($query);
 		if ( $query->have_posts() ) { 	
 			if((isset($cs_project_section_title) and $cs_project_section_title !='') || (isset($cs_filterable) and $cs_filterable =='yes')){
 				echo '<div class="cs-section-title col-md-12">';
