@@ -3566,7 +3566,7 @@ function cs_custom_excerpt_length( $length ) {
 add_filter( 'excerpt_length', 'cs_custom_excerpt_length' );
 // Custom excerpt function 
 if ( ! function_exists( 'cs_get_the_excerpt' ) ) { 
-	function cs_get_the_excerpt($charlength='255', $readmore = 'true', $readmore_text='Read More_') {
+	function cs_get_the_excerpt($charlength='255', $readmore = 'true', $readmore_text='Leer más...') {
 		global $post,$cs_theme_option;
 		$more = '';
 		$excerpt = trim(preg_replace('/<a[^>]*>(.*)<\/a>/iU', '', get_the_excerpt()));
