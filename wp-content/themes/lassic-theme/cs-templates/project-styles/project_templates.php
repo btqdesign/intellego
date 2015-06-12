@@ -66,7 +66,7 @@ if ( !class_exists('ProjectTemplates') ) {
 
 		print_r($query);
 		//if ( $query->have_posts() ) { 	
-		if(count($posts) > 0){
+		if(count($query) > 0){
 			if((isset($cs_project_section_title) and $cs_project_section_title !='') || (isset($cs_filterable) and $cs_filterable =='yes')){
 				echo '<div class="cs-section-title col-md-12">';
 					if ( isset( $cs_project_section_title ) && $cs_project_section_title !='' ) {
