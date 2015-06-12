@@ -61,7 +61,9 @@ if ( !class_exists('ProjectTemplates') ) {
 		}
 		
 		$query = new WP_Query( $args );
-		print_r($query);
+		$query = $wpdb->get_results( "SELECT SQL_CALC_FOUND_ROWS wpn0_posts.ID FROM wpn0_posts JOIN wpn0_icl_translations t ON wpn0_posts.ID = t.element_id AND t.element_type = 'post_project' JOIN wpn0_icl_languages l ON t.language_code=l.code AND l.active=1 WHERE 1=1 AND wpn0_posts.post_type = 'project' AND (wpn0_posts.post_status = 'publish' OR wpn0_posts.post_status = 'private') AND t.language_code='es' ORDER BY wpn0_posts.post_date DESC LIMIT 0, 4 ");
+
+		//print_r($query);
 		if ( $query->have_posts() ) { 	
 			if((isset($cs_project_section_title) and $cs_project_section_title !='') || (isset($cs_filterable) and $cs_filterable =='yes')){
 				echo '<div class="cs-section-title col-md-12">';
