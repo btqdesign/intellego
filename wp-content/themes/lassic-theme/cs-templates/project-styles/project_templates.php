@@ -107,7 +107,8 @@ if ( !class_exists('ProjectTemplates') ) {
         	<div <?php echo esc_attr( $cs_filter_id );?> class="cs-portfoliolist">
 	        	<?php 
 					$cs_title_limit = 30;
-					while ( $query->have_posts() ) : $query->the_post();
+					while ( count($query) > 0 ) : $query->the_post();
+					//while ( $query->have_posts() ) : $query->the_post();
 						global $post;
 						$image_id = get_post_thumbnail_id($post->ID);
 						if($image_id <> ''){
