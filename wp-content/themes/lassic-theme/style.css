@@ -1374,7 +1374,7 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 	.navigation > ul.navbar-nav > li:nth-child(2) > ul.sub-dropdown {left: -392% !important; width: 780px !important; transform:none !important;}
 	.navigation > ul.navbar-nav > li:nth-child(2) > ul.sub-dropdown > li {width: 33.33% !important; height: 60px;}
 	.navigation > ul.navbar-nav > li:nth-child(2) > ul.sub-dropdown > li:hover > a {height: 60px !important;}
-	.navigation > ul.navbar-nav > li:nth-child(3) > ul.sub-dropdown {left: -448% !important; width: 780px !important; transform:none !important;}
+	.navigation > ul.navbar-nav > li:nth-child(3) > ul.sub-dropdown {left: -458% !important; width: 780px !important; transform:none !important;}
 	.navigation > ul.navbar-nav > li:nth-child(3) > ul.sub-dropdown > li {width: 33.33% !important; height: 60px;}
 	.navigation > ul.navbar-nav > li:nth-child(3) > ul.sub-dropdown > li:hover > a {height: 60px !important;}
 	.navigation > ul.navbar-nav > li:nth-child(4) > ul.sub-dropdown {left: -600% !important; width: 780px !important; transform:none !important;}
