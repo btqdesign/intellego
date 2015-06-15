@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Awaken v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-27 11:50-0600\n"
-"PO-Revision-Date: 2015-06-15 17:04-0600\n"
+"PO-Revision-Date: 2015-06-15 17:13-0600\n"
 "Last-Translator: lms-admin <dum1@chimpgroup.com>\n"
 "Language-Team: \n"
 "Language: es_MX\n"
@@ -506,6 +506,14 @@ msgstr ""
 #: include/shortcodes/common_function.php:601
 msgid "Read More"
 msgstr "Leer Más"
+
+#: cs-templates/blog-styles/blog_templates.php:55
+#: cs-templates/blog-styles/blog_templates.php:121
+#: cs-templates/blog-styles/blog_templates.php:190
+#: cs-templates/blog-styles/blog_templates.php:254
+#, php-format
+msgid "Read more..."
+msgstr "Leer Más..."
 
 #: include/shortcodes/loops_elements.php:547
 msgid "Filterable"
@@ -1221,6 +1229,3 @@ msgstr ""
 
 #~ msgid "View All"
 #~ msgstr "Ver Todo"
-
-#~ msgid "Read more..."
-#~ msgstr "Leer Más..."
