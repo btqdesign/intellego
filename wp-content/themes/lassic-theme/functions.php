@@ -3560,11 +3560,6 @@ function cs_register_my_menus() {
 add_action( 'init', 'cs_register_my_menus' );
 
 
-function new_excerpt_more( $more ) {
-	return ' <a class="read-more" href="' . get_permalink( get_the_ID() ) . '">' . __( 'Read More', 'your-text-domain' ) . '</a>';
-}
-add_filter( 'excerpt_more', 'new_excerpt_more' );
-
 //  Excerpt Default Length 
 function cs_custom_excerpt_length( $length ) {
 	return 200;
