@@ -118,6 +118,9 @@ if ( !class_exists('cs_blog_templates') ) {
 					   ?>
 					   <div class="cs-bloginfo-sec">
 						  <h4><a href="<?php esc_url(the_permalink());?>"><?php cs_get_title($cs_title_limit); ?></a></h4>
+						  <?
+							echo substr(bloginfo ( 'language' ), 0, 2);
+							?>
 						  <?php if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','Read more...');?></p><?php } ?> 	
 							<div class="cs-blog-text">
 								<ul class="cs-category">
@@ -187,6 +190,9 @@ if ( !class_exists('cs_blog_templates') ) {
 					   ?>
 					   	<div class="cs-bloginfo-sec">
 					  		<h4><a href="<?php esc_url(the_permalink());?>"><?php cs_get_title($cs_title_limit); ?></a></h4>
+							<?
+							echo substr(bloginfo ( 'language' ), 0, 2);
+							?>
 						  	<?php if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','Read more...');?></p><?php } ?> 	
 							<div class="cs-blog-text">
 								<ul class="cs-post-options">
@@ -251,6 +257,9 @@ if ( !class_exists('cs_blog_templates') ) {
 					   ?>
 					   	<div class="cs-bloginfo-sec">
 					  		<h4><a href="<?php esc_url(the_permalink());?>"><?php cs_get_title($cs_title_limit); ?></a></h4>
+							<?
+							echo substr(bloginfo ( 'language' ), 0, 2);
+							?>
 						  	<?php if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','Read more...');?></p><?php } ?> 	
 							<div class="cs-blog-text">
 								<ul class="cs-post-options">
