@@ -1220,3 +1220,6 @@ msgstr ""
 
 #~ msgid "Read more..."
 #~ msgstr "Leer Más..."
+
+#~ msgid "Search"
+#~ msgstr "Buscar"
