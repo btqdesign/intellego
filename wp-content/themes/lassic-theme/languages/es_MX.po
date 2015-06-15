@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Awaken v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-27 11:50-0600\n"
-"PO-Revision-Date: 2015-06-15 15:18-0600\n"
+"PO-Revision-Date: 2015-06-15 15:27-0600\n"
 "Last-Translator: lms-admin <dum1@chimpgroup.com>\n"
 "Language-Team: \n"
 "Language: es_MX\n"
@@ -762,7 +762,7 @@ msgid "Installing Plugin %1$s (%2$d/%3$d)"
 msgstr ""
 
 #: include/theme-components/cs-header/header_functions.php:293
-msgid "Enter your search"
+msgid "Enter a keyword and press ENTER"
 msgstr "Escribe una palabra clave y pulsa ENTER"
 
 #: include/theme-components/cs-header/header_functions.php:314
