@@ -557,12 +557,16 @@ if (!function_exists('cs_contactus_shortcode')) {
 			$html	.= '<label> <i class="icon-user9"></i> <input type="text" name="contact_interest" onfocus="if(this.value == \'Área de Interés\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Área de Interés\'; }" value="Área de Interés" class="'.sanitize_html_class($cs_class).'" required /></label>';
 			$html	.= '<label> <i class="icon-user9"></i> <input type="text" name="contact_education" onfocus="if(this.value == \'Educación Formal\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Educación Formal\'; }" value="Educación Formal" class="'.sanitize_html_class($cs_class).'" required /></label>';
 			$html	.= '<label> <i class="icon-user9"></i> <input type="text" name="contact_studies" onfocus="if(this.value == \'Estudios Universitarios\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Estudios Universitarios\'; }" value="Estudios Universitarios" class="'.sanitize_html_class($cs_class).'" required /></label>';
-			$html	.= '<div class="g-recaptcha" data-sitekey="6Le7lgYTAAAAAHv4nen0SGCUT780SE158YkhxODx"></div>';
+		}
+		
+		// reCAPTCHA
+		$html	.= '<div class="g-recaptcha" data-sitekey="6Le7lgYTAAAAAHv4nen0SGCUT780SE158YkhxODx"></div>';
+		
+		if ( isset( $cs_contactus_vacancies ) && $cs_contactus_vacancies == 'on' ) {
 		    $html	.= '<label class="textaera-sec"> <i class="icon-quote4"></i> <textarea placeholder="CV" class="'.sanitize_html_class($cs_class).' '.sanitize_html_class($cs_view_class).'" name="contact_msg" style="height: 754px !important;" required></textarea></label>';
 		}
 		else {
 			if ( isset( $cs_contactus_label ) && $cs_contactus_label == 'on' ) {
-				$html	.= '';
 				$html	.= '<label class="textaera-sec"> <i class="icon-quote4"></i> <textarea placeholder="'.__('Message', 'lassic').'" class="'.sanitize_html_class($cs_class).' '.sanitize_html_class($cs_view_class).'" name="contact_msg" required></textarea></label>';
 			}
 			else{
