@@ -294,7 +294,7 @@ if ( ! function_exists( 'cs_search' ) ) {
                 <div class="cssearch">
                         <form id="searchform" method="get" action="<?php echo home_url()?>"  role="search"> 
                             <input type="text" name="s" id="searchinput" value="<?php _e('Search','lassic'); ?>" onblur="if(this.value == '') { this.value ='<?php _e('Search','lassic'); ?>'; }" onfocus="if(this.value =='<?php _e('Search','lassic'); ?>') { this.value = ''; }"  >
-                            <span>Enter a keyword and press ENTER</span> 
+                            <span><?php _e('Enter a keyword and press ENTER','lassic'); ?></span> 
                             <label>
           <input type="submit" value="" name="submit">
         </label> 
