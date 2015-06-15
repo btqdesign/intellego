@@ -248,13 +248,6 @@ if ( !class_exists('cs_blog_templates') ) {
 					   ?>
 					   	<div class="cs-bloginfo-sec">
 					  		<h4><a href="<?php esc_url(the_permalink());?>"><?php cs_get_title($cs_title_limit); ?></a></h4>
-							<?php
-							
-								function new_excerpt_more( $more ) {
-									return ' <a class="read-more" href="' . get_permalink( get_the_ID() ) . '">' . __( 'Read More', 'your-text-domain' ) . '</a>';
-								}
-								//add_filter( 'excerpt_more', 'new_excerpt_more' );
-							?>
 						  	<?php if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','');?></p><?php } ?> 	
 							<div class="cs-blog-text">
 								<ul class="cs-post-options">
