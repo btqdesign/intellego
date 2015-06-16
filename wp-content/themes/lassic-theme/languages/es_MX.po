@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Awaken v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-27 11:50-0600\n"
-"PO-Revision-Date: 2015-06-16 08:27-0600\n"
+"PO-Revision-Date: 2015-06-16 09:28-0600\n"
 "Last-Translator: lms-admin <dum1@chimpgroup.com>\n"
 "Language-Team: \n"
 "Language: es_MX\n"
@@ -423,7 +423,7 @@ msgstr ""
 
 #: include/page_options.php:59 single.php:257
 msgid "Related Posts"
-msgstr ""
+msgstr "Contenidos Relacionados"
 
 #: include/page_options.php:131
 msgid "Choose Sub-header"
