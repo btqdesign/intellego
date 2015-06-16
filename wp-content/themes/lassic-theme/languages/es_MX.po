@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Awaken v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-27 11:50-0600\n"
-"PO-Revision-Date: 2015-06-16 09:36-0600\n"
+"PO-Revision-Date: 2015-06-16 09:53-0600\n"
 "Last-Translator: lms-admin <dum1@chimpgroup.com>\n"
 "Language-Team: \n"
 "Language: es_MX\n"
@@ -121,12 +121,12 @@ msgstr ""
 
 #: comments.php:82 functions.php:3292
 msgid "Submit"
-msgstr ""
+msgstr "Enviar"
 
 #: cs-templates/project-styles/project_templates.php:79
 #: cs-templates/project-styles/project_templates.php:239
 msgid "All"
-msgstr ""
+msgstr "Todos"
 
 #: cs-templates/project-styles/project_templates.php:130
 msgid "View"
@@ -144,7 +144,7 @@ msgstr ""
 #: include/shortcodes/shortcode_functions.php:147 page-blank.php:21
 #: page.php:74 page.php:336 single.php:190
 msgid "Pages:"
-msgstr ""
+msgstr "Páginas:"
 
 #: cs-templates/team-styles/single_member.php:114
 msgid "Employee information"
@@ -275,11 +275,11 @@ msgstr ""
 
 #: functions.php:2895
 msgid "Prevois Post"
-msgstr ""
+msgstr "Post Anterior"
 
 #: functions.php:2909
 msgid "Next Post"
-msgstr ""
+msgstr "Post Siguiente"
 
 #: functions.php:3286
 msgid "This post is password protected. To view it please enter your password below:"
@@ -287,19 +287,19 @@ msgstr ""
 
 #: functions.php:3362
 msgid "Featured"
-msgstr ""
+msgstr "Características"
 
 #: functions.php:3380
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: functions.php:3380 functions.php:3384 functions.php:3412
 msgid "Archives"
-msgstr ""
+msgstr "Archivos"
 
 #: functions.php:3384
 msgid "Tags"
-msgstr ""
+msgstr "Etiquetas"
 
 #: functions.php:3388
 #, php-format
@@ -341,7 +341,7 @@ msgstr ""
 
 #: functions.php:3427
 msgid "No results found."
-msgstr ""
+msgstr "No se encontraron resultados"
 
 #: functions.php:3435
 #, php-format
@@ -610,15 +610,15 @@ msgstr ""
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:901
 msgid "Required"
-msgstr ""
+msgstr "Requerido"
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:901
 msgid "Recommended"
-msgstr ""
+msgstr "Recomendado"
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:903
 msgid "Not Installed"
-msgstr ""
+msgstr "No Instalado"
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:905
 msgid "Installed But Not Activated"
@@ -627,12 +627,12 @@ msgstr ""
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:984
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1069
 msgid "Install"
-msgstr ""
+msgstr "Instalar"
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1006
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1070
 msgid "Activate"
-msgstr ""
+msgstr "Activar"
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1043
 #, php-format
@@ -645,7 +645,7 @@ msgstr ""
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1055
 msgid "Source"
-msgstr ""
+msgstr "Fuente"
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1056
 msgid "Type"
@@ -960,7 +960,7 @@ msgstr ""
 
 #: include/theme-components/cs-mailchimp/mailchimp_functions.php:34
 msgid "Subscribe"
-msgstr ""
+msgstr "Suscribir"
 
 #. translators: %s: title of menu item which is invalid
 #: include/theme-components/cs-mega-menu/edit_custom_walker.php:68
@@ -1005,7 +1005,7 @@ msgstr ""
 
 #: include/theme-components/cs-mega-menu/edit_custom_walker.php:159
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #: include/theme-components/cs-mega-menu/edit_custom_walker.php:161
 msgid "The description will be displayed in the menu if the current theme supports it."
