@@ -255,6 +255,7 @@
                     if($cs_related_post =='on'){
                         if ( empty($cs_xmlObject->cs_related_post_title) ) 
                             $cs_related_post_title = __('Related Posts', 'lassic'); else $cs_related_post_title = $cs_xmlObject->cs_related_post_title;
+						$cs_related_post_title = __('Related Posts', 'lassic');
                         ?>
                         <div class="cs-related-post cs-blog cs-blog-grid">
                             <div class="cs-section-title"><h2><?php echo esc_attr($cs_related_post_title);?></h2></div>
