@@ -49,15 +49,11 @@ if ( !class_exists('cs_blog_templates') ) {
 					   ?>
 					   <div class="cs-bloginfo-sec">
 							<h2><a href="<?php esc_url(the_permalink());?>"><?php cs_get_title($cs_title_limit); ?></a></h2>
-
-						  	
-						  	<?php
-				
+						  	<?php				
 							if(get_bloginfo('language') == 'es-MX'){
-								 echo '2ntra';
-								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true', 'Leer Más...'); ?></p><?php }
+								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','Leer Más...'); ?></p><?php }
 							}else{
-								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true', 'Read more...'); ?></p><?php }
+								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','Read more...'); ?></p><?php }
 							}
 							?>
                             <ul class="cs-category">
@@ -126,13 +122,10 @@ if ( !class_exists('cs_blog_templates') ) {
 					   <div class="cs-bloginfo-sec">
 						  <h4><a href="<?php esc_url(the_permalink());?>"><?php cs_get_title($cs_title_limit); ?></a></h4>
 						  	<?php
-																				  
-
 							if(get_bloginfo('language') == 'es-MX'){
-								 echo '2ntra';
-								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true', 'Leer Más...'); ?></p><?php }
+								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','Leer Más...'); ?></p><?php }
 							}else{
-								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true', 'Read more...'); ?></p><?php }
+								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','Read more...'); ?></p><?php }
 							}
 							?>
 							<div class="cs-blog-text">
@@ -204,13 +197,10 @@ if ( !class_exists('cs_blog_templates') ) {
 					   	<div class="cs-bloginfo-sec">
 					  		<h4><a href="<?php esc_url(the_permalink());?>"><?php cs_get_title($cs_title_limit); ?></a></h4>
 						  	<?php
-						  
-
 							if(get_bloginfo('language') == 'es-MX'){
-								 echo '2ntra';
-								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true', 'Leer Más...'); ?></p><?php }
+								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','Leer Más...'); ?></p><?php }
 							}else{
-								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true', 'Read more...'); ?></p><?php }
+								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','Read more...'); ?></p><?php }
 							}
 							?>
 							<div class="cs-blog-text">
@@ -278,10 +268,9 @@ if ( !class_exists('cs_blog_templates') ) {
 					  		<h4><a href="<?php esc_url(the_permalink());?>"><?php cs_get_title($cs_title_limit); ?></a></h4>
 						  	<?php
 							if(get_bloginfo('language') == 'es-MX'){
-						   echo '2ntra';
-								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true', 'Leer Más...'); ?></p><?php }
+								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','Leer Más...'); ?></p><?php }
 							}else{
-								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true', 'Read more...'); ?></p><?php }
+								if ($description == 'yes') {?><p> <?=cs_get_the_excerpt($excerpt,'true','Read more...'); ?></p><?php }
 							}
 							?>
 							<div class="cs-blog-text">
