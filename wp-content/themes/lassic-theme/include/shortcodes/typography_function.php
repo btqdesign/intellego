@@ -540,15 +540,15 @@ if (!function_exists('cs_contactus_shortcode')) {
 		if ( isset( $cs_contactus_label ) && $cs_contactus_label <> 'on' ) {
 			$html	.= '';
 		}
-		$html	.= '<label> <i class="icon-user9"></i> <input type="text" name="contact_name" onfocus="if(this.value == \'Nombre\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Nombre\'; }" value="Nombre" class="'.sanitize_html_class($cs_class).'" required /></label>';
+		$html	.= '<label> <i class="icon-user9"></i> <input type="text" name="contact_name" onfocus="if(this.value == \''._e('Name','lassic').'\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \''._e('Name','lassic').'\'; }" value="'._e('Name','lassic').'" class="'.sanitize_html_class($cs_class).'" required /></label>';
 		if ( isset( $cs_contactus_vacancies ) && $cs_contactus_vacancies == 'on' ) {
 			$html	.= '<label> <i class="icon-user9"></i> <input type="text" name="contact_lastname" onfocus="if(this.value == \'Apellido\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Apellido\'; }" value="Apellido" class="'.sanitize_html_class($cs_class).'" required /></label>';
 		}
 		$html	.= '<label> <i class="icon-envelope4"></i> <input type="email" name="contact_email" onfocus="if(this.value == \'Email: ejemplo@ejemplo.com\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Email: ejemplo@ejemplo.com\'; }" value="Email: ejemplo@ejemplo.com" class="'.sanitize_html_class($cs_class).'" required /></label>';
 		
-		$html	.= '<label> <i class="icon-globe4"></i> <input type="text" name="subject" onfocus="if(this.value == \'Asunto\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Asunto\'; }" value="Asunto" class="'.sanitize_html_class($cs_class).'" required /></label>';
+		$html	.= '<label> <i class="icon-globe4"></i> <input type="text" name="subject" onfocus="if(this.value == \''._e('Subjet','lassic').'\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \''._e('Subjet','lassic').'\'; }" value="'._e('Subjet','lassic').'" class="'.sanitize_html_class($cs_class).'" required /></label>';
 		
-		$html	.= '<label> <i class="icon-phone8"></i> <input type="text" name="contact_number" onfocus="if(this.value == \'Telefóno\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Telefóno\'; }" value="Telefóno" class="'.sanitize_html_class($cs_class).'" required /></label>';
+		$html	.= '<label> <i class="icon-phone8"></i> <input type="text" name="contact_number" onfocus="if(this.value == \''._e('Phone','lassic').'\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \''._e('Phone','lassic').'\'; }" value="'._e('Phone','lassic').'" class="'.sanitize_html_class($cs_class).'" required /></label>';
 		
 		if ( isset( $cs_contactus_vacancies ) && $cs_contactus_vacancies == 'on' ) {
 			$html	.= '<label> <i class="icon-user9"></i> <input type="text" name="contact_birthdate" onfocus="if(this.value == \'Fecha de Nacimiento\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Fecha de Nacimiento\'; }" value="Fecha de Nacimiento" class="'.sanitize_html_class($cs_class).'" required /></label>';
@@ -567,10 +567,10 @@ if (!function_exists('cs_contactus_shortcode')) {
 		}
 		else {
 			if ( isset( $cs_contactus_label ) && $cs_contactus_label == 'on' ) {
-				$html	.= '<label class="textaera-sec"> <i class="icon-quote4"></i> <textarea placeholder="'.__('Message', 'lassic').'" class="'.sanitize_html_class($cs_class).' '.sanitize_html_class($cs_view_class).'" name="contact_msg" required></textarea></label>';
+				$html	.= '<label class="textaera-sec"> <i class="icon-quote4"></i> <textarea placeholder="'.__('Mensaje', 'lassic').'" class="'.sanitize_html_class($cs_class).' '.sanitize_html_class($cs_view_class).'" name="contact_msg" required></textarea></label>';
 			}
 			else{
-				$html	.= '<label class="textaera-sec"><i class="icon-comments-o"></i><textarea placeholder="'.__('Message', 'lassic').'" class="'.sanitize_html_class($cs_class).' '.sanitize_html_class($cs_view_class).'" name="contact_msg" required></textarea></label>';
+				$html	.= '<label class="textaera-sec"><i class="icon-comments-o"></i><textarea placeholder="'.__('Mensaje', 'lassic').'" class="'.sanitize_html_class($cs_class).' '.sanitize_html_class($cs_view_class).'" name="contact_msg" required></textarea></label>';
 			}
 		}
 		$html	.= '<label class="submit-sec"><span><i class="icon-checkmark6"></i><input type="submit" value="Enviar" class="custom-btn cs-bg-color" id="submit_btn'.$cs_email_counter.'"></span></label>';

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Awaken v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-27 11:50-0600\n"
-"PO-Revision-Date: 2015-06-15 17:17-0600\n"
+"PO-Revision-Date: 2015-06-16 08:27-0600\n"
 "Last-Translator: lms-admin <dum1@chimpgroup.com>\n"
 "Language-Team: \n"
 "Language: es_MX\n"
@@ -13,8 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.1\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
-"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
 "X-Poedit-Basepath: ../\n"
 "X-Textdomain-Support: yes\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -28,10 +27,7 @@ msgid "Oops, This Page Could Not Be Found!"
 msgstr ""
 
 #: 404.php:18
-msgid ""
-"Unfortunately the page you were looking for could not be found. It may be "
-"temporarily unavailable, moved or no longer exist. <br> Check the URL you "
-"entered for any mistakes and try again."
+msgid "Unfortunately the page you were looking for could not be found. It may be temporarily unavailable, moved or no longer exist. <br> Check the URL you entered for any mistakes and try again."
 msgstr ""
 
 #: 404.php:20
@@ -92,9 +88,7 @@ msgstr ""
 
 #: comments.php:37
 #, php-format
-msgid ""
-"You may use these <abbr title=\"HyperText Markup Language\">HTML</abbr> tags "
-"and attributes: %s"
+msgid "You may use these <abbr title=\"HyperText Markup Language\">HTML</abbr> tags and attributes: %s"
 msgstr ""
 
 #: comments.php:38
@@ -104,9 +98,7 @@ msgstr ""
 
 #: comments.php:39
 #, php-format
-msgid ""
-"Logged in as <a href=\"%1$s\">%2$s</a>. <a href=\"%3$s\" title=\"Log out of "
-"this account\">Log out?</a>"
+msgid "Logged in as <a href=\"%1$s\">%2$s</a>. <a href=\"%3$s\" title=\"Log out of this account\">Log out?</a>"
 msgstr ""
 
 #: comments.php:40
@@ -202,14 +194,8 @@ msgstr[1] ""
 #: functions.php:2763
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:119
 #, php-format
-msgid ""
-"Sorry, but you do not have the correct permissions to install the %s plugin. "
-"Contact the administrator of this site for help on getting the plugin "
-"installed."
-msgid_plural ""
-"Sorry, but you do not have the correct permissions to install the %s "
-"plugins. Contact the administrator of this site for help on getting the "
-"plugins installed."
+msgid "Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed."
+msgid_plural "Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -232,40 +218,24 @@ msgstr[1] ""
 #: functions.php:2766
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:122
 #, php-format
-msgid ""
-"Sorry, but you do not have the correct permissions to activate the %s "
-"plugin. Contact the administrator of this site for help on getting the "
-"plugin activated."
-msgid_plural ""
-"Sorry, but you do not have the correct permissions to activate the %s "
-"plugins. Contact the administrator of this site for help on getting the "
-"plugins activated."
+msgid "Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated."
+msgid_plural "Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated."
 msgstr[0] ""
 msgstr[1] ""
 
 #: functions.php:2767
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:123
 #, php-format
-msgid ""
-"The following plugin needs to be updated to its latest version to ensure "
-"maximum compatibility with this theme: %1$s."
-msgid_plural ""
-"The following plugins need to be updated to their latest version to ensure "
-"maximum compatibility with this theme: %1$s."
+msgid "The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s."
+msgid_plural "The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
 #: functions.php:2768
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:124
 #, php-format
-msgid ""
-"Sorry, but you do not have the correct permissions to update the %s plugin. "
-"Contact the administrator of this site for help on getting the plugin "
-"updated."
-msgid_plural ""
-"Sorry, but you do not have the correct permissions to update the %s plugins. "
-"Contact the administrator of this site for help on getting the plugins "
-"updated."
+msgid "Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated."
+msgid_plural "Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -312,8 +282,7 @@ msgid "Next Post"
 msgstr ""
 
 #: functions.php:3286
-msgid ""
-"This post is password protected. To view it please enter your password below:"
+msgid "This post is password protected. To view it please enter your password below:"
 msgstr ""
 
 #: functions.php:3362
@@ -376,9 +345,7 @@ msgstr ""
 
 #: functions.php:3435
 #, php-format
-msgid ""
-"<p>Ready to publish your first post? <a href=\"%1$s\">Get Started Here</a>.</"
-"p>"
+msgid "<p>Ready to publish your first post? <a href=\"%1$s\">Get Started Here</a>.</p>"
 msgstr ""
 
 #: functions.php:3439
@@ -402,9 +369,7 @@ msgid "Try more general keywords, especially if you are attempting a name"
 msgstr ""
 
 #: functions.php:3450
-msgid ""
-"<p>It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
-"searching can help.</p>"
+msgid "<p>It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help.</p>"
 msgstr ""
 
 #: functions.php:3544
@@ -445,14 +410,11 @@ msgid "(Edit)"
 msgstr ""
 
 #: functions.php:4429
-msgid ""
-"<span style=\"color:#f26f29;\">Sorry,</span> We are down for maintenance"
+msgid "<span style=\"color:#f26f29;\">Sorry,</span> We are down for maintenance"
 msgstr ""
 
 #: functions.php:4430
-msgid ""
-"Our website is under construction, we are working very hard to give "
-"you<br>the best experience with this one. <a href=\""
+msgid "Our website is under construction, we are working very hard to give you<br>the best experience with this one. <a href=\""
 msgstr ""
 
 #: functions.php:4518
@@ -513,6 +475,23 @@ msgstr "Leer Más"
 #: cs-templates/blog-styles/blog_templates.php:248
 msgid "Read more..."
 msgstr "Leer Más..."
+
+#: include/shortcodes/typography_function.php:540
+msgid "Name"
+msgstr "Nombre"
+
+#: include/shortcodes/typography_function.php:546
+msgid "Subjet"
+msgstr "Asunto"
+
+#: include/shortcodes/typography_function.php:548
+msgid "Phone"
+msgstr "Telefóno"
+
+#: include/shortcodes/typography_function.php:553
+#: include/shortcodes/typography_function.php:556
+msgid "Message"
+msgstr "Mensaje"
 
 #: include/shortcodes/loops_elements.php:547
 msgid "Filterable"
@@ -581,11 +560,6 @@ msgid "About a year Ago"
 msgid_plural "%d years Ago"
 msgstr[0] ""
 msgstr[1] ""
-
-#: include/shortcodes/typography_function.php:553
-#: include/shortcodes/typography_function.php:556
-msgid "Message"
-msgstr ""
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:116
 msgid "Something went wrong."
@@ -662,9 +636,7 @@ msgstr ""
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1043
 #, php-format
-msgid ""
-"No plugins to install or activate. <a href=\"%1$s\" title=\"Return to the "
-"Dashboard\">Return to the Dashboard</a>"
+msgid "No plugins to install or activate. <a href=\"%1$s\" title=\"Return to the Dashboard\">Return to the Dashboard</a>"
 msgstr ""
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1054
@@ -713,9 +685,7 @@ msgid "Plugin activation failed."
 msgstr ""
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1583
-msgid ""
-"The installation and activation process is starting. This process may take a "
-"while on some hosts, so please be patient."
+msgid "The installation and activation process is starting. This process may take a while on some hosts, so please be patient."
 msgstr ""
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1584
@@ -743,9 +713,7 @@ msgid "Installing and Activating Plugin %1$s (%2$d/%3$d)"
 msgstr ""
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1590
-msgid ""
-"The installation process is starting. This process may take a while on some "
-"hosts, so please be patient."
+msgid "The installation process is starting. This process may take a while on some hosts, so please be patient."
 msgstr ""
 
 #: include/theme-components/cs-activation-plugins/tgm_plugin_activation.php:1591
@@ -786,17 +754,14 @@ msgid "There was an error when reading this WXR file"
 msgstr ""
 
 #: include/theme-components/cs-importer/parsers.php:42
-msgid ""
-"Details are shown above. The importer will now try again with a different "
-"parser..."
+msgid "Details are shown above. The importer will now try again with a different parser..."
 msgstr ""
 
 #: include/theme-components/cs-importer/parsers.php:66
 #: include/theme-components/cs-importer/parsers.php:71
 #: include/theme-components/cs-importer/parsers.php:261
 #: include/theme-components/cs-importer/parsers.php:450
-msgid ""
-"This does not appear to be a WXR file, missing/invalid WXR version number"
+msgid "This does not appear to be a WXR file, missing/invalid WXR version number"
 msgstr ""
 
 #: include/theme-components/cs-importer/theme_importer.php:60
@@ -826,9 +791,7 @@ msgid "Dont Refresh Page"
 msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:107
-msgid ""
-"We are fetching dummy data for you. It can take 2 to 10 minutes depending "
-"upon data speed."
+msgid "We are fetching dummy data for you. It can take 2 to 10 minutes depending upon data speed."
 msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:188
@@ -845,23 +808,17 @@ msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:214
 #, php-format
-msgid ""
-"The export file could not be found at <code>%s</code>. It is likely that "
-"this was caused by a permissions problem."
+msgid "The export file could not be found at <code>%s</code>. It is likely that this was caused by a permissions problem."
 msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:230
 #, php-format
-msgid ""
-"This WXR file (version %s) may not be supported by this version of the "
-"importer. Please consider updating."
+msgid "This WXR file (version %s) may not be supported by this version of the importer. Please consider updating."
 msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:253
 #, php-format
-msgid ""
-"Failed to import author %s. Their posts will be attributed to the current "
-"user."
+msgid "Failed to import author %s. Their posts will be attributed to the current user."
 msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:279
@@ -869,19 +826,12 @@ msgid "Assign Authors"
 msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:280
-msgid ""
-"To make it easier for you to edit and save the imported content, you may "
-"want to reassign the author of the imported item to an existing user of this "
-"site. For example, you may want to import all the entries as <code>admin</"
-"code>s entries."
+msgid "To make it easier for you to edit and save the imported content, you may want to reassign the author of the imported item to an existing user of this site. For example, you may want to import all the entries as <code>admin</code>s entries."
 msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:282
 #, php-format
-msgid ""
-"If a new user is created by WordPress, a new password will be randomly "
-"generated and the new user&#8217;s role will be set as %s. Manually changing "
-"the new user&#8217;s details will be necessary."
+msgid "If a new user is created by WordPress, a new password will be randomly generated and the new user&#8217;s role will be set as %s. Manually changing the new user&#8217;s details will be necessary."
 msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:292
@@ -918,9 +868,7 @@ msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:386
 #, php-format
-msgid ""
-"Failed to create new user for %s. Their posts will be attributed to the "
-"current user."
+msgid "Failed to create new user for %s. Their posts will be attributed to the current user."
 msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:434
@@ -999,16 +947,11 @@ msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:1031
 #, php-format
-msgid ""
-"A new version of this importer is available. Please update to version %s to "
-"ensure compatibility with newer export files."
+msgid "A new version of this importer is available. Please update to version %s to ensure compatibility with newer export files."
 msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:1046
-msgid ""
-"Howdy! Upload your WordPress eXtended RSS (WXR) file and we&#8217;ll import "
-"the posts, pages, comments, custom fields, categories, and tags into this "
-"site."
+msgid "Howdy! Upload your WordPress eXtended RSS (WXR) file and we&#8217;ll import the posts, pages, comments, custom fields, categories, and tags into this site."
 msgstr ""
 
 #: include/theme-components/cs-importer/wordpress-importer.php:1047
@@ -1065,9 +1008,7 @@ msgid "Description"
 msgstr ""
 
 #: include/theme-components/cs-mega-menu/edit_custom_walker.php:161
-msgid ""
-"The description will be displayed in the menu if the current theme supports "
-"it."
+msgid "The description will be displayed in the menu if the current theme supports it."
 msgstr ""
 
 #: include/theme-components/cs-mega-menu/edit_custom_walker.php:169
