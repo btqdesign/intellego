@@ -540,15 +540,15 @@ if (!function_exists('cs_contactus_shortcode')) {
 		if ( isset( $cs_contactus_label ) && $cs_contactus_label <> 'on' ) {
 			$html	.= '';
 		}
-		$html	.= '<label> <i class="icon-user9"></i> <input type="text" name="contact_name" onfocus="if(this.value == \''._e('Name','lassic').'\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \''._e('Name','lassic').'\'; }" value="'._e('Name','lassic').'" class="'.sanitize_html_class($cs_class).'" required /></label>';
+		$html	.= '<label> <i class="icon-user9"></i> <input type="text" name="contact_name" onfocus="if(this.value == \''.__('Name','lassic').'\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \''.__('Name','lassic').'\'; }" value="'.__('Name','lassic').'" class="'.sanitize_html_class($cs_class).'" required /></label>';
 		if ( isset( $cs_contactus_vacancies ) && $cs_contactus_vacancies == 'on' ) {
 			$html	.= '<label> <i class="icon-user9"></i> <input type="text" name="contact_lastname" onfocus="if(this.value == \'Apellido\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Apellido\'; }" value="Apellido" class="'.sanitize_html_class($cs_class).'" required /></label>';
 		}
 		$html	.= '<label> <i class="icon-envelope4"></i> <input type="email" name="contact_email" onfocus="if(this.value == \'Email: ejemplo@ejemplo.com\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Email: ejemplo@ejemplo.com\'; }" value="Email: ejemplo@ejemplo.com" class="'.sanitize_html_class($cs_class).'" required /></label>';
 		
-		$html	.= '<label> <i class="icon-globe4"></i> <input type="text" name="subject" onfocus="if(this.value == \''._e('Subjet','lassic').'\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \''._e('Subjet','lassic').'\'; }" value="'._e('Subjet','lassic').'" class="'.sanitize_html_class($cs_class).'" required /></label>';
+		$html	.= '<label> <i class="icon-globe4"></i> <input type="text" name="subject" onfocus="if(this.value == \''.__('Subjet','lassic').'\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \''.__('Subjet','lassic').'\'; }" value="'.__('Subjet','lassic').'" class="'.sanitize_html_class($cs_class).'" required /></label>';
 		
-		$html	.= '<label> <i class="icon-phone8"></i> <input type="text" name="contact_number" onfocus="if(this.value == \''._e('Phone','lassic').'\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \''._e('Phone','lassic').'\'; }" value="'._e('Phone','lassic').'" class="'.sanitize_html_class($cs_class).'" required /></label>';
+		$html	.= '<label> <i class="icon-phone8"></i> <input type="text" name="contact_number" onfocus="if(this.value == \''.__('Phone','lassic').'\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \''.__('Phone','lassic').'\'; }" value="'.__('Phone','lassic').'" class="'.sanitize_html_class($cs_class).'" required /></label>';
 		
 		if ( isset( $cs_contactus_vacancies ) && $cs_contactus_vacancies == 'on' ) {
 			$html	.= '<label> <i class="icon-user9"></i> <input type="text" name="contact_birthdate" onfocus="if(this.value == \'Fecha de Nacimiento\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'Fecha de Nacimiento\'; }" value="Fecha de Nacimiento" class="'.sanitize_html_class($cs_class).'" required /></label>';
