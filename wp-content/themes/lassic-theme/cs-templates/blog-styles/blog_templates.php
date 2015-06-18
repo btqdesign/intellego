@@ -265,6 +265,7 @@ if ( !class_exists('cs_blog_templates') ) {
 							
 					   ?>
 					   	<div class="cs-bloginfo-sec">
+							<h4><a href="<?php esc_url(the_permalink());?>"><?php cs_get_title($cs_title_limit); ?></a></h4>
 						  	<?php
 							if(get_bloginfo('language') == 'es-MX'){
 								if ($description == 'yes') {?><p> <?php echo cs_get_the_excerpt($excerpt,'true','Leer M&aacute;s...'); ?></p><?php }
