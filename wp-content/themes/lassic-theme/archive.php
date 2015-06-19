@@ -185,9 +185,9 @@
                                     </ul> 
                                     <ul class="cs-post-options">
                                     	<?php cs_featured(); ?>
-                                        <li><i class="icon-user9"></i><a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>">
+                                        <!--<li><i class="icon-user9"></i><a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>">
                                             <?php the_author(); ?></a>
-                                        </li>
+                                        </li>-->
                                         <li><i class=" icon-calendar11"></i><time datetime="<?php echo get_the_date('Y-m-d',$post->ID);?>">
                                         <?php echo get_the_date('F d,Y',$post->ID);?></time>
                                         </li>
