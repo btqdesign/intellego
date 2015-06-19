@@ -191,10 +191,10 @@
                                         <li><i class=" icon-calendar11"></i><time datetime="<?php echo get_the_date('Y-m-d',$post->ID);?>">
                                         <?php echo get_the_date('F d,Y',$post->ID);?></time>
                                         </li>
-                                        <li><i class=" icon-comment2"></i>
+                                        <!--<li><i class=" icon-comment2"></i>
                                           <span><?php echo comments_number(__('0', 'lassic'), __('1', 'lassic'), __('%', 'lassic') );?></span>
                                           <a href="<?php comments_link(); ?>"><?php _e('Comments','lassic');?></a>
-                                        </li>
+                                        </li>-->
                                     </ul>
                                 </div>
                             </div>
