@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Awaken v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-27 11:50-0600\n"
-"PO-Revision-Date: 2015-06-16 09:53-0600\n"
+"PO-Revision-Date: 2015-06-19 12:45-0600\n"
 "Last-Translator: lms-admin <dum1@chimpgroup.com>\n"
 "Language-Team: \n"
 "Language: es_MX\n"
@@ -148,7 +148,7 @@ msgstr "Páginas:"
 
 #: cs-templates/team-styles/single_member.php:114
 msgid "Employee information"
-msgstr ""
+msgstr "Información del colaborador"
 
 #: cs-templates/team-styles/single_member.php:121
 #: include/theme-components/cs-posttypes/pt_team.php:136
