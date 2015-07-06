@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-27 11:50-0600\n"
-"PO-Revision-Date: 2015-07-06 15:19-0600\n"
+"PO-Revision-Date: 2015-07-06 15:26-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -515,16 +515,16 @@ msgstr "Nome"
 
 #: include/shortcodes/typography_function.php:546
 msgid "Subjet"
-msgstr ""
+msgstr "Assunto"
 
 #: include/shortcodes/typography_function.php:548
 msgid "Phone"
-msgstr ""
+msgstr "Telefone"
 
 #: include/shortcodes/typography_function.php:553
 #: include/shortcodes/typography_function.php:556
 msgid "Message"
-msgstr ""
+msgstr "Mensagem"
 
 #: include/shortcodes/loops_elements.php:547
 msgid "Filterable"
