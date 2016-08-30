@@ -492,10 +492,10 @@ blockquote span { position: relative; z-index: 1; }
 .cs-tags i { float: left; padding: 7px 10px; background-color: #e5472f; color: #fff; border: 1px solid #e5472f; border-radius: 3px; margin-right: 3px; }
 /* Cs Atachments Style */
 .cs-attachments { 
-	float: left;
-	width: 100%;  
-	margin-bottom: 25px;  
-	display: none; 
+	float: left; 
+	width: 100%; 
+	margin-bottom: 25px; 
+	display: none;
 }
 	.cs-attachments ul {margin-left: -10px;}
 		.cs-attachments ul li { list-style: none; float: none; display: inline-block; vertical-align: top; margin: 0 0 10px 10px; width: 15%; }
