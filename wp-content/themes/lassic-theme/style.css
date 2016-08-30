@@ -491,7 +491,12 @@ blockquote span { position: relative; z-index: 1; }
 		.cs-tags ul li a:hover {color: #fff;}
 .cs-tags i { float: left; padding: 7px 10px; background-color: #e5472f; color: #fff; border: 1px solid #e5472f; border-radius: 3px; margin-right: 3px; }
 /* Cs Atachments Style */
-.cs-attachments { float: left; width: 100%; margin-bottom: 25px; display: none!important;}
+.cs-attachments { 
+	float: left; 
+	width: 100%; 
+	margin-bottom: 25px; 
+	display: none;
+}
 	.cs-attachments ul {margin-left: -10px;}
 		.cs-attachments ul li { list-style: none; float: none; display: inline-block; vertical-align: top; margin: 0 0 10px 10px; width: 15%; }
 			.cs-attachments ul li i { float: left; width: 100%; height: 67px; background-color: #000; color: #ffffff; text-align: center; font-size: 40px; padding: 14px 0px 0px 0px; }
@@ -1336,7 +1341,14 @@ blockquote { position: relative; border: none; float: left; font-size: 20px; fon
 /*Plain Form End*/
 /* ShortCodes End */
 /* Footer  */
-#footer-sec { width: 100%; float: left; margin: 0px 0px 0px 0px; position: relative; padding: 60px 0; background-size: cover; }
+#footer-sec { 
+	width: 100%; 
+	float: left; 
+	margin: 0px 0px 0px 0px; 
+	position: relative; 
+	padding: 0 0; /*Demaciado paddin de top 29082016*/
+	background-size: cover; 
+}
 	#footer-sec:before { position: absolute; left: 0; top: 0; width: 100%; height: 100%; content: ""; opacity: 0.95; }
 	#footer-sec .logo { float: left; width: 100%; margin: 0 0 20px 0; }
 /* Widget Section Title */
