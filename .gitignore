@@ -13,3 +13,11 @@ wp-content/cache/
 wp-content/upgrade/
 _notes
 logs
+comunicacion/*.swp
+comunicacion/.DS_Store
+comunicacion/*.DS_Store
+comunicacion/*.log
+comunicacion/sitemap.xml
+comunicacion/sitemap.xml.gz
+comunicacion/_notes
+comunicacion/logs
