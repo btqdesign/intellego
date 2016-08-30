@@ -495,7 +495,6 @@ blockquote span { position: relative; z-index: 1; }
 	float: left;
 	width: 100%;  
 	margin-bottom: 25px;  
-	display: none; 
 }
 	.cs-attachments ul {margin-left: -10px;}
 		.cs-attachments ul li { list-style: none; float: none; display: inline-block; vertical-align: top; margin: 0 0 10px 10px; width: 15%; }
