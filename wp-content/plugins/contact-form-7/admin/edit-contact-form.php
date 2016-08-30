@@ -31,7 +31,7 @@ function wpcf7_admin_save_button( $post_id ) {
 
 ?><div class="wrap">
 
-<h2><?php
+<h1><?php
 	if ( $post->initial() ) {
 		echo esc_html( __( 'Add New Contact Form', 'contact-form-7' ) );
 	} else {
@@ -41,8 +41,9 @@ function wpcf7_admin_save_button( $post_id ) {
 			echo ' <a href="' . esc_url( menu_page_url( 'wpcf7-new', false ) ) . '" class="add-new-h2">' . esc_html( __( 'Add New', 'contact-form-7' ) ) . '</a>';
 		}
 	}
-?></h2>
+?></h1>
 
+<?php do_action( 'wpcf7_admin_warnings' ); ?>
 <?php do_action( 'wpcf7_admin_notices' ); ?>
 
 <?php
@@ -132,6 +133,10 @@ if ( $post ) :
 <?php endif; ?>
 </div><!-- #minor-publishing-actions -->
 
+<div id="misc-publishing-actions">
+<?php do_action( 'wpcf7_admin_misc_pub_section', $post_id ); ?>
+</div><!-- #misc-publishing-actions -->
+
 <div id="major-publishing-actions">
 
 <?php
@@ -143,9 +148,11 @@ if ( $post ) :
 </div><!-- #delete-action -->
 <?php endif; ?>
 
-<div class="save-contact-form textright">
+<div id="publishing-action">
+	<span class="spinner"></span>
 	<?php wpcf7_admin_save_button( $post_id ); ?>
 </div>
+<div class="clear"></div>
 </div><!-- #major-publishing-actions -->
 </div><!-- #submitpost -->
 </div>
@@ -167,6 +174,8 @@ if ( $post ) :
 
 <div id="postbox-container-2" class="postbox-container">
 <div id="contact-form-editor">
+<div class="keyboard-interaction"><?php echo sprintf( esc_html( __( '%s keys switch panels', 'contact-form-7' ) ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>
+
 <?php
 
 	$editor = new WPCF7_Editor( $post );

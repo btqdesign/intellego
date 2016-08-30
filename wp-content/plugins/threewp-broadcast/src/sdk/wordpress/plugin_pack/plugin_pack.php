@@ -33,9 +33,56 @@ abstract class plugin_pack
 		$this->plugins()->activate();
 	}
 
+	/**
+		@brief		Convenience method to activate a plugin.
+		@details	Can take a single classname string, or an array.
+		@since		2015-12-22 18:10:59
+	**/
+	public function activate_plugin( $classnames )
+	{
+		if ( ! is_array( $classnames ) )
+			$classnames = [ $classnames ];
+
+		$this->plugins()->populate( $classnames );	// Load all of the plugins.
+
+		foreach( $classnames as $classname )
+			$this->plugins()
+			->get( $classname )
+				->plugin()	// Return the plugin itself
+				->activate_internal();	// And tell it to activate.
+
+		return $this->plugins()->save();
+	}
+
 	public function deactivate()
 	{
 		$this->plugins()->deactivate();
+	}
+
+	/**
+		@brief		Convenience method to deactivate a plugin.
+		@details	Can take a single classname string, or an array.
+		@since		2015-12-22 18:10:59
+	**/
+	public function deactivate_plugin( $classnames )
+	{
+		if ( ! is_array( $classnames ) )
+			$classnames = [ $classnames ];
+
+		foreach( $classnames as $classname )
+		{
+			if ( ! $this->plugins()->has( $classname ) )
+				continue;
+
+			$this->plugins()
+				->get( $classname )
+				->plugin()	// Return the plugin itself
+				->deactivate_internal();	// And tell it to deactivate.
+
+			$this->plugins()
+				->forget( $classname );
+		}
+		return $this->plugins()->save();
 	}
 
 	/**
@@ -87,7 +134,7 @@ abstract class plugin_pack
 		$plugins->populate( $action->classes );
 
 		// Plugins class for the coloring.
-		$table = $this->table()->css_class( 'plugin_pack plugins' );
+		$table = $this->table()->css_class( 'plugin_pack plugins with_groups' );
 		$row = $table->head()->row();
 		$table->bulk_actions()
 			->form( $form )
@@ -95,8 +142,8 @@ abstract class plugin_pack
 			->add( $this->_( 'Deactivate plugin' ), 'deactivate_plugin' )
 			->add( $this->_( 'Uninstall plugin' ), 'uninstall_plugin' )
 			->cb( $row );
-		$row->th()->text_( 'Plugin' );
-		$row->th()->text_( 'Description' );
+		$row->th()->text( __( 'Plugin' ) );
+		$row->th()->text( __( 'Description' ) );
 
 		if ( $form->is_posting() )
 		{
@@ -127,6 +174,8 @@ abstract class plugin_pack
 							$this->plugins()->forget( $classname );
 							$message = $this->_( 'The selected plugin(s) have been uninstalled.' );
 							break;
+						default:
+							$this->plugins()->forget( $classname );
 					}
 					$this->plugins()->save();
 				}
@@ -138,20 +187,37 @@ abstract class plugin_pack
 		foreach( $plugins->by_groups() as $group => $plugins )
 			foreach( $plugins as $plugin )
 			{
-				$group = $plugin->get_comment( 'group' );
+				$group = $plugin->get_comment( 'plugin_group' );
 
 				if ( $old_group != $group )
 				{
 					$old_group = $group;
-					$row = $table->body()->row();
-					$row->th()->css_class( 'plugin_group' )->colspan( 3 )->text( $group );
+
+					// The group slug helps the javascript to group the rows together.
+					$group_slug = sanitize_title( $group );
+
+					$row = $table->body()->row()
+						->css_class( 'inactive group' )
+						->data( 'group', $group_slug );
+
+					$row->th()->css_class( 'plugin_group name' )->colspan( 3 )->text( $group );
 				}
 
-				$row = $table->body()->row();
-				$table->bulk_actions()->cb( $row, $plugin->get_id() );
+				$row = $table->body()->row()
+					->css_class( 'plugin' )
+					->data( 'group', $group_slug );
+
+				$cb = $table->bulk_actions()->cb( $row, $plugin->get_id() );
 
 				$td = $row->td();
-				$td->text( $plugin->get_name() );
+
+				// Assemble a label.
+				$label = new \plainview\sdk_broadcast\html\div();
+				$label->tag = 'label';
+				$label->set_attribute( 'for', $cb->get_id() );
+				$label->content = $plugin->get_name();
+
+				$td->text( $label );
 				$td->css_class( 'plugin-title' );
 
 				if ( $this->plugins()->has( $plugin->get_classname() ) )
@@ -181,7 +247,6 @@ abstract class plugin_pack
 		$this->__plugins = new plugins( $this );
 		$this->__plugins->populate( $this->get_enabled_plugins() );
 		$this->__plugins->load();
-		$this->__plugins->maybe_save();
 		return $this->plugins();
 	}
 

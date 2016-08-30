@@ -75,6 +75,33 @@ class broadcast_data
 	}
 
 	/**
+		@brief		Return the ID of the post on this blog, either parent or child.
+		@since		2016-04-27 19:29:47
+	**/
+	public function get_linked_post_on_this_blog()
+	{
+		$blog_id = get_current_blog_id();
+
+		// Can we offer the post of from which this BCD is built?
+		if ( $this->blog_id == $blog_id )
+			return $this->post_id;
+
+		// Is there perhaps a child on the specified blog?
+		$children = $this->get_linked_children();
+		if ( isset( $children[ $blog_id ] ) )
+			return $children[ $blog_id ];
+
+		// How about the parent?
+		$parent = $this->get_linked_parent();
+		if ( $parent )
+			if ( $parent[ 'blog_id' ] == $blog_id )
+				return $parent[ 'post_id' ];
+
+		// No matches at all. Return false.
+		return false;
+	}
+
+	/**
 	 * Does this post have any linked children?
 	 */
 	public function has_linked_children()
@@ -83,7 +110,7 @@ class broadcast_data
 	}
 
 	/**
-	 * Does this post have children on the current blog(
+	 * Does this post have children on the current blog?
 	 *
 	 * Used after switch_to_blog has been called.
 	 */

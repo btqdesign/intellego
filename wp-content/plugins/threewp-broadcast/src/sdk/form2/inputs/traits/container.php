@@ -227,6 +227,18 @@ trait container
 	}
 
 	/**
+		@brief		Asks the inputs to use their post values.
+		@return		this		Object chaining.
+		@since		20130524
+	**/
+	public function use_post_value()
+	{
+		foreach( $this->inputs as $input )
+			$input->use_post_value();
+		return $this;
+	}
+
+	/**
 		@brief		Validates all of the inputs.
 		@return		this		Object chaining.
 		@since		20130524
@@ -236,18 +248,6 @@ trait container
 		foreach( $this->inputs as $input )
 			$input->validates();
 		$this->has_validated = true;
-		return $this;
-	}
-
-	/**
-		@brief		Asks the inputs to use their post values.
-		@return		this		Object chaining.
-		@since		20130524
-	**/
-	public function use_post_value()
-	{
-		foreach( $this->inputs as $input )
-			$input->use_post_value();
 		return $this;
 	}
 }

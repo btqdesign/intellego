@@ -11,8 +11,50 @@ namespace plainview\sdk_broadcast;
 
 	@par			Changelog
 
-	This list only shows which classes were modified. For a detailed list, see the class' changelog.
-
+	- 20160718		Wordpress: Newer updater.
+	- 20160630		Wordpress: db trait should use static:: not self::.
+	- 20160621		Form: File input has accepts() function for restricting file types.
+	- 20160414		Wordpress: Allow updated SSL workaround to be forced on.
+	- 20160330		Wordpress: Updater has built in Redhat SSL Workaround.
+	- 20160210		Wordpress: Message boxes should be dismissable.
+	- 20160207		Wordpress: wp_die should not double output messages.
+	- 20160204		Wordpress: edd_admin_license_tab_text
+	- 20160112		form: select inputs can now be sorted.
+	- 20160102		Deleted Wordpress options_object class.
+	- 20160102		Added object_stores trait to replace Wordpress Options_Object.
+	- 20151227		Wordpress: Removed old tabs functionality. Use only the tabs classes now.
+	- 20151227		Wordpress: Split tabs into nav tabs and subsubsub tabs.
+	- 20151225		Wordpress: Added menu_page() instead of add_submenu_page() methods.
+	- 20151225		form: Old form class retired. form() is now an alias for form2().
+	- 20151225		form2: Added sort order trait to inputs.
+	- 20151225		Wordpress: Added deprecated_function().
+	- 20151224		Wordpress: Allow tabs to be sorted using ->order();
+	- 20151223		Wordpress: Update EDD updater. Less validity checks. Better fail message.
+	- 20151222		Wordpress: Added row_actions();
+	- 20151221		Wordpress: Added message boxes.
+	- 20151221		Wordpress: Removed send_mail(). Use ->mail() instead.
+	- 20151215		Wordpress: Allow db object to load several IDs at once.
+	- 20151206		Wordpress: Table grouping + js.
+	- 20151203		Wordpress tables: Remove hover effect.
+	- 20151202		Wordpress: Do not base64 options object.
+	- 20151129		HTML: Added data convenience method and test.
+	- 20151106		Collections/html: Redone handling, with test.
+	- 20151105		Wordpress: add wp_editor form2 input type.
+	- 20151028		Wordpress: do not activate pack plugins if no action is selected.
+	- 20151028		Wordpress: prevent array_intersect warning if the user does not have capabilities on this blog.
+	- 20151025		Wordpress: Bulk action column has a unique ID.
+	- 20151024		Wordpress: Add Options_Object class.
+	- 20151009		Wordpress: Update plugin pack table.
+	- 20151003		Wordpress: More detailed debug trait.
+	- 20151003		Wordpress: Allow custom directory for language file.
+	- 20151002		Wordpress: use get_current_user_id() to return the current user's ID.
+	- 20150804		Moved to bitbucket.
+	- 20150725		Wordpress: Allow saving debug info to file.
+	- 20150721		Wordpress: get_user_capabilities and user_has_roles.
+	- 20150711		Wordpress plugin pack table allows selecting of checkboxes via plugin name.
+	- 20150708		Wordpress updater has its own namespace.
+	- 20150707		Wordpress tabs are now elements also.
+	- 20150624		Update Wordpress updater to 1.6
 	- 20150608		Wordpress plugin pack: allow plugin grouping by specifying @group in comment.
 	- 20150604		Wordpress debug trait now escapes the variables.
 	- 20150519		Mail: add sprintf support to the html, subject and text methods.
@@ -156,10 +198,10 @@ class base
 
 	/**
 		@brief		The version of this SDK file.
-		@since		20130416
+		@since		20130630
 		@var		$sdk_version
 	**/
-	protected $sdk_version = 20150608;
+	protected $sdk_version = 20160718;
 
 	/**
 		@brief		Constructor.
@@ -326,9 +368,9 @@ class base
 	/**
 		@brief		Creates a form2 object.
 		@return		\\plainview\\sdk_broadcast\\form2\\form		A new form object.
-		@since		20130509
+		@since		2015-12-25 17:21:03
 	**/
-	public function form2()
+	public function form()
 	{
 		if ( ! class_exists( '\\plainview\\sdk_broadcast\\form2\\form' ) )
 			require_once( dirname( __FILE__ ) . '/form2/form.php' );
@@ -338,6 +380,16 @@ class base
 
 		$form = new \plainview\sdk_broadcast\wordpress\form2\form();
 		return $form;
+	}
+
+	/**
+		@brief		Backwards compatibility alias for form.
+		@see		form()
+		@since		20130509
+	**/
+	public function form2()
+	{
+		return $this->form();
 	}
 
 	/**

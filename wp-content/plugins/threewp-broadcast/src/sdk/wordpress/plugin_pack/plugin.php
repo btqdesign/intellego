@@ -70,6 +70,11 @@ class plugin
 		}
 
 		$text = $this->get_file_contents();
+		// Strip off everything after the first comment to save memory in the tokenizer.
+		$text = preg_replace( '/\*\*\\/.*/s', '', $text );
+		// Terminate the comment.
+		$text .= '**/';
+
 		$comments = array_filter( token_get_all( $text ), function( $entry )
 		{
 			return $entry[0] == T_DOC_COMMENT;
@@ -92,8 +97,8 @@ class plugin
 
 			if ( ( strlen( $line ) > 0 ) && ( $line[ 0 ] == '@' ) )
 			{
-				$current_key = preg_replace( '/@([a-zA-Z0-9]*).*/', '\1', $line );
-				$text = preg_replace( '/@[a-zA-Z0-9]*[\t]*+/', '', $line );
+				$current_key = preg_replace( '/@([a-zA-Z_0-9]*).*/', '\1', $line );
+				$text = preg_replace( '/@[a-zA-Z_0-9]*[\t]*+/', '', $line );
 				if ( $text == '' )
 					continue;
 			}

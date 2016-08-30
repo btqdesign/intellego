@@ -1,28 +1,50 @@
 <?php 
 if (isset($_POST['ucf_api_key_submit'])){
-	$api_key_return = wp_remote_get('http://dnesscarkey.com/font-convertor/api/validate_key.php?license_key='.$_POST['uaf_api_key']);
-	
+	$uaf_api_key 	= trim($_POST['uaf_api_key']);
+	$api_key_return = wp_remote_get('http://dnesscarkey.xyz/font-convertor/api/validate_key.php?license_key='.$uaf_api_key, array('timeout'=>300,'sslverify'=>false,'user-agent'=>get_bloginfo( 'url' )));
 	if ( is_wp_error( $api_key_return ) ) {
-	   $error_message = $api_key_return->get_error_message();
+	   $error_message 	= $api_key_return->get_error_message();
 	   $api_message 	= "Something went wrong: $error_message";
+	   $api_msg_type    = 'error';
 	} else {
 	    $api_key_return = json_decode($api_key_return['body']);
 		if ($api_key_return->status == 'success'){
-			update_option('uaf_api_key', $_POST['uaf_api_key']);
+			update_option('uaf_api_key', $uaf_api_key);
+			update_option('uaf_api_package', $api_key_return->package);
 		}
+		$api_msg_type   = $api_key_return->status;
+		$api_message 	= $api_key_return->msg;
+	}
+}
+
+if (isset($_POST['ucf_api_key_remove'])){
+	$uaf_api_key		= get_option('uaf_api_key');
+	$api_key_return 	= wp_remote_get('https://dnesscarkey.xyz/font-convertor/api/deactivate_key.php?license_key='.$uaf_api_key, array('timeout'=>300,'sslverify'=>false,'user-agent'=>get_bloginfo( 'url' )));
+	if ( is_wp_error( $api_key_return ) ) {
+	   $error_message 	= $api_key_return->get_error_message();
+	   $api_message 	= "Something went wrong: $error_message";
+	   $api_msg_type    = 'error';
+	} else {
+	    $api_key_return = json_decode($api_key_return['body']);
+		if ($api_key_return->status == 'success'){
+			delete_option('uaf_api_key');
+			delete_option('uaf_api_package');
+		}
+		$api_msg_type   = $api_key_return->status;
 		$api_message 	= $api_key_return->msg;
 	}	
 }
 
-if (isset($_POST['ucf_api_key_remove'])){
-	delete_option('uaf_api_key');
-	$api_message 	= 'Your Activation key has been removed';
+$uaf_api_key					=	get_option('uaf_api_key');
+$uaf_api_package				=	get_option('uaf_api_package');
+$delete_confirmation_msg		= 	'Are you sure ?';
+if ($uaf_api_package == 'lite'){
+	$delete_confirmation_msg	= "Are you sure ? Since you are using lite(Free) key, deactivating it will delete the key record from our server as well and you won\'t be able to upgrade it.";
 }
 
-$uaf_api_key			=	get_option('uaf_api_key');
 ?>
 <?php if (!empty($api_message)):?>
-	<div class="updated" id="message"><p><?php echo $api_message ?></p></div>
+	<div class="updated <?php echo $api_msg_type; ?>" id="message"><p><?php echo $api_message ?></p></div>
 <?php endif; ?>
 <div class="wrap">
 <h2>Use Any Font</h2>
@@ -46,7 +68,7 @@ $uaf_api_key			=	get_option('uaf_api_key');
                         <br/> <br/>                       
                         Please keep the API key to start using this plugin. Offer your contribution (Free to $100) and get the API key from <a href="http://dnesscarkey.com/font-convertor/api/" target="_blank">here</a>.<br/>
                         <?php else: ?>
-                        	<span class="active_key"><?php echo $uaf_api_key;  ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Active</span>							<input type="submit" name="ucf_api_key_remove" class="button-primary" value="Remove Key" style="padding:2px; margin-left:20px;" onclick="if(!confirm('Are you sure ?')){return false;}" />
+                        	<span class="active_key"><?php echo $uaf_api_key;  ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Active</span>							<input type="submit" name="ucf_api_key_remove" class="button-primary" value="Remove Key" style="padding:2px; margin-left:20px;" onclick="if(!confirm('<?php echo $delete_confirmation_msg; ?>')){return false;}" />
                         <?php endif;?>
                         </form>
                         <br/>                        

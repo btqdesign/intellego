@@ -21,6 +21,7 @@ extends \threewp_broadcast\maintenance\checks\check
 	use traits\steps\step_results_fail_parent_is_unlinked;
 	use traits\steps\step_results_fail_same_parent;
 	use traits\steps\step_results_fail_child_is_unlinked;
+	use traits\steps\step_results_fail_unnecessary_children;
 
 	public $table;
 
@@ -28,6 +29,45 @@ extends \threewp_broadcast\maintenance\checks\check
 	//		MISC					 //
 	// ----------------------------- //
 
+	/**
+		@brief		Return the blogname.
+		@details	I wish switch_to_blog could tell me that the blog doesn't exist.
+		@since		2015-08-19 21:47:53
+	**/
+	public function blogname( $blog_id )
+	{
+		if ( switch_to_blog( $blog_id ) === true )
+		{
+			$r = sprintf( '%s %s', get_bloginfo( 'name' ), $blog_id );
+			restore_current_blog();
+		}
+		else
+			$r = 'Unknown ' . $blog_id;
+		return $r;
+	}
+
+	/**
+		@brief		Return a string with the blog and post linked.
+		@details	I wish switch_to_blog could tell me that the blog doesn't exist.
+		@since		2015-08-19 21:47:53
+	**/
+	public function blogpost( $blog_id, $post_id )
+	{
+		if ( switch_to_blog( $blog_id ) === true )
+		{
+			$post = get_post( $post_id );
+			$r = sprintf( '<a href="%s">%s</a> on %s (%s)',
+				get_permalink( $post_id ),
+				$post->post_title,
+				get_bloginfo( 'name' ),
+				$blog_id
+			);
+			restore_current_blog();
+		}
+		else
+			$r = 'Unknown ' . $blog_id;
+		return $r;
+	}
 
 	public static function data()
 	{
@@ -91,8 +131,29 @@ extends \threewp_broadcast\maintenance\checks\check
 				$blog_id = $parent[ 'blog_id' ];
 				$post_id = $parent[ 'post_id' ];
 
+				if ( count( $bcd->get_linked_children() ) > 0 )
+					$this->data->unnecessary_children->set( $id, $bcd );
+
 				// The parent blog + post must exist.
 				if ( ! $this->blog_and_post_exists( $blog_id, $post_id ) )
+				{
+					$this->data->missing_parents->set( $id, [ $blog_id => $post_id ] );
+					continue;
+				}
+
+				switch_to_blog( $bcd->blog_id );
+				$child_post = get_post( $bcd->post_id );
+				restore_current_blog();
+
+				// And the posts must be the same.
+				switch_to_blog( $blog_id );
+				$parent_post = get_post( $post_id );
+				restore_current_blog();
+
+				// If the parent doesn't match the child, then the parent is missing.
+				if (
+					( $child_post->post_type != $parent_post->post_type )
+				)
 				{
 					$this->data->missing_parents->set( $id, [ $blog_id => $post_id ] );
 					continue;
@@ -127,10 +188,30 @@ extends \threewp_broadcast\maintenance\checks\check
 
 			// If this is a parent:
 			$children = $bcd->get_linked_children();
+			if ( count( $children ) > 0 )
+			{
+				switch_to_blog( $bcd->blog_id );
+				$parent_post = get_post( $bcd->post_id );
+				restore_current_blog();
+			}
 			foreach( $children as $blog_id => $post_id )
 			{
 				// The child blog + post must exist.
 				if ( ! $this->blog_and_post_exists( $blog_id, $post_id ) )
+				{
+					$this->data->missing_children->set( $id, [ $blog_id => $post_id ] );
+					continue;
+				}
+
+				// And the posts must be the same.
+				switch_to_blog( $blog_id );
+				$child_post = get_post( $post_id );
+				restore_current_blog();
+
+				// If the parent doesn't match the child, then the parent is missing.
+				if (
+					( $child_post->post_type != $parent_post->post_type )
+				)
 				{
 					$this->data->missing_children->set( $id, [ $blog_id => $post_id ] );
 					continue;
@@ -204,6 +285,7 @@ extends \threewp_broadcast\maintenance\checks\check
 		$this->step_results_fail_child_is_unlinked( $o );
 		$this->step_results_fail_same_parent( $o );
 		$this->step_results_fail_parent_is_unlinked( $o );
+		$this->step_results_fail_unnecessary_children( $o );
 		$o->r .= $o->form->close_tag();
 
 		return $o->r;

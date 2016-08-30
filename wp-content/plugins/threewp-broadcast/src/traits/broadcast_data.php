@@ -2,6 +2,7 @@
 
 namespace threewp_broadcast\traits;
 
+use threewp_broadcast\actions;
 use threewp_broadcast\broadcast_data as data;			// Else if conflicts with the trait name. *sigh*
 
 /**
@@ -37,8 +38,41 @@ trait broadcast_data
 	*/
 	public function delete_post_broadcast_data( $blog_id, $post_id)
 	{
+		$action = new actions\delete_post_broadcast_data();
+		$action->blog_id = $blog_id;
+		$action->post_id = $post_id;
+		$action->execute();
+
+		if ( $action->is_finished() )
+			return;
+
 		$this->broadcast_data_cache()->set_for( $blog_id, $post_id, new data );
 		$this->sql_delete_broadcast_data( $blog_id, $post_id );
+	}
+
+	/**
+		@brief		Convenience method to return the broadcast data of the linked parent (if any).
+		@details	Will retrieve the broadcast data of this blogid / postid. If it is a linked child, will return the parent's broadcast data.
+
+		Note that it is extra convenient by leaving the $post_id optional, meaning you can use the $blog_id as the $post_id, if the post is on this blog.
+		@since		2016-07-12 19:58:52
+	**/
+	public function get_parent_post_broadcast_data( $blog_id, $post_id = null )
+	{
+		if ( $post_id === null )
+		{
+			$post_id = $blog_id;
+			$blog_id = get_current_blog_id();
+		}
+
+		$bcd = $this->get_post_broadcast_data( $blog_id, $post_id );
+
+		// Is this a child? Retrieve the parent's bcd.
+		$parent = $bcd->get_linked_parent();
+		if ( $parent !== false )
+			$bcd = $this->get_post_broadcast_data( $parent[ 'blog_id' ], $parent[ 'post_id' ] );
+
+		return $bcd;
 	}
 
 	/**
@@ -51,6 +85,14 @@ trait broadcast_data
 	 */
 	public function get_post_broadcast_data( $blog_id, $post_id )
 	{
+		$action = new actions\get_post_broadcast_data();
+		$action->blog_id = $blog_id;
+		$action->post_id = $post_id;
+		$action->execute();
+
+		if ( $action->is_finished() )
+			return $action->broadcast_data;
+
 		return $this->broadcast_data_cache()->get_for( $blog_id, $post_id );
 	}
 
@@ -67,6 +109,15 @@ trait broadcast_data
 	{
 		// Update the cache.
 		$this->broadcast_data_cache()->set_for( $blog_id, $post_id, $broadcast_data );
+
+		$action = new actions\set_post_broadcast_data();
+		$action->blog_id = $blog_id;
+		$action->post_id = $post_id;
+		$action->broadcast_data = $broadcast_data;
+		$action->execute();
+
+		if ( $action->is_finished() )
+			return;
 
 		if ( $broadcast_data->is_modified() )
 			if ( $broadcast_data->is_empty() )

@@ -15,6 +15,18 @@ class file
 {
 	public $type = 'file';
 
+	/**
+		@brief		Set the accept attribute.
+		@since		2016-06-21 16:20:46
+	**/
+	public function accept( $accept = '' )
+	{
+		if ( $accept == '' )
+			$this->clear_attribute( 'accept' );
+		else
+			$this->set_attribute( 'accept', $accept );
+		return $this;
+	}
 
 	/**
 		@brief		File has no value.

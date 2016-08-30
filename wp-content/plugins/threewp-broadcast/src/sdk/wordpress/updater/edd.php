@@ -2,9 +2,6 @@
 
 namespace plainview\sdk_broadcast\wordpress\updater;
 
-if( ! class_exists( 'EDD_SL_Plugin_Updater' ) )
-	require_once( dirname( __FILE__ ) . '/EDD_SL_Plugin_Updater.php' );
-
 use \Exception;
 
 /**
@@ -47,6 +44,8 @@ trait edd
 		$form = $this->form2();
 		$r = '';
 		$status = $this->edd_get_cached_license_status();
+
+		$r .= $this->edd_admin_license_tab_text();
 
 		switch( $status->license )
 		{
@@ -181,6 +180,14 @@ trait edd
 	}
 
 	/**
+		@brief		Allow subclasses to display a text to the user before the license information.
+		@since		2016-02-04 23:18:46
+	**/
+	public function edd_admin_license_tab_text()
+	{
+	}
+
+	/**
 		@brief		Activate this license.
 		@throws		Exception if the license was not able to be activated.
 		@since		2014-09-15 21:14:52
@@ -233,11 +240,62 @@ trait edd
 	}
 
 	/**
+		@brief		Enable the SSL workaround?
+		@since		2016-04-14 12:23:26
+	**/
+	public function edd_enable_ssl_workaround()
+	{
+		return false;
+	}
+
+	/**
+		@brief		Return an array of url pieces that we might be interested in.
+		@since		2016-03-30 17:12:33
+	**/
+	public function edd_get_ssl_workaround_urls()
+	{
+		return [
+			'plainviewplugins.com',
+		];
+	}
+
+	/**
+		@brief		Disable curl but only for those addresses that we're interested in.
+		@since		2016-03-30 17:11:31
+	**/
+	public function edd_http_api_transports( $transports, $args, $url )
+	{
+		$urls = $this->edd_get_ssl_workaround_urls();
+		$match = false;
+		foreach( $urls as $u )
+			if ( strpos( $url, $u ) !== false )
+			{
+				$match = true;
+				break;
+			}
+		if ( ! $match )
+			return $transports;
+
+		// Find curl and remove it.
+		foreach( $transports as $index => $transport )
+			if ( $transport == 'curl' )
+				unset( $transports[ $index ] );
+
+		return $transports;
+	}
+
+	/**
 		@brief		Initialize the EDD updater.
 		@since		2014-09-15 20:53:54
 	**/
 	public function edd_init()
 	{
+		// Redhat / CentOS uses a broken version of OpenSSL. Work around it.
+		$workaround = $this->edd_enable_ssl_workaround();
+		$workaround |= @ file_exists( '/etc/redhat-release' );
+		if ( $workaround AND count( $this->edd_get_ssl_workaround_urls() > 0 ) )
+			$this->add_filter( 'http_api_transports', 'edd_http_api_transports', 10, 3 );
+
 		$status = $this->edd_get_cached_license_status();
 
 		if ( $status->license == 'valid' )
@@ -255,7 +313,7 @@ trait edd
 		if ( $status->license != 'valid' )
 			return;
 
-		$edd_updater = new \EDD_SL_Plugin_Updater
+		$edd_updater = new EDD_SL_Plugin_Updater
 		(
 			$this->edd_get_url(),
 			$this->paths[ '__FILE__' ],
@@ -445,7 +503,7 @@ trait edd
 		$response = wp_remote_get( $url, [ 'timeout' => 15, 'sslverify' => false ] );
 
 		if ( is_wp_error( $response ) )
-			throw new Exception( 'Invalid response from the updater service.' );
+			throw new Exception( 'Invalid response from the updater service: ' . json_encode( $response ) );
 
 		return $response;
 	}

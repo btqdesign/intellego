@@ -2,8 +2,8 @@
 Contributors: dnesscarkey
 Tags: use any font, any font, embed any font, font embed, font uploader, css3 font embed, @font-face embed, font conversion, webfont, ttf, opentype, custom fonts
 Requires at least: 3.0
-Tested up to: 4.2.2
-Stable tag: 4.3.3
+Tested up to: 4.5.2
+Stable tag: 4.5.1
 
 Embed any font in your website
 
@@ -12,7 +12,7 @@ Use any font you wish and give your site a elegant look. No css knowledge requir
 
 Click <a href="http://dineshkarki.com.np/use-any-font/demo" target="_blank">here</a> for Use Any Font working demo.
 
-Use Any Font gives you freedom to use any font in your website. It is not like other font embed services which gives you countable number of fonts to select from neither the one that stores your font in remote server. You can use any font if you have its font format (ttf,otf) without being dependent to other's server uptime.
+Use Any Font gives you freedom to use any font in your website. It is not like other font embed services which gives you countable number of fonts to select from neither the one that stores your font in remote server. You can use any font if you have its font format (ttf,otf,woff) without being dependent to other's server uptime.
 
 Features
 
@@ -20,8 +20,8 @@ Features
 * Support all major browsers including IE 6+, Firefox, Chrome, Safari, IOS, Andriod, Opera and more.
 * Font conversion within the plugin interface font uploader.
 * Use uploaded font directly from Editor
-* Supports font format including ttf, otf. The required fonts are converted automatically.
-* Accepts font file upto 10 MB.
+* Supports font format including ttf, otf, woff. The required fonts are converted automatically.
+* Accepts font file upto 15 MB.
 * Embed fonts using @font-face css. SEO friendly and quick loading.
 * Multiple fonts can be used.
 * Faster load time as your custom fonts are stored on your own server.
@@ -56,15 +56,15 @@ We don't respond to support tickets created here. Please visit our <a href="http
 
 = Which font format does plugin accepts ? =
 
-Currently, ttf, otf font format are accepted.
+Currently, ttf, otf, woff font format are accepted.
 
 = What is the max font file size ? =
 
-Font file upto 10MB is acceptable. However, we suggest you to use smaller ones as far as possible. The font file size directly affects your site load time. 
+Font file upto 15MB is acceptable. However, we suggest you to use smaller ones as far as possible. The font file size directly affects your site load time. 
 
-= Mentioned 10 MB here but in font upload section it says less. Why ? =
+= Mentioned 15 MB here but in font upload section it says less. Why ? =
 
-Ya, our plugin accept upto 10 MB font file but your wordpress installation have limitation for file size. Please check this link to increase it http://www.wpbeginner.com/wp-tutorials/how-to-increase-the-maximum-file-upload-size-in-wordpress/
+Ya, our plugin accept upto 15 MB font file but your wordpress installation have limitation for file size. Please check this link to increase it http://www.wpbeginner.com/wp-tutorials/how-to-increase-the-maximum-file-upload-size-in-wordpress/
 
 = Does it works with multiple fonts ? =
 
@@ -106,8 +106,44 @@ You can check our <a href="http://dineshkarki.com.np/forums/forum/use-any-fonts"
 1. Screenshot #3. Assign font directly from Wordpress Editor
 1. Screenshot #4. Font list not showing in editor.
 1. Screenshot #5. Disable font list in editor.
+1. Screenshot #6. Assign fonts to custom elements.
 
 == Changelog ==
+
+= 4.5.1 =
+* Fixed form validation js error.
+
+= 4.5 =
+* Fixed SSL font loading issue.
+
+= 4.4.4 =
+* Font upload issue fixed.
+
+= 4.4.3 =
+* Fixed couldn't receive font file issue.
+
+= 4.4.2 =
+* Fixed API verification issue
+
+= 4.4.1 =
+* Fixed SSL API key issue
+
+
+= 4.3.7 =
+* Secure file upload URL for Default Js Uploader
+
+= 4.3.6 =
+* Fixed validation for PHP uploader
+* Sanitize font name 
+* Test with 4.3.1
+
+= 4.3.5 =
+* Fixed host name lookup issue
+* Added SSL for font upload path
+* Test with 4.3
+
+= 4.3.4 =
+* License key trim added. 
 
 = 4.3.3 =
 * Font convertor url change.

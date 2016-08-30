@@ -17,6 +17,7 @@ class ThreeWP_Broadcast
 	use traits\meta_boxes;
 	use traits\post_actions;
 	use traits\terms_and_taxonomies;
+	use traits\savings_calculator;
 
 	/**
 		@brief		Broadcasting stack.
@@ -98,27 +99,35 @@ class ThreeWP_Broadcast
 			$this->add_filter( 'post_type_link', 'post_link', 10, 3 );
 		}
 
+		$this->attachments_init();
+		$this->post_actions_init();
+		$this->savings_calculator_init();
+
+		$this->add_action( 'network_admin_menu', 'admin_menu' );
+		$this->add_action( 'plugins_loaded' );
+
 		$this->add_filter( 'threewp_broadcast_add_meta_box' );
 		$this->add_filter( 'threewp_broadcast_admin_menu', 'add_post_row_actions_and_hooks', 100 );
-		$this->add_filter( 'threewp_broadcast_broadcast_post' );
-		$this->add_action( 'threewp_broadcast_copy_attachment', 100 );
+
+		// This is a normal broadcast action, not a special action object. This is a holdover from the good old days from when Broadcast used normal actions.
+		// Don't want to break anyone's plugins.
+		$this->add_action( 'threewp_broadcast_broadcast_post' );
+
+		$this->add_action( 'threewp_broadcast_collect_post_type_taxonomies', 5 );
+
 		$this->add_action( 'threewp_broadcast_each_linked_post' );
-		$this->add_action( 'threewp_broadcast_get_post_actions' );
-		$this->add_action( 'threewp_broadcast_get_post_bulk_actions' );
-		$this->add_action( 'threewp_broadcast_get_user_writable_blogs', 11 );		// Allow other plugins to do this first.
-		$this->add_filter( 'threewp_broadcast_get_post_types', 9 );					// Add our custom post types to the array of broadcastable post types.
-		$this->add_action( 'threewp_broadcast_manage_posts_custom_column', 9 );		// Just before the standard 10.
-		$this->add_action( 'threewp_broadcast_maybe_clear_post', 11 );
-		$this->add_action( 'threewp_broadcast_menu', 9 );
+		$this->add_action( 'threewp_broadcast_get_user_writable_blogs', 100 );		// Allow other plugins to do this first.
+		$this->add_filter( 'threewp_broadcast_get_post_types', 5 );					// Add our custom post types to the array of broadcastable post types.
+		$this->add_action( 'threewp_broadcast_maybe_clear_post', 100 );
+		$this->add_action( 'threewp_broadcast_menu', 5 );
 		$this->add_action( 'threewp_broadcast_menu', 'threewp_broadcast_menu_final', 100 );
-		$this->add_action( 'threewp_broadcast_post_action' );
+		$this->add_filter( 'threewp_broadcast_parse_content' );
 		$this->add_action( 'threewp_broadcast_prepare_broadcasting_data' );
-		$this->add_filter( 'threewp_broadcast_prepare_meta_box', 9 );
+		$this->add_filter( 'threewp_broadcast_prepare_meta_box', 5 );
 		$this->add_filter( 'threewp_broadcast_prepare_meta_box', 'threewp_broadcast_prepared_meta_box', 100 );
-		$this->add_action( 'threewp_broadcast_wp_insert_term', 9 );
-		$this->add_action( 'threewp_broadcast_wp_update_term', 9 );
-		$this->add_action( 'wp_ajax_broadcast_post_action_form' );
-		$this->add_action( 'wp_ajax_broadcast_post_bulk_action' );
+		$this->add_filter( 'threewp_broadcast_preparse_content' );
+		$this->add_action( 'threewp_broadcast_wp_insert_term', 5 );
+		$this->add_action( 'threewp_broadcast_wp_update_term', 5 );
 
 		if ( $this->get_site_option( 'canonical_url' ) )
 			$this->add_action( 'wp_head', 1 );
@@ -137,6 +146,15 @@ class ThreeWP_Broadcast
 
 		$db_ver = $this->get_site_option( 'database_version', 0 );
 
+		// 2016-01-05 Always run the create if not exists.
+		$this->query("CREATE TABLE IF NOT EXISTS `". $this->broadcast_data_table() . "` (
+		  `blog_id` int(11) NOT NULL COMMENT 'Blog ID',
+		  `post_id` int(11) NOT NULL COMMENT 'Post ID',
+		  `data` longtext NOT NULL COMMENT 'Serialized BroadcastData',
+		  KEY `blog_id` (`blog_id`,`post_id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+		");
+
 		if ( $db_ver < 1 )
 		{
 			// Remove old options
@@ -146,14 +164,6 @@ class ThreeWP_Broadcast
 			$this->delete_site_option( 'activity_monitor_broadcasts' );
 			$this->delete_site_option( 'activity_monitor_group_changes' );
 			$this->delete_site_option( 'activity_monitor_unlinks' );
-
-			$this->query("CREATE TABLE IF NOT EXISTS `". $this->broadcast_data_table() . "` (
-			  `blog_id` int(11) NOT NULL COMMENT 'Blog ID',
-			  `post_id` int(11) NOT NULL COMMENT 'Post ID',
-			  `data` longtext NOT NULL COMMENT 'Serialized BroadcastData',
-			  KEY `blog_id` (`blog_id`,`post_id`)
-			) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-			");
 
 			// Cats and tags replaced by taxonomy support. Version 1.5
 			$this->delete_site_option( 'role_categories' );
@@ -197,11 +207,8 @@ class ThreeWP_Broadcast
 			$db_ver = 4;
 		}
 
-		if ( $db_ver < 5 )
-		{
-			$this->create_broadcast_data_id_column();
-			$db_ver = 5;
-		}
+		// 2016-01-05 This used to be v5, but is now always run.
+		$this->create_broadcast_data_id_column();
 
 		if ( $db_ver < 6 )
 		{
@@ -233,16 +240,6 @@ class ThreeWP_Broadcast
 		{
 			// Make the table a longtext for those posts with many links.
 			$this->query("ALTER TABLE `". $this->broadcast_data_table() . "` CHANGE `data` `data` LONGTEXT");
-
-			// We have deleted the extra internal custom field setting. If the user does NOT want the fields broadcasted, add them to the blacklist.
-			$internal_fields = $this->get_site_option( 'broadcast_internal_custom_fields', true );
-			if ( $internal_fields == false )
-			{
-				$blacklist = $this->get_site_option( 'custom_field_blacklist' );
-				$blacklist .= ' _*';
-				$blacklist = trim( $blacklist );
-				$this->update_site_option( 'custom_field_blacklist', $blacklist );
-			}
 			$db_ver = 8;
 		}
 
@@ -259,6 +256,17 @@ class ThreeWP_Broadcast
 	// --------------------------------------------------------------------------------------------
 	// ----------------------------------------- Callbacks
 	// --------------------------------------------------------------------------------------------
+
+	/**
+		@brief		Broadcast is ready for broadcasting.
+		@since		2015-10-29 12:22:53
+	**/
+	public function plugins_loaded()
+	{
+		$this->__loaded = true;
+		$action = new actions\loaded();
+		$action->execute();
+	}
 
 	public function post_link( $link, $post )
 	{
@@ -457,7 +465,12 @@ class ThreeWP_Broadcast
 		remove_action( 'wp_head', 'rel_canonical' );
 
 		// Remove Canonical Link Added By Yoast WordPress SEO Plugin
-		$this->add_filter( 'wpseo_canonical', 'wp_head_remove_wordpress_seo_canonical' );;
+		if ( class_exists( '\\WPSEO_Frontend' ) )
+		{
+			$this->add_filter( 'wpseo_canonical', 'wp_head_remove_wordpress_seo_canonical' );;
+			$wpseo_frontend = \WPSEO_Frontend::get_instance();
+			remove_action( 'wpseo_head', array( $wpseo_frontend, 'canonical' ), 20 );
+		}
 	}
 
 	/**
@@ -476,12 +489,21 @@ class ThreeWP_Broadcast
 	// --------------------------------------------------------------------------------------------
 
 	/**
+		@brief		Return the API class.
+		@since		2015-06-16 22:21:22
+	**/
+	public function api()
+	{
+		return new api();
+	}
+
+	/**
 		@brief		Convenience function to return a Plainview SDK Collection.
 		@since		2014-10-31 13:21:06
 	**/
-	public static function collection()
+	public static function collection( $items = [] )
 	{
-		return new \plainview\sdk_broadcast\collections\Collection();
+		return new \plainview\sdk_broadcast\collections\Collection( $items );
 	}
 
 	/**
@@ -591,7 +613,7 @@ class ThreeWP_Broadcast
 				{
 					$function_name = $function[ 0 ];
 					if ( is_object( $function_name ) )
-						$function_name = get_class( $function_name );
+						$function_name = sprintf( '%s::%s', get_class( $function_name ), $function[ 1 ] );
 					else
 						$function_name = sprintf( '%s::%s', $function_name, $function[ 1 ] );
 				}
@@ -604,19 +626,115 @@ class ThreeWP_Broadcast
 	}
 
 	/**
-		@brief		Return the user's capabilities on this blog as an array.
-		@since		2015-03-17 18:56:30
+		@brief		Return a table containing the info of each plugin.
+		@since		2016-07-19 13:46:46
 	**/
-	public static function get_user_capabilities()
+	public function get_plugin_info_array( $plugins )
 	{
-		global $wpdb;
-		$key = sprintf( '%scapabilities', $wpdb->prefix );
-		$r = get_user_meta( get_current_user_id(), $key, true );
-
-		if ( is_super_admin() )
-			$r[ 'super_admin' ] = true;
-
+		$r = [];
+		if ( function_exists( 'get_plugin_data' ) )
+			foreach( $plugins as $plugin_filename )
+			{
+				$s = [];
+				$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_filename );
+				$plugin_data = (object)$plugin_data;
+				$s []= $plugin_filename;
+				$s []= $plugin_data->Name;
+				$s []= $plugin_data->Version;
+				$s = implode( ', ', $s );
+				$r []= $s;
+			}
 		return $r;
+	}
+
+	/**
+		@brief		Return a table object containing the system info.
+		@since		2016-05-04 21:06:33
+	**/
+	public function get_system_info_table()
+	{
+		$table = $this->table();
+		// Caption for the blog / PHP information table
+		$table->caption()->text_( 'Information' );
+
+		$row = $table->head()->row();
+		$row->th()->text_( 'Key' );
+		$row->th()->text_( 'Value' );
+
+		if ( $this->debugging() )
+		{
+			$row = $table->body()->row();
+			$row->td()->text_( 'Debugging' );
+			$row->td()->text_( 'Enabled' );
+		}
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'Broadcast version' );
+		$row->td()->text( $this->plugin_version );
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'PHP version' );
+		$row->td()->text( phpversion() );
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'Wordpress upload directory array' );
+		$row->td()->text( '<pre>' . var_export( wp_upload_dir(), true ) . '</pre>' );
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'PHP maximum execution time' );
+		$text = $this->p_( '%s seconds', ini_get ( 'max_execution_time' ) );
+		$row->td()->text( $text );
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'PHP memory limit' );
+		$text = ini_get( 'memory_limit' );
+		$row->td()->text( $text );
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'Wordpress memory limit' );
+		$text = wpautop( sprintf( WP_MEMORY_LIMIT . "
+
+%s
+
+<code>define('WP_MEMORY_LIMIT', '512M');</code>
+",		$this->_( 'This can be increased by adding the following to your wp-config.php:' ) ) );
+		$row->td()->text( $text );
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'Debug code' );
+		$text = WP_MEMORY_LIMIT;
+		$text = wpautop( sprintf( "%s
+
+<code>ini_set('display_errors','On');</code>
+<code>define('WP_DEBUG', true);</code>
+",		$this->p_( 'Add the following lines to your wp-config.php to help find out why errors or blank screens are occurring:' ) ) );
+		$row->td()->text( $text );
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'Hooked into save_post' );
+		$hooks = $this->get_hooks( 'save_post' );
+		$row->td()->text( implode( "<br>\n", $hooks ) );
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'Save post decoys' );
+		$row->td()->text( $this->get_site_option( 'save_post_decoys' ) );
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'Save post priority' );
+		$row->td()->text( $this->get_site_option( 'save_post_priority' ) );
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'Plugins active on blog' );
+		$plugins = $this->get_plugin_info_array( get_option( 'active_plugins' ) );
+		$row->td()->text( implode( "<br>\n", $plugins ) );
+
+		$row = $table->body()->row();
+		$row->td()->text_( 'Plugins active on network' );
+		$plugins = get_site_option( 'active_sitewide_plugins' );
+		$plugins = $this->get_plugin_info_array( array_keys( $plugins ) );
+		$row->td()->text( implode( "<br>\n", $plugins ) );
+
+		return $table;
 	}
 
 	/**
@@ -625,7 +743,12 @@ class ThreeWP_Broadcast
 	**/
 	public function hook_save_post()
 	{
-		$this->add_action( 'save_post', intval( $this->get_site_option( 'save_post_priority' ) ) );
+		$priority = intval( $this->get_site_option( 'save_post_priority' ) );
+		$decoys = intval( $this->get_site_option( 'save_post_decoys' ) );
+		// See nop() for why this even exists.
+		for ( $counter = 0; $counter < $decoys; $counter++ )
+			$this->add_action( 'save_post', 'nop', $priority - 1 - $counter );
+		$this->add_action( 'save_post', $priority );
 	}
 
 	/**
@@ -686,6 +809,31 @@ class ThreeWP_Broadcast
 	}
 
 	/**
+		@brief		Do nothing.
+		@details	Used as a workaround for plugins that might remove_action in the save_post before us.
+					This is a bug in how Wordpress handles filters and actions: https://core.trac.wordpress.org/ticket/17817
+		@since		2015-08-26 21:09:28
+	**/
+	public function nop()
+	{
+	}
+
+	/**
+		@brief		Return the plugin pack instance.
+		@since		2015-10-28 14:42:18
+	**/
+	public function plugin_pack()
+	{
+		if ( ! isset( $this->__plugin_pack ) )
+		{
+			$this->__plugin_pack = new premium_pack\ThreeWP_Broadcast_Plugin_Pack();
+			if ( $this->__loaded )
+				$this->__plugin_pack->plugins_ready = true;
+		}
+		return $this->__plugin_pack;
+	}
+
+	/**
 		@brief		Save the user's last used settings.
 		@details	Since v8 the data is stored in the user's meta.
 		@since		2014-10-09 06:19:53
@@ -708,6 +856,9 @@ class ThreeWP_Broadcast
 			'database_version' => 0,							// Version of database and settings
 			'debug' => false,									// Display debug information?
 			'debug_ips' => '',									// List of IP addresses that can see debug information, when debug is enabled.
+			'debug_to_browser' => false,						// Display debug info in the browser?
+			'debug_to_file' => false,							// Save debug info to a file.
+			'save_post_decoys' => 1,							// How many nop() hooks to insert into the save_post action before Broadcast itself.
 			'save_post_priority' => 640,						// Priority of save_post action. Higher = lets other plugins do their stuff first
 			'override_child_permalinks' => false,				// Make the child's permalinks link back to the parent item?
 			'post_types' => 'post page',						// Custom post types which use broadcasting
@@ -718,24 +869,8 @@ class ThreeWP_Broadcast
 			'role_broadcast_scheduled_posts' => [ 'super_admin' ],	// Role required to broadcast scheduled, future posts
 			'role_taxonomies' => [ 'super_admin' ],					// Role required to broadcast the taxonomies
 			'role_custom_fields' => [ 'super_admin' ],				// Role required to broadcast the custom fields
+			'savings_calculator_data' => '',						// Data for the savings calculator.
 		], parent::site_options() );
-	}
-
-	/**
-		@brief		Does the user have any of these roles?
-		@since		2015-03-17 18:57:33
-	**/
-	public static function user_has_roles( $roles )
-	{
-		if ( is_super_admin() )
-			return true;
-
-		if ( ! is_array( $roles ) )
-			$roles = [ $roles ];
-		$user_roles = static::get_user_capabilities();
-		$user_roles = array_keys ( $user_roles );
-		$intersect = array_intersect( $user_roles, $roles );
-		return count( $intersect ) > 0;
 	}
 
 	/**

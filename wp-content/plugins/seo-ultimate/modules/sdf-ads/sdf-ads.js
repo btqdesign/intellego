@@ -8,17 +8,18 @@ jQuery(document).ready(function($) {
 	var sds_promo_blog_post = $('#sds_promo_blog_post').html();
 	var banners_remote = ({
 "banners": [
-{"banner_img":"InternalLinkBanner.jpg", "banner_link":"https://seodesignframework.leadpages.net/internal-links/"},
-{"banner_img":"MetaWritingBanner.jpg", "banner_link":"https://seodesignframework.leadpages.net/meta-titles-descriptions/"}
+{"banner_img":"seo-design-framework-banner.jpg", "banner_link":"http://www.seodesignframework.com/"},
+{"banner_img":"sdf-website-silo-architecture.png", "banner_link":"http://www.seodesignframework.com/website-silo-architecture/"},
+{"banner_img":"seo-ultimate-plugin-done-for-you-service.jpg", "banner_link":"http://go.seoultimateplus.com/done-for-you"},
+{"banner_img":"seo-ultimate-plus-video-training.jpg", "banner_link":"https://seodesignframework.leadpages.co/seo-ultimate-video-training/"},
+{"banner_img":"seo-ultimate-wordpress-dashboard.png", "banner_link":"http://go.seoultimateplus.com/get-help"}
 ],
 "slides": [
 {"slide_cap":"<h3>Download Jeffrey’s Brain</h3><p>Get Equipped for Success - Tips from Our Founder. Download: 20 SEO Tips, SEO for Large Websites and the Organic SEO EBook today.</p>", "slide_link":"http://www.seodesignframework.com/ebooks/"},
-{"slide_cap":"<h3>Got Design?</h3><p>Unleash Your Best Design Concepts with Drag-n-Drop Controls that Give You the Power to Implement Complex Designs Quickly and Easily</p>", "slide_link":"http://www.seodesignframework.com/sdf-drag-and-drop-page-builder/"},
-{"slide_cap":"<h3>Silos Made Easy</h3><p>Deploy Perfect Website Silo Architecture Quickly and Easily with the SEO Design Framework.</p>", "slide_link":"http://www.seodesignframework.com/website-silo-architecture/"},
-{"slide_cap":"<h3>What, No Control?</h3><p>Become Master of your Blog with Page-Level Controls that Liberate Designs and Crush Limitations of other Themes and Frameworks.</p>", "slide_link":"http://www.seodesignframework.com/page-level-controls/"}
+{"slide_cap":"<h3>Silos Made Easy</h3><p>Deploy Perfect Website Silo Architecture Quickly and Easily with the SEO Design Framework.</p>", "slide_link":"http://www.seodesignframework.com/website-silo-architecture/"}
 ],
 "dashboard_widget": [
-{"title":"Introducing SEO Ultimate+", "content":"<a rel=\"nofollow\" target=\"_blank\" title=\"SEO Ultimate+\" href=\"http://www.seoultimateplus.com\"><img src=\"" + suModulesSdfAdsSdfAdsL10n.sdf_banners_url + "SEO-Ultimate-Dashboard-Bannner-1.jpg\" alt=\"SEO Ultimate+\" /></a><p>To Get Premium Support and Exclusive New Features.<br />Upgrade to <a rel=\"nofollow\" target=\"_blank\" title=\"SEO Ultimate+\" href=\"http://www.seoultimateplus.com\">SEO Ultimate+</a> Today!</p>"}
+{"title":"Supercharge your SEO", "content":"<p>Get access to <a rel=\"nofollow\" target=\"_blank\" title=\"SEO Ultimate video training\" href=\"http://go.seoultimateplus.com/get-help/\">detailed video training</a> and more.</p><a rel=\"nofollow\" target=\"_blank\" title=\"SEO Ultimate video training\" href=\"http://go.seoultimateplus.com/get-help/\"><img src=\"" + suModulesSdfAdsSdfAdsL10n.sdf_banners_url + "seo-ultimate-wordpress-dashboard.png\" alt=\"SEO Ultimate video training\" /></a>"}
 ]
 })
 

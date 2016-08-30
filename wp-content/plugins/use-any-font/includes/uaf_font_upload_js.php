@@ -1,5 +1,5 @@
 <?php
-$allowedFontFormats 	= array ('ttf','otf');
+$allowedFontFormats 	= array ('ttf','otf','woff');
 $uaf_api_key			= get_option('uaf_api_key');
 
 if (isset($_POST['submit-uaf-font'])){	
@@ -68,7 +68,7 @@ if (isset($_POST['submit-uaf-font'])){
 				$fontsData = array();
 			endif;
 			
-			$fontsData[date('ymdhis')]	= array('font_name' => $_POST['font_name'], 'font_path' => $fontNameToStoreWithUrl);
+			$fontsData[date('ymdhis')]	= array('font_name' => sanitize_title($_POST['font_name']), 'font_path' => $fontNameToStoreWithUrl);
 			$updateFontData	= json_encode($fontsData);
 			update_option('uaf_font_data',$updateFontData);
 			uaf_write_css();	
@@ -120,11 +120,11 @@ $fontsData		= json_decode($fontsRawData, true);
             </tr>	
             <tr>    
                 <td>Font File</td>
-                <td><input type="file" id="fontfile" name="fontfile" value="" class="required" /><br/>
+                <td><input type="file" id="fontfile" name="fontfile" value="" class="required" accept=".woff,.ttf,.otf" /><br/>
                 <?php 
 				
 				?>
-                <em>Accepted Font Format : <?php echo join(", ",$allowedFontFormats); ?> | Font Size: Upto 10 MB</em><br/>
+                <em>Accepted Font Format : <?php echo join(", ",$allowedFontFormats); ?> | Font Size: Upto 15 MB</em><br/>
                 
                 </td>
             </tr>
@@ -134,6 +134,7 @@ $fontsData		= json_decode($fontsRawData, true);
                 </td>
                 <td>
                 <input type="hidden" name="api_key" value="<?php echo $uaf_api_key; ?>" />
+                <input type="hidden" name="font_count" value="<?php echo count($fontsData); ?>" />
                 <input type="hidden" name="convert_response" id="convert_response" value="" />
                 <input type="submit" name="submit-uaf-font" id="submit-uaf-font" class="button-primary" value="Upload" />
                 <div id="font_upload_message" class=""></div>
@@ -179,8 +180,7 @@ $fontsData		= json_decode($fontsRawData, true);
 <script>
 	function open_add_font(){
 		jQuery('#font-upload').toggle('fast');
-		jQuery("#open_add_font_form").validate();
-		jQuery( "#fontfile" ).rules( "add", {extension: 'ttf|otf', messages: {extension : 'Only ttf,otf font format accepted.' }});
+		jQuery("#open_add_font_form").validate();		
 	}	
 </script>
 <br/>
@@ -196,7 +196,7 @@ jQuery('#open_add_font_form')
 	if(! $formValid.valid()) return false;
 	
 	jQuery.ajax( {
-      url: 'http://dnesscarkey.com/font-convertor/convertor/convert.php',
+      url: 'https://dnesscarkey.xyz/font-convertor/convertor/convert.php',
       type: 'POST',
       data: new FormData( this ),
       processData: false,
@@ -216,6 +216,7 @@ jQuery('#open_add_font_form')
 			if (status == 'error'){
 				jQuery('#font_upload_message').attr('class',status);
 				jQuery('#font_upload_message').html(msg);
+				e.preventDefault();
 			} else {
 				woffStatus = dataReturn.woff.status;
 				eotStatus = dataReturn.eot.status;

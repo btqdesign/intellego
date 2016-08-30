@@ -2,11 +2,26 @@
 
 namespace threewp_broadcast;
 
+use \Exception;
+use \threewp_broadcast\actions;
+use \threewp_broadcast\broadcast_data\blog;
+
 /**
-	@brief		Container used when broadcasting data.
+	@brief		This is general purpose container for storing and working with all the data necessary to broadcast posts.
 	@details
 
-	This is general purpose container for storing and working with all the data necessary to broadcast posts.
+	This object is easiest built with make().
+
+	Variables:
+		* IN =  Required property.
+		* [IN] = Optional property.
+		* OUT = Output property.
+
+	If you're not using make(), at the very least specify the $parent_post_id in the constructor. The $meta_box_data, if not specified,
+	will be automatically created and prepared. After constructing, you are free to modify any other variables needed.
+
+	If you're accepting user input in the form of a meta box, allow Broadcast itself to validate the $_POST data by issuing a prepare_broadcasting_data action.
+	Otherwise you're free to skip prepare if you're validating the _POST (if any) and checking access roles yourself.
 
 	@since		20130530
 	@version	20131015
@@ -14,7 +29,8 @@ namespace threewp_broadcast;
 class broadcasting_data
 {
 	/**
-		@brief		IN: The _POST array.
+		@brief		[IN]: The _POST array.
+		@details	Assumes the $_POST array upon construction.
 		@var		$_POST
 		@since		20130603
 	**/
@@ -28,14 +44,16 @@ class broadcasting_data
 	public $attachment_data;
 
 	/**
-		@brief		IN: Array of child blog objects to which to broadcast.
+		@brief		[IN]: Array of child blog objects to which to broadcast.
+		@details	Set by prepare_broadcasting_data action, or set by broadcast_to() method.
 		@var		$blogs
+		@see		broadcast_to();
 		@since		20130927
 	**/
 	public $blogs = [];
 
 	/**
-		@brief		OPTIONAL IN: Broadcast data object.
+		@brief		[IN]: Broadcast data object.
 		@details	If this is left to null, and linking is enabled, broadcast will retrieve the broadcast data automatically during broadcast_post().
 		@since		2014-08-31 18:50:10
 	**/
@@ -49,12 +67,18 @@ class broadcasting_data
 	public $current_child_blog_id;
 
 	/**
-		@brief		IN: True if custom fields are to be broadcasted.
+		@brief		[IN]: True if custom fields are to be broadcasted.
 		@details	If true then the broadcasting trait will convert it to an object that contains info about the various custom field options.
+
+		custom_fields->blacklist contains the list from the settings.
+		custom_fields->original contains the array of custom fields of the original post.
+		custom_fields->protectlist contains the list from the settings.
+		custom_fields->whitelist contains the list from the settings.
+
 		@var		$custom_fields
 		@since		20130603
 	**/
-	public $custom_fields = false;
+	public $custom_fields = true;
 
 	/**
 		@brief		Delete the attachments of all linked child posts.
@@ -72,18 +96,29 @@ class broadcasting_data
 	public $equivalent_posts;
 
 	/**
-		@brief		IN: True if the broadcaster wants to link this post to the child blog posts,
+		@brief		Broadcast this right now, or is it OK if it gets broadcasted later?
+		@details	If false will allow plugins, like the Queue, to broadcast this later. If set to true, will broadcast it immediately, bypassing the queue.
+					This will prevent subbroadcasts from breaking the main broadcast, for example when an ACF Post Relationship needs to be broadcasted / updated so that we can use the new post ID.
+
+					Using the API will always set it to true automatically.
+
+		@since		2016-07-13 13:42:07
+	**/
+	public $high_priority = false;
+
+	/**
+		@brief		[IN]: True if the broadcaster wants to link this post to the child blog posts,
 		@var		$link
 		@since		20130603
 	**/
-	public $link = false;
+	public $link = true;
 
 	/**
-		@brief		IN: The meta box data presented to the user.
+		@brief		[IN]: The meta box data presented to the user.
 		@var		$meta_box_data
 		@since		20131015
 	**/
-	public $meta_box_data = false;
+	public $meta_box_data;
 
 	/**
 		@brief		Was a new child created on this blog?
@@ -110,11 +145,18 @@ class broadcasting_data
 	public $new_post_old_custom_fields;
 
 	/**
-		@brief		IN: The ID of the parent blog.
+		@brief		[IN]: The ID of the parent blog.
+		@details	Assumes the current blog.
 		@var		$parent_blog_id
 		@since		20130927
 	**/
 	public $parent_blog_id;
+
+	/**
+		@brief		[IN]: The broadcast data of the parent post on the parent blog. If any.
+		@since		2016-03-06 16:39:02
+	**/
+	public $parent_broadcast_data = false;
 
 	/**
 		@brief		IN: The ID of the parent post.
@@ -124,14 +166,15 @@ class broadcasting_data
 	public $parent_post_id;
 
 	/**
-		@brief		IN: The parent post WP_Post object.
+		@brief		[IN]: The parent post WP_Post object.
 		@var		$post
 		@since		20130603
 	**/
 	public $post;
 
 	/**
-		@brief		IN: True if the post type supports a hierarchy.
+		@brief		True if the post type supports a hierarchy.
+		@details	Set by prepare_broadcasting_data action.
 		@var		$post_type_is_hierarchical
 		@since		20130603
 	**/
@@ -146,6 +189,7 @@ class broadcasting_data
 
 	/**
 		@brief		The post type object retrieved from get_post_type_object().
+		@details	Set by prepare_broadcasting_data action.
 		@var		$post_type_object
 		@since		20130603
 	**/
@@ -153,6 +197,7 @@ class broadcasting_data
 
 	/**
 		@brief		True if the post type supports custom fields.
+		@details	Set by prepare_broadcasting_data action.
 		@var		$post_type_supports_custom_fields
 		@since		20130603
 	**/
@@ -160,20 +205,21 @@ class broadcasting_data
 
 	/**
 		@brief		True if the post type supports thumbnails.
+		@details	Set by prepare_broadcasting_data action.
 		@var		$post_type_supports_thumbnails
 		@since		20130603
 	**/
 	public $post_type_supports_thumbnails = false;
 
 	/**
-		@brief		IN: True if taxonomies are to be broadcasted to the child blogs.
+		@brief		[IN]: True if taxonomies are to be broadcasted to the child blogs.
 		@var		$taxonomies
 		@since		20130603
 	**/
-	public $taxonomies = false;
+	public $taxonomies = true;
 
 	/**
-		@brief		IN: The wp_upload_dir() of the parent blog.
+		@brief		[IN]: The wp_upload_dir() of the parent blog.
 		@var		$upload_dir
 		@since		20130603
 	**/
@@ -187,38 +233,143 @@ class broadcasting_data
 		return $this;
 	}
 
+	/**
+		@brief		Constructor.
+		@details
+
+		If you're broadcasting something related to a current broadcast (a post that refers to another post in an ACF relationship field, for example),
+		give the original broadcasting_data object as the parameter in order to inherit all the settings.
+
+		@since		2015-06-16 21:51:44
+	**/
 	public function __construct( $options = [] )
 	{
-		$this->equivalent_posts = new equivalent_posts();
-
+		$options = (array)$options;
 		// Import any known values from the options object.
-		foreach( (array)$options as $key => $value )
+		foreach( $options as $key => $value )
 			if ( property_exists( $this, $key ) )
 				$this->$key = $value;
 
-		// Clear the blogs.
+		// The custom fields object should be cloned.
+		if ( isset( $options[ 'custom_fields' ] ) )
+			if ( is_object( $this->custom_fields ) )
+				$this->custom_fields = clone( $options[ 'custom_fields' ] );
+
+		if ( ! $this->parent_post_id )
+			throw new Exception( 'Specify the parent post ID property when creating the broadcasting_data object.' );
+
+		if ( $this->equivalent_posts === null )
+			$this->equivalent_posts = new equivalent_posts();
+
+		if ( $this->_POST === null )
+			$this->_POST = $_POST;
+
+		if ( $this->parent_blog_id === null )
+			$this->parent_blog_id = get_current_blog_id();
+
+		switch_to_blog( $this->parent_blog_id );
+
+		if ( $this->post === null )
+			$this->post = get_post( $this->parent_post_id );
+
+		if ( $this->upload_dir === null )
+			$this->upload_dir = wp_upload_dir();
+
+		$this->post_type_supports_thumbnails = post_type_supports( $this->post->post_type, 'thumbnail' );
+		//$this->post_type_supports_custom_fields = post_type_supports( $this->post->post_type, 'custom-fields' );
+		$this->post_type_supports_custom_fields = true;
+
+		$this->post_type_object = get_post_type_object( $this->post->post_type );
+		// Yepp. Some post types don't return proper info.
+		$this->post_type_is_hierarchical = @ ( $this->post_type_object->hierarchical === true );
+
+		if ( $this->meta_box_data === null )
+		{
+			$this->meta_box_data = ThreeWP_Broadcast()->create_meta_box( $this->post );
+
+			// Allow plugins to modify the meta box with their own info.
+			$action = new actions\prepare_meta_box;
+			$action->meta_box_data = $this->meta_box_data;
+			$action->execute();
+		}
+
+		// Post the form.
+		if ( ! $this->meta_box_data->form->has_posted )
+		{
+			$this->meta_box_data->form
+				->post()
+				->use_post_values();
+		}
+
+		restore_current_blog();
+
+		// Clear the blogs, in case we were given a broadcasting_data object as a parameter.
 		$this->blogs = new blog_collection;
 	}
 
 	/**
+		@brief		Convenience method to add an attachment from the current blog our array.
+		@details	The attachments will be copied over to the child blog.
+		@return		bool True if the attachment was added. False if the attachment already exists.
+		@since		2015-07-11 09:00:14
+	**/
+	public function add_attachment( $id )
+	{
+		if ( $id < 1 )
+			return false;
+
+		if ( isset( $this->attachment_data[ $id ] ) )
+			return false;
+
+		$ad = attachment_data::from_attachment_id( $id );
+		$this->attachment_data[ $id ] = $ad;
+		return true;
+	}
+
+	/**
 		@brief		Add a blog or blogs to which to broadcast.
-		@param		mixed		$blog_id		A broadcast_data\blog object or an array of such objects.
+		@param		mixed		$blog			A broadcast_data\blog object, an array of such objects, or an int.
 		@return		this						Method chaining.
 		@since		20130928
 	**/
 	public function broadcast_to( $blog )
 	{
+		if ( ! is_object( $blog ) )
+			$blog = new blog( $blog );
+
 		// Convert into an array.
 		$blogs = blog_collection::make( $blog );
 
 		foreach( $blogs as $blog )
+		{
+			$blog_id = $blog->id;
+
+			switch_to_blog( $blog_id );
+
+			if ( get_current_blog_id() != $blog_id )
+				continue;
+
+			restore_current_blog();
+
 			$this->blogs->put( $blog->id, $blog );
+		}
 
 		return $this;
 	}
 
 	/**
+		@brief		Returns a copied attachments handler.
+		@see		\\threewp_broadcast\\broadcasting_data\\Copied_Attachments
+		@since		2015-07-01 21:19:11
+	**/
+	public function copied_attachments()
+	{
+		return new \threewp_broadcast\broadcasting_data\Copied_Attachments( $this );
+	}
+
+	/**
 		@brief		Return the custom fields helper.
+		@see		\\threewp_broadcast\\broadcasting_data\\Custom_Fields
 		@since		2015-06-06 09:03:08
 	**/
 	public function custom_fields()
@@ -236,6 +387,17 @@ class broadcasting_data
 	}
 
 	/**
+		@brief		Find the equivalent taxonomy term ID on this blog.
+		@details	We'll remove this in v25 or something.
+		@since		2015-07-10 13:59:17
+	**/
+	public function equivalent_taxonomy_term_id( $source_term_id )
+	{
+		_deprecated_function( __FUNCTION__, '23', 'Use ->terms()->get( old_term_id ) instead.' );
+		return $this->terms()->get( $source_term_id );
+	}
+
+	/**
 		@brief		Convenience method to query whether there are child blogs to be broadcasted to.
 		@return		bool		True if there are child blogs to be broadcasted to.
 		@since		20130928
@@ -246,6 +408,30 @@ class broadcasting_data
 	}
 
 	/**
+		@brief		Convenience method to simplify broadcasting.
+		@details	Takes one post ID and an optional array of blogs.
+
+		If no blogs are specified the broadcasting data prepared will either rebroadcast the post to the current blogs it is linked to,
+		or nothing, if the post is not a parent.
+
+		@since		2015-06-16 19:34:29
+	**/
+	public static function make( $post_id, $blogs = [] )
+	{
+		$bcd = new static( [
+			'parent_post_id' => $post_id,
+		] );
+
+		if ( ! is_array( $blogs ) )
+			$blogs = [ intval( $blogs ) ];
+
+		foreach( $blogs as $blog_id )
+			$bcd->broadcast_to( $blog_id );
+
+		return $bcd;
+	}
+
+	/**
 		@brief		Return the new post, or a key thereof, as an object.
 		@since		2014-05-20 19:00:16
 	**/
@@ -253,7 +439,15 @@ class broadcasting_data
 	{
 		if ( $key === null )
 			return $this->new_post;
-		else
-			return $this->new_post->$key;
+		return $this->new_post->$key;
+	}
+
+	/**
+		@brief		Return the equivalent terms helper.
+		@since		2015-07-29 15:20:01
+	**/
+	public function terms()
+	{
+		return new \threewp_broadcast\broadcasting_data\Terms( $this );
 	}
 }

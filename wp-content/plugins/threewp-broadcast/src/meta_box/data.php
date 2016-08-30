@@ -74,6 +74,8 @@ class data
 	**/
 	public function convert_form_input_later( $input_name )
 	{
+		if ( ! $this->html->has( $input_name ) )
+			$this->html->set( $input_name, '' );
 		$this->inputs_to_convert_later->set( $input_name, $input_name );
 	}
 

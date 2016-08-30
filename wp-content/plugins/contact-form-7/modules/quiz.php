@@ -14,15 +14,17 @@ function wpcf7_add_shortcode_quiz() {
 function wpcf7_quiz_shortcode_handler( $tag ) {
 	$tag = new WPCF7_Shortcode( $tag );
 
-	if ( empty( $tag->name ) )
+	if ( empty( $tag->name ) ) {
 		return '';
+	}
 
 	$validation_error = wpcf7_get_validation_error( $tag->name );
 
 	$class = wpcf7_form_controls_class( $tag->type );
 
-	if ( $validation_error )
+	if ( $validation_error ) {
 		$class .= ' wpcf7-not-valid';
+	}
 
 	$atts = array();
 
@@ -37,6 +39,7 @@ function wpcf7_quiz_shortcode_handler( $tag ) {
 	$atts['class'] = $tag->get_class_option( $class );
 	$atts['id'] = $tag->get_id_option();
 	$atts['tabindex'] = $tag->get_option( 'tabindex', 'int', true );
+	$atts['autocomplete'] = 'off';
 	$atts['aria-required'] = 'true';
 	$atts['aria-invalid'] = $validation_error ? 'true' : 'false';
 
@@ -147,14 +150,14 @@ add_filter( 'wpcf7_messages', 'wpcf7_quiz_messages' );
 function wpcf7_quiz_messages( $messages ) {
 	return array_merge( $messages, array( 'quiz_answer_not_correct' => array(
 		'description' => __( "Sender doesn't enter the correct answer to the quiz", 'contact-form-7' ),
-		'default' => __( 'Your answer is not correct.', 'contact-form-7' )
+		'default' => __( "The answer to the quiz is incorrect.", 'contact-form-7' )
 	) ) );
 }
 
 
 /* Tag generator */
 
-add_action( 'admin_init', 'wpcf7_add_tag_generator_quiz', 40 );
+add_action( 'wpcf7_admin_init', 'wpcf7_add_tag_generator_quiz', 40 );
 
 function wpcf7_add_tag_generator_quiz() {
 	$tag_generator = WPCF7_TagGenerator::get_instance();

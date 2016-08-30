@@ -14,6 +14,29 @@ use \threewp_broadcast\posts\actions\bulk\wp_ajax;
 trait post_actions
 {
 	/**
+		@brief		Add the post actions.
+		@since		2015-10-13 15:20:16
+	**/
+	public function post_actions_init()
+	{
+		$this->add_action( 'threewp_broadcast_get_post_actions' );
+		$this->add_action( 'threewp_broadcast_get_post_bulk_actions' );
+		$this->add_action( 'threewp_broadcast_manage_posts_custom_column', 5 );
+		$this->add_action( 'threewp_broadcast_post_action' );
+		$this->add_action( 'wp_ajax_broadcast_post_action_form' );
+		$this->add_action( 'wp_ajax_broadcast_post_bulk_action' );
+
+		// We need to keep track of linking.
+		$this->add_action( 'wp_trash_post', 'trash_post' );
+		$this->add_action( 'trash_post' );
+		$this->add_action( 'trash_page', 'trash_post' );
+		$this->add_action( 'untrash_post' );
+		$this->add_action( 'untrash_page', 'untrash_post' );
+		$this->add_action( 'delete_post' );
+		$this->add_action( 'delete_page', 'delete_post' );
+	}
+
+	/**
 		@brief		Adds post row actions
 		@since		20131015
 	**/
@@ -30,16 +53,6 @@ trait post_actions
 				$this->add_action( 'manage_pages_custom_column', 'manage_posts_custom_column', 10, 2 );
 			}
 
-			// Hook into the actions so that we can keep track of the broadcast data.
-			$this->add_action( 'wp_trash_post', 'trash_post' );
-			$this->add_action( 'trash_post' );
-			$this->add_action( 'trash_page', 'trash_post' );
-
-			$this->add_action( 'untrash_post' );
-			$this->add_action( 'untrash_page', 'untrash_post' );
-
-			$this->add_action( 'delete_post' );
-			$this->add_action( 'delete_page', 'delete_post' );
 		}
 	}
 
@@ -62,10 +75,6 @@ trait post_actions
 				};
 			</script>
 		' );
-
-		// Enqueue the popup js.
-		wp_enqueue_script( 'magnific-popup', $this->paths[ 'url' ] . '/js/jquery.magnific-popup.min.js', '', $this->plugin_version );
-		wp_enqueue_style( 'magnific-popup', $this->paths[ 'url' ] . '/css/magnific-popup.css', '', $this->plugin_version  );
 
 		$defaults[ '3wp_broadcast' ] = '<span title="'.$this->_( 'Shows which blogs have posts linked to this one' ).'">'.$this->_( 'Broadcasted' ).'</span>';
 		return $defaults;
@@ -101,11 +110,14 @@ trait post_actions
 	public function threewp_broadcast_get_post_actions( $action )
 	{
 		foreach( [
-			'delete' => 'Delete child',
-			'find_unlinked' => 'Find unlinked child',
-			'restore' => 'Restore child',
-			'trash' => 'Trash child',
-			'unlink' => 'Unlink child',
+			// Single post action in the popup
+			'delete' => $this->_( 'Delete child' ),
+			// Single post action in the popup
+			'restore' => $this->_( 'Restore child' ),
+			// Single post action in the popup
+			'trash' => $this->_( 'Trash child' ),
+			// Single post action in the popup
+			'unlink' => $this->_( 'Unlink child' ),
 		] as $slug => $name )
 		{
 			$a = new post_action;
@@ -125,10 +137,15 @@ trait post_actions
 		$ajax_action = 'broadcast_post_bulk_action';
 
 		foreach( [
+			// Bulk post action in the dropdown
 			'delete' => $this->_( 'Delete children' ),
+			// Bulk post action in the dropdown
 			'find_unlinked' => $this->_( 'Find unlinked children' ),
+			// Bulk post action in the dropdown
 			'restore' => $this->_( 'Restore children' ),
+			// Bulk post action in the dropdown
 			'trash' => $this->_( 'Trash children' ),
+			// Bulk post action in the dropdown
 			'unlink' => $this->_( 'Unlink' ),
 		] as $subaction => $name )
 		{
@@ -182,7 +199,8 @@ trait post_actions
 					foreach( $children as $child_blog_id => $child_post_id )
 					{
 						switch_to_blog( $child_blog_id );
-						$blogname = get_bloginfo( 'blogname' );
+						$info = get_blog_details();
+						$blogname = $info->blogname ? $info->blogname : $info->domain . $info->path;
 						$links[ $blogname ] = sprintf( '&#x21e8; %s', $blogname );
 						restore_current_blog();
 					}
@@ -220,16 +238,21 @@ trait post_actions
 			// Delete all children
 			case 'delete':
 				$broadcast_data = $this->get_post_broadcast_data( $blog_id, $post_id );
-				foreach( $broadcast_data->get_linked_children() as $child_blog_id => $child_post_id )
+				if ( $broadcast_data->get_linked_children() )
 				{
-					if ( ( $on_child_blog_id > 0 ) && ( $child_blog_id != $on_child_blog_id ) )
-						continue;
-					switch_to_blog( $child_blog_id );
-					wp_delete_post( $child_post_id, true );
-					$broadcast_data->remove_linked_child( $child_blog_id );
-					restore_current_blog();
+					foreach( $broadcast_data->get_linked_children() as $child_blog_id => $child_post_id )
+					{
+						if ( ( $on_child_blog_id > 0 ) && ( $child_blog_id != $on_child_blog_id ) )
+							continue;
+						switch_to_blog( $child_blog_id );
+						wp_delete_post( $child_post_id, true );
+						$broadcast_data->remove_linked_child( $child_blog_id );
+						restore_current_blog();
+					}
+					$broadcast_data = $this->set_post_broadcast_data( $blog_id, $post_id, $broadcast_data );
 				}
-				$broadcast_data = $this->set_post_broadcast_data( $blog_id, $post_id, $broadcast_data );
+				else
+					wp_delete_post( $post_id, true );
 			break;
 			case 'find_unlinked':
 				$post = get_post( $post_id );
@@ -247,12 +270,13 @@ trait post_actions
 
 					$blog->switch_to();
 
-					$args = array(
+					$args = [
 						'cache_results' => false,
 						'name' => $post->post_name,
-						'numberposts' => 2,
-						'post_type'=> $post->post_type,
-					);
+						'post_type' => $post->post_type,
+						'post_status' => $post->post_status,
+					];
+					$this->debug( 'Searching for posts on blog %s: %s', $args, $blog->id );
 					$posts = get_posts( $args );
 
 					// An exact match was found.
@@ -264,6 +288,7 @@ trait post_actions
 						if ( $child_broadcast_data->get_linked_parent() === false )
 							if ( ! $child_broadcast_data->has_linked_children() )
 							{
+								$this->debug( 'Adding linked child %s on blog %s', $unlinked->ID, $blog->id );
 								$broadcast_data->add_linked_child( $blog->id, $unlinked->ID );
 
 								// Add link info for the new child.
@@ -271,6 +296,8 @@ trait post_actions
 								$this->set_post_broadcast_data( $blog->id, $unlinked->ID, $child_broadcast_data );
 							}
 					}
+					else
+						$this->debug( 'Not exactly one match on blog.' );
 
 					$blog->switch_from();
 				}
@@ -279,26 +306,32 @@ trait post_actions
 			// Restore children
 			case 'restore':
 				$broadcast_data = $this->get_post_broadcast_data( $blog_id, $post_id );
-				foreach( $broadcast_data->get_linked_children() as $child_blog_id => $child_post_id )
-				{
-					if ( ( $on_child_blog_id > 0 ) && ( $child_blog_id != $on_child_blog_id ) )
-						continue;
-					switch_to_blog( $child_blog_id );
-					wp_publish_post( $child_post_id );
-					restore_current_blog();
-				}
+				if ( $broadcast_data->get_linked_children() )
+					foreach( $broadcast_data->get_linked_children() as $child_blog_id => $child_post_id )
+					{
+						if ( ( $on_child_blog_id > 0 ) && ( $child_blog_id != $on_child_blog_id ) )
+							continue;
+						switch_to_blog( $child_blog_id );
+						wp_publish_post( $child_post_id );
+						restore_current_blog();
+					}
+				else
+					wp_trash_post( $post_id );
 			break;
 			// Trash children
 			case 'trash':
 				$broadcast_data = $this->get_post_broadcast_data( $blog_id, $post_id );
-				foreach( $broadcast_data->get_linked_children() as $child_blog_id => $child_post_id )
-				{
-					if ( ( $on_child_blog_id > 0 ) && ( $child_blog_id != $on_child_blog_id ) )
-						continue;
-					switch_to_blog( $child_blog_id );
-					wp_trash_post( $child_post_id );
-					restore_current_blog();
-				}
+				if ( $broadcast_data->get_linked_children() )
+					foreach( $broadcast_data->get_linked_children() as $child_blog_id => $child_post_id )
+					{
+						if ( ( $on_child_blog_id > 0 ) && ( $child_blog_id != $on_child_blog_id ) )
+							continue;
+						switch_to_blog( $child_blog_id );
+						wp_trash_post( $child_post_id );
+						restore_current_blog();
+					}
+				else
+					wp_trash_post( $post_id );
 			break;
 			// Unlink children
 			case 'unlink':
@@ -349,6 +382,8 @@ trait post_actions
 		global $blog_id;
 		$broadcast_data = $this->get_post_broadcast_data( $blog_id, $post_id );
 
+		$this->debug( 'Intercepted %s on blog %s, post %s', $command, $blog_id, $post_id );
+
 		if ( $broadcast_data->has_linked_children() )
 		{
 			foreach( $broadcast_data->get_linked_children() as $childBlog=>$childPost)
@@ -359,6 +394,7 @@ trait post_actions
 					$this->delete_post_broadcast_data( $childBlog, $childPost );
 				}
 				switch_to_blog( $childBlog);
+				$this->debug( 'Running %s on blog %s, post %s', $command, $childBlog, $childPost );
 				$command( $childPost);
 				restore_current_blog();
 			}
@@ -458,8 +494,10 @@ trait post_actions
 		if ( $broadcast_data->get_linked_parent() !== false )
 		{
 			$unlink = $form->checkbox( 'unlink' )
+				// Description of unlink checkbox
 				->description_( 'Unlink this post from its parent.' )
-				->label( 'Unlink' );
+				// Label of unlink checkbox
+				->label_( 'Unlink' );
 			$has_links = true;
 		}
 
@@ -482,8 +520,10 @@ trait post_actions
 			foreach( $children as $child_blog_id => $child_post_id )
 			{
 				switch_to_blog( $child_blog_id );
+				$info = get_blog_details();
+				$blogname = $info->blogname ? $info->blogname : $info->domain . $info->path;
 				$select = $form->select( $child_blog_id )
-					->label( get_bloginfo( 'blogname' ) )
+					->label( $blogname )
 					->prefix( 'blogs' )
 					->options( $options )
 					;
@@ -499,7 +539,8 @@ trait post_actions
 			$json->html .= $this->p_( 'This post has no broadcast links.' );
 
 		$submit = $form->primary_button( 'submit' )
-			->value( 'Submit' );
+			// Submit button for post actions
+			->value_( 'Submit' );
 
 		if ( $form->is_posting() )
 		{

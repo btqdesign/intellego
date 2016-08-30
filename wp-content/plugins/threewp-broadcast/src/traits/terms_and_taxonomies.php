@@ -18,39 +18,14 @@ trait terms_and_taxonomies
 		Requires only that $bcd->post->post_type be filled in.
 		If $bcd->post->ID exists, only the terms used in the post will be collected, else all the terms will be inserted into $bcd->parent_post_taxonomies[ taxonomy ].
 
+		@see		threewp_broadcast_collect_post_type_taxonomies
 		@since		2014-04-08 13:40:44
 	**/
 	public function collect_post_type_taxonomies( $bcd )
 	{
-		$bcd->parent_blog_taxonomies = get_object_taxonomies( [ 'object_type' => $bcd->post->post_type ], 'array' );
-		$bcd->parent_post_taxonomies = [];
-		foreach( $bcd->parent_blog_taxonomies as $parent_blog_taxonomy => $taxonomy )
-		{
-			if ( isset( $bcd->post->ID ) )
-				$taxonomy_terms = get_the_terms( $bcd->post->ID, $parent_blog_taxonomy );
-			else
-				$taxonomy_terms = get_terms( [ $parent_blog_taxonomy ], [
-					'hide_empty' => false,
-				] );
-
-			// No terms = empty = false.
-			if ( ! $taxonomy_terms )
-				$taxonomy_terms = [];
-
-			$bcd->parent_post_taxonomies[ $parent_blog_taxonomy ] = $this->array_rekey( $taxonomy_terms, 'term_id' );
-
-			// Parent blog taxonomy terms are used for creating missing target term ancestors
-			$o = (object)[];
-			$o->taxonomy = $taxonomy;
-			$o->terms = $bcd->parent_post_taxonomies[ $parent_blog_taxonomy ];
-			$this->get_parent_terms( $o );
-
-			$bcd->parent_blog_taxonomies[ $parent_blog_taxonomy ] =
-			[
-				'taxonomy' => $taxonomy,
-				'terms'    => $o->terms,
-			];
-		}
+		$action = new actions\collect_post_type_taxonomies();
+		$action->broadcasting_data = $bcd;
+		$action->execute();
 	}
 
 	public function get_current_blog_taxonomy_terms( $taxonomy )
@@ -180,6 +155,8 @@ trait terms_and_taxonomies
 		] );
 		$target_terms = $this->array_rekey( $target_terms, 'term_id' );
 
+		$this->debug( 'Target terms: %s', $target_terms );
+
 		$refresh_cache = false;
 
 		// Keep track of which terms we've found.
@@ -216,9 +193,31 @@ trait terms_and_taxonomies
 			$this->debug( '%s taxonomies are missing on this blog.', count( $unfound_sources ) );
 			foreach( $unfound_sources as $unfound_source_id => $unfound_source )
 			{
-				// We need to clone to unset the parent.
+				// We need to clone because we will be modifying the source.
 				$unfound_source = clone( $unfound_source );
-				unset( $unfound_source->parent );
+
+				if ( $unfound_source->parent > 0 )
+				{
+					$this->debug( 'The unfound source needs a parent.' );
+					$parent_of_equivalent_source_term = $unfound_source->parent;
+					$unfound_source->parent = 0;
+					// Does the parent of the source have an equivalent target?
+					if ( isset( $found_sources[ $parent_of_equivalent_source_term ] ) )
+						$unfound_source->parent = $found_sources[ $parent_of_equivalent_source_term ];
+
+					// Recursively insert ancestors if needed, and get the target term's parent's ID
+					if ( $unfound_source->parent == 0 )
+					{
+						$this->debug( 'Inserting parent term for %s', $unfound_source->slug );
+						$unfound_source->parent = $this->insert_term_ancestors(
+							$unfound_source,
+							$taxonomy,
+							$found_targets,
+							$bcd->parent_blog_taxonomies[ $taxonomy ][ 'terms' ]
+						);
+					}
+				}
+
 				$action = new actions\wp_insert_term;
 				$action->taxonomy = $taxonomy;
 				$action->term = $unfound_source;
@@ -247,6 +246,7 @@ trait terms_and_taxonomies
 			$target_term = (object)$target_terms[ $target_term_id ];
 
 			$action = new actions\wp_update_term;
+			$action->broadcasting_data = $bcd;
 			$action->taxonomy = $taxonomy;
 
 			// The old term is the target term, since it contains the old values.
@@ -261,6 +261,7 @@ trait terms_and_taxonomies
 			if ( $source_term->parent > 0 )
 			{
 				$parent_of_equivalent_source_term = $source_term->parent;
+				$this->debug( 'Parent of equivalent source term: %s', $parent_of_equivalent_source_term );
 				// Does the parent of the source have an equivalent target?
 				if ( isset( $found_sources[ $parent_of_equivalent_source_term ] ) )
 					$new_parent = $found_sources[ $parent_of_equivalent_source_term ];
@@ -268,6 +269,7 @@ trait terms_and_taxonomies
 			else
 				$new_parent = 0;
 
+			$action->switch_data( 'parent' );
 			$action->new_term->parent = $new_parent;
 
 			$action->execute();
@@ -282,6 +284,70 @@ trait terms_and_taxonomies
 		// see: http://wordpress.org/support/topic/category_children-how-to-recalculate?replies=4
 		if ( $refresh_cache )
 			delete_option( 'category_children' );
+	}
+
+	/**
+		@brief		Convert all terms of a taxonomy into a tree.
+		@since		2015-07-11 22:22:04
+	**/
+	public function taxonomy_terms_to_tree( $taxonomy )
+	{
+		$terms = get_terms( $taxonomy, [
+			'hide_empty' => false,
+		] );
+		$tree = new \plainview\sdk_broadcast\tree\tree();
+		// Add root node 0, so that the terms can attach themselves to it.
+		foreach( $terms as $term )
+		{
+			$parent = ( $term->parent > 0 ? absint( $term->parent ) : null );
+			$tree->add( intval( $term->term_id ), $term, $parent );
+		}
+		return $tree;
+	}
+
+	/**
+		@brief		Collects the post type's taxonomies into the broadcasting data object.
+		@details
+
+		The taxonomies are places in $bcd->parent_blog_taxonomies.
+		Requires only that $bcd->post->post_type be filled in.
+		If $bcd->post->ID exists, only the terms used in the post will be collected, else all the terms will be inserted into $bcd->parent_post_taxonomies[ taxonomy ].
+
+		@see		collect_post_type_taxonomies
+		@since		2016-07-19 20:45:02
+	**/
+	public function threewp_broadcast_collect_post_type_taxonomies( $action )
+	{
+		$bcd = $action->broadcasting_data;
+		$bcd->parent_blog_taxonomies = get_object_taxonomies( [ 'object_type' => $bcd->post->post_type ], 'array' );
+		$bcd->parent_post_taxonomies = [];
+		foreach( $bcd->parent_blog_taxonomies as $parent_blog_taxonomy => $taxonomy )
+		{
+			if ( isset( $bcd->post->ID ) )
+				$taxonomy_terms = get_the_terms( $bcd->post->ID, $parent_blog_taxonomy );
+			else
+				$taxonomy_terms = get_terms( [ $parent_blog_taxonomy ], [
+					'hide_empty' => false,
+				] );
+
+			// No terms = empty = false.
+			if ( ! $taxonomy_terms )
+				$taxonomy_terms = [];
+
+			$bcd->parent_post_taxonomies[ $parent_blog_taxonomy ] = $this->array_rekey( $taxonomy_terms, 'term_id' );
+
+			// Parent blog taxonomy terms are used for creating missing target term ancestors
+			$o = (object)[];
+			$o->taxonomy = $taxonomy;
+			$o->terms = $bcd->parent_post_taxonomies[ $parent_blog_taxonomy ];
+			$this->get_parent_terms( $o );
+
+			$bcd->parent_blog_taxonomies[ $parent_blog_taxonomy ] =
+			[
+				'taxonomy' => $taxonomy,
+				'terms'    => $o->terms,
+			];
+		}
 	}
 
 	/**
@@ -340,6 +406,7 @@ trait terms_and_taxonomies
 	**/
 	public function threewp_broadcast_wp_update_term( $action )
 	{
+		$this->debug( 'wp_update_term: %s', $action->new_term );
 		$update = true;
 
 		// If we are given an old term, then we have a chance of checking to see if there should be an update called at all.
@@ -349,7 +416,10 @@ trait terms_and_taxonomies
 			$update = false;
 			foreach( [ 'name', 'description', 'parent' ] as $key )
 				if ( $action->old_term->$key != $action->new_term->$key )
+				{
+					$this->debug( 'Will update the term because of %s', $key );
 					$update = true;
+				}
 		}
 
 		if ( $update )

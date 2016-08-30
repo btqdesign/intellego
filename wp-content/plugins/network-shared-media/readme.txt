@@ -3,8 +3,8 @@ Contributors: joostdekeijzer
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=joost@dekeijzer.org&item_name=network-shared-media+WordPress+plugin&item_number=Joost+de+Keijzer&currency_code=EUR
 Tags: multisite, network, wpmu, media, image, photo, picture, mp3, video, integration
 Requires at least: 3.5
-Tested up to: 4.0
-Stable tag: 0.10.1
+Tested up to: 4.3
+Stable tag: 0.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,9 @@ This plugin only shows sites which attributes are set as follows:
 3. Show a selected image and "Insert into Post"
 
 == Changelog ==
+= 0.11 =
+* Removed media-upload.php file and the direct request for it. It was incompatible with setups where the plugins directory had been moved. Now, requests are done through /wp-admin/admin-ajax.php.
+* Tested with WordPress 4.3
 
 = 0.10.1 =
 * Added German translation (by realloc)

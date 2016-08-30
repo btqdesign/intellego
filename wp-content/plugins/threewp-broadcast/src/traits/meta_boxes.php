@@ -26,7 +26,7 @@ trait meta_boxes
 			$action = new actions\get_post_types;
 			$action->execute();
 			foreach( $action->post_types as $post_type )
-				add_meta_box( 'threewp_broadcast', $this->_( 'Broadcast' ), array( &$this, 'threewp_broadcast_add_meta_box' ), $post_type, 'side', 'low' );
+				add_meta_box( 'threewp_broadcast', $this->_( 'Broadcast' ), [ $this, 'threewp_broadcast_add_meta_box' ], $post_type, 'side', 'low' );
 			return;
 		}
 
@@ -136,29 +136,25 @@ trait meta_boxes
 		$meta_box_data->last_used_settings = $this->load_last_used_settings( $this->user_id() );
 
 		$post_type = $meta_box_data->post->post_type;
-		$post_type_object = get_post_type_object( $post_type );
 		$post_type_supports_thumbnails = post_type_supports( $post_type, 'thumbnail' );
-		$post_type_is_hierarchical = $post_type_object->hierarchical;
+
+		$post_type_object = get_post_type_object( $post_type );
+		// Yepp. Some post types don't return proper info.
+		$post_type_is_hierarchical = @ ( $post_type_object->hierarchical === true );
+
+		if ( is_super_admin() OR static::user_has_roles( $this->get_site_option( 'role_link' ) ) )
+		{
+			// Link checkbox should always be on.
+			$link_input = $form->checkbox( 'link' )
+				->checked( true )
+				->label_( 'Link this post to its children' )
+				->title( $this->_( 'Create a link to the children, which will be updated when this post is updated, trashed when this post is trashed, etc.' ) );
+			$meta_box_data->convert_form_input_later( 'link' );
+		}
 
 		// 20140327 Because so many plugins create broken post types, assume that all post types support custom fields.
 		// $post_type_supports_custom_fields = post_type_supports( $post_type, 'custom-fields' );
 		$post_type_supports_custom_fields = true;
-
-		if ( is_super_admin() OR static::user_has_roles( $this->get_site_option( 'role_link' ) ) )
-		{
-			// Check the link box if the post has been published and has children OR it isn't published yet.
-			$linked = (
-				( $published AND $meta_box_data->broadcast_data->has_linked_children() )
-				OR
-				! $published
-			);
-			$link_input = $form->checkbox( 'link' )
-				->checked( $linked )
-				->label_( 'Link this post to its children' )
-				->title( $this->_( 'Create a link to the children, which will be updated when this post is updated, trashed when this post is trashed, etc.' ) );
-			$meta_box_data->html->put( 'link', '' );
-			$meta_box_data->convert_form_input_later( 'link' );
-		}
 
 		if (
 			( $post_type_supports_custom_fields OR $post_type_supports_thumbnails )
@@ -170,7 +166,6 @@ trait meta_boxes
 				->checked( isset( $meta_box_data->last_used_settings[ 'custom_fields' ] ) )
 				->label_( 'Custom fields' )
 				->title( 'Broadcast all the custom fields and the featured image?' );
-			$meta_box_data->html->put( 'custom_fields', '' );
 			$meta_box_data->convert_form_input_later( 'custom_fields' );
 		}
 
@@ -180,7 +175,6 @@ trait meta_boxes
 				->checked( isset( $meta_box_data->last_used_settings[ 'taxonomies' ] ) )
 				->label_( 'Taxonomies' )
 				->title( 'The taxonomies must have the same name (slug) on the selected blogs.' );
-			$meta_box_data->html->put( 'taxonomies', '' );
 			$meta_box_data->convert_form_input_later( 'taxonomies' );
 		}
 
@@ -204,10 +198,14 @@ trait meta_boxes
 
 		foreach( $blogs as $blog )
 		{
-			$blogs_input->option( $blog->blogname, $blog->id );
+			$label = $form::unfilter_text( $blog->get_name() );
+			if ( $label == '' )
+				$label = $blog->domain;
+
+			$blogs_input->option( $label, $blog->id );
 			$input_name = 'blogs_' . $blog->id;
 			$option = $blogs_input->input( $input_name );
-			$option->get_label()->content = $form::unfilter_text( $blog->blogname );
+			$option->get_label()->content = htmlspecialchars( $label );
 			$option->css_class( 'blog ' . $blog->id );
 			if ( $blog->is_disabled() )
 				$option->disabled()->css_class( 'disabled' );
@@ -222,8 +220,23 @@ trait meta_boxes
 				$option->hidden();
 		}
 
-		$meta_box_data->html->put( 'blogs', '' );
 		$meta_box_data->convert_form_input_later( 'blogs' );
+
+		$unchecked_child_blogs = $form->select( 'unchecked_child_blogs' )
+			->css_class( 'blogs checkboxes' )
+			// Input title
+			->title_( 'What to do with unchecked, linked child blogs' )
+			// Input label
+			->label_( 'With the unchecked child blogs' )
+			// With the unchecked child blogs:
+			->option_( 'Do not update', '' )
+			// With the unchecked child blogs:
+			->option_( 'Delete the child post', 'delete' )
+			// With the unchecked child blogs:
+			->option_( 'Trash the child post', 'trash' )
+			// With the unchecked child blogs:
+			->option_( 'Unlink the child post', 'unlink' );
+		$meta_box_data->convert_form_input_later( 'unchecked_child_blogs' );
 
 		$js = sprintf( '<script type="text/javascript">var broadcast_blogs_to_hide = %s;</script>', $this->get_site_option( 'blogs_to_hide', 5 ) );
 		$meta_box_data->html->put( 'blogs_js', $js );
