@@ -106,6 +106,12 @@ display: none !important;
 .breadcrumb-sec{
 	min-height: 500px!important;
 }
+.page-title-align-center h1{
+	font-size: 60px !important;
+}
+.page-title-align-center p{
+	font-size: 25px !important;
+}
 
 
 iframe {width: 100%;}
