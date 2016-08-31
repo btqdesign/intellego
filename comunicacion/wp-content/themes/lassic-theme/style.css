@@ -452,7 +452,7 @@ body.category .cs-category li { width:100%;}
 .blog-carousel.owl-carousel article { float: left; width: 100%; }
 .blog-carousel.owl-carousel figure figcaption a img { width: auto; float: none; display: inline-block; }
 .blog-carousel { float: left; width: 100%; }
-	.blog-carousel.cs-prv-next .owl-controls { top: -50px; right: 15px; }
+	.blog-carousel.cs-prv-next .owl-controls { top: -28px; right: 15px; }
 .cs-partner ul li figure img {width: auto;}
 .cs-partner ul li {text-align: center;}
 	.cs-partner ul li figure { display: inline-block; margin-bottom: 0px; }
