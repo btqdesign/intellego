@@ -941,7 +941,7 @@ if ( ! function_exists( 'cs_theme_option' ) ) {
 						"desc" => "",
 						"hint_text" => "",
 						"id" => "cs_heading_h4_color",
-						"std" => "#262626",
+						"std" => "#ff9900",
 						"type" => "color"
 					);
 	
