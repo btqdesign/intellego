@@ -163,7 +163,7 @@
                     }
                     ?>
                     <div class="cs-post-panel">
-                        <h2><?php the_title(); ?></h2>
+                        <!--<h2><?php the_title(); ?></h2>-->
                         <ul class="cs-category">
                             <?php  
                                 $categories_list = get_the_term_list ( get_the_id(), 'category', '', '', '' );
