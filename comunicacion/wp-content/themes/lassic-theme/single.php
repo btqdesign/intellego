@@ -164,6 +164,7 @@
                     ?>
                     <div class="cs-post-panel">
                         <!--<h2><?php the_title(); ?></h2>-->
+						<!--
                         <ul class="cs-category">
                             <?php  
                                 $categories_list = get_the_term_list ( get_the_id(), 'category', '', '', '' );
@@ -173,7 +174,7 @@
                                       echo '<i class="icon-arrow-down10"></i></li>';
                                 }
                             ?>
-                        </ul> 
+                        </ul> -->
                         <ul class="cs-post-options">
                             <!--<li><i class="icon-user9"></i><a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>"><?php the_author(); ?></a></li>-->
                             <li><i class=" icon-calendar11"></i><time datetime="<?php echo get_the_date('y-m-d',get_the_id()); ?>">
