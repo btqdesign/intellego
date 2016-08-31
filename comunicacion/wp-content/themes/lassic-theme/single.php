@@ -175,8 +175,9 @@
                                 }
                             ?>
                         </ul> -->
+						<!--
                         <ul class="cs-post-options">
-                            <!--<li><i class="icon-user9"></i><a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>"><?php the_author(); ?></a></li>-->
+                            <!--<li><i class="icon-user9"></i><a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>"><?php the_author(); ?></a></li>- ->
                             <li><i class=" icon-calendar11"></i><time datetime="<?php echo get_the_date('y-m-d',get_the_id()); ?>">
                                 <?php echo get_the_date('F d ,Y',get_the_id()); ?></time>
                             </li>
@@ -185,6 +186,7 @@
                                 <a href="<?php comments_link(); ?>"><?php _e('Comments','lassic');?></a>
                             </li>
                         </ul>
+						-->
                         <div class="cs-editor-text cs-blog-editor lightbox">
                             <?php 
                                 the_content();
