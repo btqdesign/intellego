@@ -14,8 +14,8 @@ defined('ABSPATH') or die();
 	</div>
 	<ul>
 		<li class='badge-free' data-badge='free'>Upload, Download, Delete</li>
-		<li class='badge-pro' data-badge='pro'>Copy, Move, Create, Rename, Archive, Extract, Edit</li>
-		<li class='badge-pro' data-badge='pro'>Supports all mime types</li>
+		<li class='badge-free' data-badge='free'>Copy, Move, Create, Rename, Archive, Extract, Edit</li>
+		<li class='badge-free' data-badge='free'>Supports all mime types</li>
 		<li class='badge-pro' data-badge='pro'>Frontend Support</li>
 		<li class='badge-pro' data-badge='pro'>File Sharing</li>
 		<li class='badge-pro' data-badge='pro'>File Type Control</li>

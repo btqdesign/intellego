@@ -227,9 +227,10 @@ abstract class FM_BootStart{
 		if( empty( $this->menu_data ) ) return;
 
 		if($this->menu_data['type'] == 'menu'){
-			// @ add_menu_page( $this->name, $this->name, 'manage_options', $this->prefix, array($this, 'admin_page'));
-			add_menu_page( $this->name, $this->name, 'manage_options', $this->prefix.'_settings', array(&$this, 'admin_panel'), $this->url('img/icon-24x24.png'), 7 );
-			// @ add_posts_page( 'V Movies', 'V Movies', 'manage_options', 'v-movies', array($this, 'admin_panel') );
+			
+			add_menu_page( $this->name, $this->name, 'manage_options', $this->prefix, array(&$this, 'admin_panel'), $this->url('img/icon-24x24.png'), 7 );
+			add_submenu_page( $this->prefix, __( 'File Manager Settings' ), 'Settings', 'manage_options', $this->zip( 'File Manager Settings' ), array( &$this, 'settings' ) );
+			
 		}
 
 	}
@@ -246,7 +247,19 @@ abstract class FM_BootStart{
 		$this->render('', 'admin/index');
 
 	 }
+	
+	/**
+	 * Adds a settings page
+	 * 
+	 * */
+	public function settings(){
+		
+		if(!current_user_can('manage_options')) die( $this->render('', 'access-denied') );
 
+		$this->render('', 'admin/settings');
+		
+	}
+	
 	/**
 	 *
 	 * Absolute path finder

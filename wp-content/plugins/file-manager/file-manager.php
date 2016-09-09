@@ -1,10 +1,9 @@
 <?php
 /**
- * 
+ *
  * Plugin Name: File Manager
- * Author: Aftabul Islam
- * Author URI: www.giribaz.website
- * Version: 3.1.0
+ * Author Name: Aftabul Islam
+ * Version: 4.0.3
  * Author Email: toaihimel@gmail.com
  * License: GPLv2
  * Description: Manage your file the way you like. You can upload, delete, copy, move, rename, compress, extract files. You don't need to worry about ftp. It is realy simple and easy to use.
@@ -25,7 +24,7 @@ class FM extends FM_BootStart {
 		$this->menu_data = array(
 			'type' => 'menu',
 		);
-		
+
 		// Adding Ajax
 		$this->add_ajax('connector'); // elFinder ajax call
 		$this->add_ajax('valid_directory'); // Checks if the directory is valid or not
@@ -36,25 +35,64 @@ class FM extends FM_BootStart {
 		add_filter('plugin_action_links', array(&$this, 'plugin_page_links'), 10, 2);
 		
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * File manager connector function
-	 * 
+	 *
 	 * */
 	public function connector(){
 		
-		if( !defined('FILE_MANAGER_PREMIUM') && !defined('FILE_MANAGER_BACKEND') ){
-			$file_operations = array( 'mkdir', 'mkfile', 'rename', 'duplicate', 'paste', 'ban', 'archive', 'extract', 'copy', 'cut', 'edit' );
-			$mime_allowed = array('text/plain');
-			$mime_denied = array('image');
-		} else {
+		//~ Holds the list of avilable file operations.
+		$file_operation_list = array( 
+			'open', // Open directory
+			'ls',   // File list inside a directory
+			'tree', // Subdirectory for required directory
+			'parents', // Parent directory for required directory 
+			'tmb', // Newly created thumbnail list  
+			'size', // Count total file size 
+			'mkdir', // Create directory
+			'mkfile', // Create empty file
+			'rm', // Remove dir/file
+			'rename', // Rename file
+			'duplicate', // Duplicate file - create copy with "copy %d" suffix
+			'paste', // Copy/move files into new destination
+			'upload', // Save uploaded file
+			'get', // Return file content
+			'put', // Save content into text file
+			'archive', // Create archive
+			'extract', // Extract files from archive
+			'search', // Search files
+			'info', // File info
+			'dim', // Image dimmensions 
+			'resize', // Resize image
+			'url', // content URL
+			'ban', // Ban a user
+			'copy', // Copy a file/folder to another location
+			'cut', // Cut for file/folder
+			'edit', // Edit for files
+			'upload', // Upload A file
+			'download', // download A file
+			);
 		
-			$file_operations = array();
-			$mime_allowed = array('text/plain', 'image');
-			$mime_denied = array();
+		// Disabled file operations
+		$file_operation_disabled = array( 'url', 'info' );
+		
+		// Allowed mime types 
+		$mime_allowed = array( 
+			'text',
+			'image', 
+			'video', 
+			'audio', 
+			'application',
+			'model',
+			'chemical',
+			'x-conference',
+			'message',
+			 
+			);
 			
-		}
+		$mime_denied = array();
 		
 		$opts = array(
 			'debug' => true,
@@ -65,17 +103,18 @@ class FM extends FM_BootStart {
 					'URL'           => site_url(),                  // URL to files (REQUIRED)
 					'uploadDeny'    => $mime_denied,                // All Mimetypes not allowed to upload
 					'uploadAllow'   => $mime_allowed,               // Mimetype `image` and `text/plain` allowed to upload
-					'uploadOrder'   => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
+					'uploadOrder'   => array('allow', 'deny'),      // allowed Mimetype `image` and `text/plain` only
 					'accessControl' => 'access',
-					'disabled'      => $file_operations             // disable and hide dot starting files (OPTIONAL)
+					'disabled'      => $file_operations_disabled    // List of disabled operations
+					//~ 'attributes'
 				)
 			)
 		);
-		
+
 		$elFinder = new FM_EL_Finder();
 		$elFinder = $elFinder->connect($opts);
 		$elFinder->run();
-				
+
 		die();
 	}
 	
@@ -102,7 +141,7 @@ class FM extends FM_BootStart {
 		
 		return $links;
 	}
-
+	
 }
 
 global $FileManager;

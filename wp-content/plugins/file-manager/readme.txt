@@ -1,9 +1,9 @@
 === File Manager ===
-Contributors: aihimel
-Donate link: http://www.giribaz.website/
+Contributors: aihimel, shovonchoudhury
+Donate link: http://www.giribaz.com/
 Tags: file manager, wordpress file manager, wp file manager, FTP, elfinder, file Browser, manage files, upload, delete, rename, copy, move, online file browser, remote file manager, drag and drop, folder upload
 Requires at least: 4.4.0
-Tested up to: 4.5.3
+Tested up to: 4.6.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -15,27 +15,25 @@ Manage your file the way you like. You can upload, delete, copy, move, rename, c
 Most robust and powerful file manager for wordpress. You can upload, delete, copy, move, rename, archive, extract files. You don't need to worry about ftp any more. It is realy simple and easy to use.
 Just install the plugin following standard wordpress plugin install process and visit your dashbord. You will find a side menu called file manager. Just click on it to open file manager.
 
-> <strong>[Extend File Manager](http://www.giribaz.website/)</strong> with tons of features and priority support.
+> <strong>[Extend File Manager](http://www.giribaz.com/)</strong> with tons of features and priority support.
 
-> <strong>toaihimel@gmail.com</strong> for contact.
+<strong>[Documentation](http://www.giribaz.com/file-manager-documentation/)</strong> See detail documentation here.
 
-<strong>[Documentation](http://www.giribaz.website/file-manager-documentation/)</strong> See detail documentation here.
-
-<strong>[Get Express Support](http://www.giribaz.website/support/)</strong> Open a support ticket to get support quickly.
+<strong>[Get Express Support](http://www.giribaz.com/support/)</strong> Open a support ticket to get support quickly.
 
 = Key Features =
 
 + Upload, Download and Delete operations
-+ All operations with files and folders (copy, move, upload, create folder/file, rename, archive, extract, edit, etc.) (pro only)
++ All operations with files and folders (copy, move, upload, create folder/file, rename, archive, extract, edit, etc.) 
 + Light and Elegant client UI
 + Drag & Drop file upload support
 + List and Icons view available
 + Alternative to FTP
-+ Archives create/extract (zip, rar, 7z, tar, gzip, bzip2) (pro only)
-+ Image and File Edit Support (pro only)
++ Archives create/extract (zip, rar, 7z, tar, gzip, bzip2) 
++ Image and File Edit Support 
 + Quicklook, preview for common file types
 + Calculate directory sizes
-+ Video and audio preview/play (pro only)
++ Video and audio preview/play 
 + Support file search and sort
 
 = Extended Features =
@@ -70,7 +68,7 @@ Just install the plugin following standard wordpress plugin install process and 
 + **Maximum Operations:** Support 8 types of file operation control.
 + **Ban Roles/Users:** Ban Users and Roles.
 
-**[Extend File Manager](http://www.giribaz.website/)**
+**[Extend File Manager](http://www.giribaz.com/)**
 
 == Installation ==
 

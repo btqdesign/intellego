@@ -160,7 +160,7 @@ input[type=radio]
 	margin: 0;
 	position: fixed;
 	bottom: 0;
-	right: 0; 
+	right: 0;
 	z-index: 100;
 	background-color: #B10C0C;
 	padding: 10px;
@@ -170,8 +170,29 @@ input[type=radio]
 .footer-sticky-button a{
 	text-decoration: none;
 	color: white;
-	font-size: 1.5em;
+	font-size: 1.1em;
 }
+
+/*	Donation Area */
+.donation{
+	bottom: 0;
+	float: left;
+	z-index: 100;
+	border-radius: 5px;
+	position:fixed;
+	background-color: #B10C0C;
+}
+/* End Of Donation Area */
+
+/*Editor Font Re-fix*/
+.ui-widget textarea {
+    font-family: Verdana,Arial,sans-serif,Trebuchet MS,Tahoma;
+    font-size: 1.3em;
+		background-color: #f0f0f0;
+		padding:10px;
+		text-align:left;
+}
+/*Editor Font Re-fix*/
 
 .bootstart-admin-content{
 	max-width: 73%;
