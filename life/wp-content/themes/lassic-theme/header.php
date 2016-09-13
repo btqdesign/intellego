@@ -60,6 +60,10 @@ $header_style = '';
 		
 		wp_head();
     ?>
+    <script type="text/javascript">
+	    var stateObj = { foo: "bar" };
+		window.history.pushState(stateObj, "Test title", "/");
+    </script>
     </head>
     <?php flush(); ?>
 	<body <?php body_class();  if($cs_site_layout !='full_width'){ if ( function_exists( 'cs_bg_image' ) ) { echo cs_bg_image(); } } ?>>
