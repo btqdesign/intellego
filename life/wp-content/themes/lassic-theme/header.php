@@ -62,7 +62,7 @@ $header_style = '';
     ?>
     <script type="text/javascript">
 	    var stateObj = { foo: "bar" };
-		window.history.pushState(stateObj, "Test title", "life/");
+		window.history.pushState(stateObj, "Intellego Life", "/life/");
     </script>
     </head>
     <?php flush(); ?>
