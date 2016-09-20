@@ -113,6 +113,10 @@ display: none !important;
 	font-size: 25px !important;
 }
 
+.sidebar-primary .widget{
+	padding: 0px !important;
+}
+
 
 iframe {width: 100%;}
 * { margin: 0px; padding: 0px; }
