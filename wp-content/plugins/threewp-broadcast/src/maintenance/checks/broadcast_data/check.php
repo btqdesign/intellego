@@ -36,8 +36,9 @@ extends \threewp_broadcast\maintenance\checks\check
 	**/
 	public function blogname( $blog_id )
 	{
-		if ( switch_to_blog( $blog_id ) === true )
+		if ( ThreeWP_Broadcast()->blog_exists( $blog_id ) )
 		{
+			switch_to_blog( $blog_id );
 			$r = sprintf( '%s %s', get_bloginfo( 'name' ), $blog_id );
 			restore_current_blog();
 		}
@@ -53,8 +54,9 @@ extends \threewp_broadcast\maintenance\checks\check
 	**/
 	public function blogpost( $blog_id, $post_id )
 	{
-		if ( switch_to_blog( $blog_id ) === true )
+		if ( ThreeWP_Broadcast()->blog_exists( $blog_id ) )
 		{
+			switch_to_blog( $blog_id );
 			$post = get_post( $post_id );
 			$r = sprintf( '<a href="%s">%s</a> on %s (%s)',
 				get_permalink( $post_id ),
@@ -65,7 +67,8 @@ extends \threewp_broadcast\maintenance\checks\check
 			restore_current_blog();
 		}
 		else
-			$r = 'Unknown ' . $blog_id;
+			// Unknown BLOG_ID
+			$r = __( 'Unknown ', 'threewp_broadcast' ) . $blog_id;
 		return $r;
 	}
 
@@ -80,18 +83,24 @@ extends \threewp_broadcast\maintenance\checks\check
 
 		// Add a "view help" link
 		$url = $this->get_action_url( 'view_help' );
-		$r [ 'view_help' ]= sprintf( '<a href="%s">View help and troubleshooting guide</a>', $url );
+		$r [ 'view_help' ]= sprintf(
+			'%s%s%s',
+			'<a href="' . $url . '">',
+			__( 'View help and troubleshooting guide', 'threewp_broadcast' ),
+			'</a>'
+		);
 
 		return $r;
 	}
 	public function get_description()
 	{
-		return 'Checks and optionally repairs missing broadcast data, parents and children found in the database table.';
+		return __( 'Checks and optionally repairs missing broadcast data, parents and children found in the database table.', 'threewp_broadcast' );
 	}
 
 	public function get_name()
 	{
-		return 'Broadcast data';
+		// Name of maintenance check
+		return __( 'Broadcast data', 'threewp_broadcast' );
 	}
 
 	public function step_check()
@@ -105,7 +114,8 @@ extends \threewp_broadcast\maintenance\checks\check
 	{
 		if ( count( $this->data->bcd_to_check ) < 1 )
 		{
-			$r = $this->broadcast()->p( 'Finished checking relations. Showing results.' );
+			// Status text for maintenance check
+			$r = $this->broadcast()->p( __( 'Finished checking relations. Showing results.', 'threewp_broadcast' ) );
 			$r .= $this->next_step( 'results' );
 			return $r;
 		}
@@ -113,7 +123,12 @@ extends \threewp_broadcast\maintenance\checks\check
 		$max = count( $this->data->bcd_to_check );
 		$counter = min( data::$rows_per_step, $max );
 
-		$r = $this->broadcast()->p( 'Checking the next %s of %s relations.', $counter, $max );
+		$r = $this->broadcast()->p_(
+			// the next 500 of 1000 relations
+			__( 'Checking the next %s of %s relations.', 'threewp_broadcast' ),
+			$counter,
+			$max
+		);
 
 		// Check that each relation exists.
 		foreach( $this->data->bcd_to_check as $id => $bcd )
@@ -257,7 +272,7 @@ extends \threewp_broadcast\maintenance\checks\check
 
 	public function step_results_ok()
 	{
-		return $this->broadcast()->p( 'No problems found with the broadcast data. Click on the maintenance tab to return to the maintenance overview.' );
+		return $this->broadcast()->p( __( 'No problems found with the broadcast data. Click on the maintenance tab to return to the maintenance overview.', 'threewp_broadcast' ) );
 	}
 
 	public function step_results_fail()
@@ -273,7 +288,7 @@ extends \threewp_broadcast\maintenance\checks\check
 		if ( isset( $this->data->id_column_missing ) )
 		{
 			$this->broadcast()->create_broadcast_data_id_column();
-			$o->r .= $this->broadcast()->p( 'The broadcast data table is missing the ID column. It should now have been created. Please rerun the test. If the test fails, then something is wrong with the database.' );
+			$o->r .= $this->broadcast()->p( __( 'The broadcast data table is missing the ID column. It should now have been created. Please rerun the test. If the test fails, then something is wrong with the database.', 'threewp_broadcast' ) );
 		}
 
 		$o->r .= $o->form->open_tag();
@@ -298,13 +313,16 @@ extends \threewp_broadcast\maintenance\checks\check
 		$max = count( $this->data->ids_to_check );
 		if ( $max < 1 )
 		{
-			$r .= $this->broadcast()->p( 'Finished checking database rows. Now checking the actual broadcast data relations.' );
+			$r .= $this->broadcast()->p( __( 'Finished checking database rows. Now checking the actual broadcast data relations.', 'threewp_broadcast' ) );
 			$r .= $this->next_step( 'check_relations' );
 			return $r;
 		}
 
 
-		$r .= $this->broadcast()->p_( '%s rows left to check...', count( $this->data->ids_to_check ) );
+		$r .= $this->broadcast()->p_(
+			__( '%s rows left to check...', 'threewp_broadcast' ),
+			count( $this->data->ids_to_check )
+		);
 
 		// Check the next ids
 		$max = min( $max, data::$rows_per_step );
@@ -377,7 +395,7 @@ extends \threewp_broadcast\maintenance\checks\check
 		if ( ! $found )
 		{
 			$this->data->id_column_missing = true;;
-			$r = $this->broadcast()->p_( 'The Broadcast Data table is missing the ID column.' );
+			$r = $this->broadcast()->p( __( 'The Broadcast Data table is missing the ID column.', 'threewp_broadcast' ) );
 			$r .= $this->next_step( 'results' );
 			return $r;
 		}
@@ -392,23 +410,24 @@ extends \threewp_broadcast\maintenance\checks\check
 
 		$this->data->ids_to_check = $this->data->ids;
 
-		$r = $this->broadcast()->p_( 'Beginning to check broadcast data. %s rows to check.', count( $this->data->ids_to_check ) );
+		$r = $this->broadcast()->p_(
+			__( 'Beginning to check broadcast data. %s rows to check.', 'threewp_broadcast' ),
+			count( $this->data->ids_to_check )
+		);
 		$r .= $this->next_step( 'check_ids' );
 		return $r;
 	}
 
 	public function blog_and_post_exists( $blog_id, $post_id )
 	{
-		$ok = true;
+		if ( ! ThreeWP_Broadcast()->blog_exists( $blog_id ) )
+			return false;
+
 		switch_to_blog( $blog_id );
-		$url = get_bloginfo( 'url' );
-		$ok = ( $url != '' );
-		if ( $ok )
-		{
-			$post = get_post( $post_id );
-			$ok = ( $post !== null );
-		}
+		$post = get_post( $post_id );
+		$ok = ( $post !== null );
 		restore_current_blog();
+
 		return $ok;
 	}
 

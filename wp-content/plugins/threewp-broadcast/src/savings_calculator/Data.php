@@ -40,20 +40,24 @@ class Data
 		$table = static::store_container()->table();
 
 		$row = $table->body()->row();
-		$row->th()->text( 'Monitoring since' );
+		// Since when is the time savings function monitoring
+		$row->th()->text( __( 'Monitoring since', 'threewp_broadcast' ) );
 		$since = $this->get( 'since', time() );
 		$row->td()->text( date( 'Y-m-d', $since ) );
 
 		$row = $table->body()->row();
-		$row->th()->text( 'Posts created' );
+		// How many posts have been created during time savings monitoring
+		$row->th()->text( __( 'Posts created', 'threewp_broadcast' ) );
 		$row->td()->text( $this->get( 'posts_created', 0 ) );
 
 		$row = $table->body()->row();
-		$row->th()->text( 'Posts updated' );
+		// How many posts have been updated during time savings monitoring
+		$row->th()->text( __( 'Posts updated', 'threewp_broadcast' ) );
 		$row->td()->text( $this->get( 'posts_updated', 0 ) );
 
 		$row = $table->body()->row();
-		$row->th()->text( 'Time saved (HH:MM:SS)' );
+		// How much time has been saved during time savings monitoring
+		$row->th()->text( __( 'Time saved (HH:MM:SS)', 'threewp_broadcast' ) );
 		$time_saved = $this->get( 'time_saved', 0 );
 
 		// This is complicated. To get a nice date we can use gmdate, but it won't give us days.
@@ -65,12 +69,18 @@ class Data
 			// Time to calculate days.
 			$days = floor( $hours / 24 );
 			$hours = $hours - ( $days * 24 );
-			$nice_date = sprintf( '%s days %s:%s:%s', $days, $hours, $parts[ 1 ], $parts[ 2 ] );
+			$nice_date = sprintf( '%s %s %s:%s:%s',
+				$days,
+				__( 'days', 'threewp_broadcast' ),
+				$hours,
+				$parts[ 1 ],
+				$parts[ 2 ]
+			);
 		}
 		$row->td()->text( $nice_date );
 
 		$row = $table->body()->row();
-		$row->th()->text( 'Money saved' );
+		$row->th()->text( __( 'Money saved', 'threewp_broadcast' ) );
 		$wage = $this->get( 'hourly_wage', 100 );
 		$cost = $time_saved / 60 / 60 * $wage;
 		$cost = floor( $cost );

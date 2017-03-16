@@ -1,5 +1,12 @@
 jQuery(document).ready(function( $ ){
     var options = IZ.options;
+
+    // Fix for the Lazy Load plugin with jQuery.sonar
+    $("img[data-lazy-src]").each(function(){
+        $(this).attr('data-zoom-image', $(this).data('lazy-src'));
+    });
+
+    // Start the zoom for the normal images
     $(".zoooom, .zoooom img").image_zoom(options);
 
     // WooCommerce category pages
@@ -7,15 +14,13 @@ jQuery(document).ready(function( $ ){
         $(".tax-product_cat .products img").image_zoom(options);
     }
 
-    // Show zoom for lazy_load images
-    if ( IZ.lazy_load == '1' ) {
-        if (typeof $.unveil === "function") { 
-            $("img.unveil").unveil(0, function() {
-                $(this).load(function() {
-                    $("img.zoooom, .zoooom img").image_zoom(options);
-                });
+    // Fix for the LazyLoad (unveil.js) plugins 
+    if (typeof $.unveil === "function") { 
+        $("img.unveil").unveil(0, function() {
+            $(this).load(function() {
+                $("img.zoooom, .zoooom img").image_zoom(options);
             });
-        }
+        });
     }
 
 
@@ -65,24 +70,28 @@ jQuery(document).ready(function( $ ){
                     } else {
                         obj1.removeAttr( attr );
                     }
-                    if ( temp && temp.length > 0 ) {
-                        obj2.attr(attr, temp);
-                    } else {
-                        obj2.removeAttr( attr );
+                    if ( IZ.exchange_thumbnails == '1' ) {
+                        if ( temp && temp.length > 0 ) {
+                            obj2.attr(attr, temp);
+                        } else {
+                            obj2.removeAttr( attr );
+                        }
                     }
                 });
 
                 // Exchange the link sources
                 var temp;
                 temp = obj2.parent().attr('href');
-                obj2.parent().attr('href', obj1.parent().attr('href'));
+                if ( IZ.exchange_thumbnails == '1' ) {
+                    obj2.parent().attr('href', obj1.parent().attr('href'));
+                }
                 obj1.parent().attr('href', temp );
 
                 // Set the obj1.src = the link source
                 obj1.attr('src', temp ); 
 
                 // Set the obj2.src = data-thumbnail-src
-                if ( obj1.data('thumbnail-src') ) {
+                if ( obj1.data('thumbnail-src') && IZ.exchange_thumbnails == '1' ) {
                     obj2.attr( 'src', obj1.attr('data-thumbnail-src'));
                 }
 

@@ -36,25 +36,9 @@ class equivalent_posts
 	{
 		if ( ! isset( $this->equivalents[ $parent_blog ][ $parent_post ][ $child_blog ] ) )
 		{
-			// Try to retrieve the broadcast data
-			$broadcast_data = $this->broadcast()->get_post_broadcast_data( $parent_blog, $parent_post );
-
-			$children = $broadcast_data->get_linked_children();
-			if ( isset( $children[ $child_blog ] ) )
-				// The requested post exists on the blog as a child.
-				$this->set( $parent_blog, $parent_post, $child_blog, $children[ $child_blog ] );
-			else
-			{
-				$parent = $broadcast_data->get_linked_parent();
-				// Is the requested post a child with a parent?
-				if ( $parent )
-					// The requested post exist on the blog as a parent.
-					$this->set( $parent_blog, $parent_post, $parent[ 'blog_id' ], $parent[ 'post_id' ] );
-			}
-
-			// Did we find anything?
-			if ( ! isset( $this->equivalents[ $parent_blog ][ $parent_post ][ $child_blog ] ) )
-				return false;
+			$broadcast_data = $this->broadcast()->get_parent_post_broadcast_data( $parent_blog, $parent_post );
+			$child = $broadcast_data->get_linked_post_on_this_blog();
+			$this->set( $parent_blog, $parent_post, $child_blog, $child );
 		}
 		return $this->equivalents[ $parent_blog ][ $parent_post ][ $child_blog ];
 	}

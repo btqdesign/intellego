@@ -3,12 +3,12 @@ Contributors: aihimel, shovonchoudhury
 Donate link: http://www.giribaz.com/
 Tags: file manager, wordpress file manager, wp file manager, FTP, elfinder, file Browser, manage files, upload, delete, rename, copy, move, online file browser, remote file manager, drag and drop, folder upload
 Requires at least: 4.4.0
-Tested up to: 4.6.1
+Tested up to: 4.7.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Manage your file the way you like. You can upload, delete, copy, move, rename, compress, extract files. You don't need to worry about ftp any more. It is realy simple and easy to use.
+Upload, delete, copy, move, rename, edit, compress, extract files. You don't need to worry about ftp any more. It is realy simple and easy to use.
 
 == Description ==
 
@@ -21,19 +21,21 @@ Just install the plugin following standard wordpress plugin install process and 
 
 <strong>[Get Express Support](http://www.giribaz.com/support/)</strong> Open a support ticket to get support quickly.
 
+[youtube https://www.youtube.com/watch?v=93aiNIWRLqY]
+
 = Key Features =
 
 + Upload, Download and Delete operations
-+ All operations with files and folders (copy, move, upload, create folder/file, rename, archive, extract, edit, etc.) 
++ All operations with files and folders (copy, move, upload, create folder/file, rename, archive, extract, edit, etc.)
 + Light and Elegant client UI
 + Drag & Drop file upload support
 + List and Icons view available
 + Alternative to FTP
-+ Archives create/extract (zip, rar, 7z, tar, gzip, bzip2) 
-+ Image and File Edit Support 
++ Archives create/extract (zip, rar, 7z, tar, gzip, bzip2)
++ Image and File Edit Support
 + Quicklook, preview for common file types
 + Calculate directory sizes
-+ Video and audio preview/play 
++ Video and audio preview/play
 + Support file search and sort
 
 = Extended Features =
@@ -104,6 +106,10 @@ Yes, I will support the plugin.
 7. Preview file
 8. Edit file
 9. Right Click Menu
+10. File manager settings page
+11. File manager pro widget(PRO only)
+12. File manager pro shortcode(PRO only)
+13. File manager pro frontend(PRO only)
 
 == Changelog ==
 
@@ -144,3 +150,31 @@ Yes, I will support the plugin.
 = 3.0.0 =
 
 * Bug fixed and Interface updated.
+
+= 4.0.4 =
+
+* OS independent file path structure
+* Logging system added
+
+= 4.1.0 =
+
+* UI changed
+* Server configuration panel added
+* fm_options hook added
+
+= 4.1.1 (14 December, 2016) =
+
+* Minor UI changes
+
+= 4.1.2 (5 January, 2017) =
+
+* Extra slash issue solved
+
+= 4.1.3 (19 February, 2017) =
+
+* Lower version of PHP error fixed
+
+= 4.1.4 (2 March, 2017) = 
+
+* Lanugage option added
+* Designe issue fixed

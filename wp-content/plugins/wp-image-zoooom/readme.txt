@@ -3,10 +3,10 @@ Created: 21/11/2015
 Contributors: diana_burduja
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=diana.burduja@gmail.com&lc=AT&item_name=Diana%20Burduja&item_number=WP%2dImage%2dZoooom%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Email: diana@burduja.eu
-Tags: e-commerce, featured image, hover over image zoom, image, image zoom, image     zoom plugin, image magnification, image magnifier, jquery picture zoom, magnifier, magnify image, magnifying glass, mouse over image zoom, panorama, picture zoom, product image, product zoom, product magnification, product magnifier, responsive, woocommerce product zoom, woocommerce zoom, woocommerce  magnifying glass, zoom, zoom image, zoom plugin
+Tags: e-commerce, featured image, hover over image zoom, image, image zoom, image zoom plugin, image magnification, image magnifier, jquery picture zoom, magnifier, magnify image, magnifying glass, mouse over image zoom, panorama, picture zoom, product image, product zoom, product magnification, product magnifier, responsive, woocommerce product zoom, woocommerce zoom, woocommerce  magnifying glass, zoom, zoom image, zoom plugin, woocommerce image zoom, woocommerce product image zoom, woocommerce zoom magnifier
 Requires at least: 3.0.1
-Tested up to: 4.6
-Stable tag: 1.3.0 
+Tested up to: 4.7
+Stable tag: 1.6 
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -34,9 +34,9 @@ Allow your visitors to see the details of your images. Improve the user experien
 = Notes =
 
 * This plugin is provided "as-is"; within the scope of WordPress. We will update this plugin to remain secure, and to follow WP coding standards.
-* If you prefer more dedicated support, with more advanced and powerful plugin features, please consider upgrading to [WP Image Zoooom Pro](https://www.silkypress.com/wp-image-zoom-plugin/).
+* If you prefer more dedicated support, with more advanced and powerful plugin features, please consider upgrading to [WP Image Zoooom Pro](https://www.silkypress.com/wp-image-zoom-plugin/?utm_source=wordpress&utm_campaign=iz_free&utm_medium=banner).
 
-= Why should you upgrade to WP Image Zoom Pro? =
+= Why should you upgrade to WP Image Zoooom Pro? =
 
 * Works with WooCommerce variations
 * Works with Portfolio images
@@ -52,8 +52,8 @@ Allow your visitors to see the details of your images. Improve the user experien
 == Installation ==
 
 * From the WP admin panel, click "Plugins" -> "Add new".
-* In the browser input box, type "WP Image Zoooom".
-* Select the "WP Image Zoooom" plugin and click "Install".
+* In the browser input box, type "WP Image Zoom".
+* Select the "WP Image Zoom" plugin and click "Install".
 * Activate the plugin.
 
 OR...
@@ -71,7 +71,7 @@ OR...
 * Use either FTP or your hosts cPanel to gain access to your website file directories.
 * Browse to the `wp-content/plugins` directory.
 * Upload the extracted `wp-image-zoooom` folder to this directory location.
-* Open the WP admin panel.. click the "Plugins" page.. and click "Activate" under the newly added "WP Image Zoooom" plugin.
+* Open the WP admin panel.. click the "Plugins" page.. and click "Activate" under the newly added "WP Image Zoom" plugin.
 
 == Frequently Asked Questions ==
 
@@ -86,16 +86,18 @@ In order for the zoom to work you have to upload a bigger picture than the one p
 
 In case you did upload a bigger picture and the zoom still isn't working, you might try to deactivate the Jetpack Photon module. The module resizes the image and interferes with the zoom.
 
-= The zoom window is about 1cm lower than the zoom window =
+= The zoom window is about 1cm lower than the zoomed image =
 This is an effect caused by the WordPres Admin Bar. Try logging out and check the zoom again.
 
-Another cause could be the "CSS Animation" settings within Visual Composer. If you want to keep the animation effect and still have the zoom, I recommend you upgrade to the WP Image Zooom PRO, as there the zoom window is totally differently constructed and the animation doesn't affect the zoom.
+Another cause could be the sticky header. When the page is loaded, the zoom window is built and set in the right position (next to the zoomed image). When you scroll down, the sticky header changes its height but the zoom window keeps staying in the same position. In order to solve this you can choose between removing the header's sticky effect or upgrading to the WP Image Zoooom PRO, as there the zoom window is totally differently built and the sticky header doesn't affect the zoom position.
+
+Another cause could be the "CSS Animation" settings within Visual Composer. If you want to keep the animation effect and still have the zoom, I recommend you upgrade to the WP Image Zoooom PRO. 
 
 = How to zoom an image without the button in the editor? =
 When you add a CSS class called 'zoooom' to any image, the zoom will be applied on that particular image. Remember that the zooming works only when the displayed image is smaller than the loaded image (i.e. the image is shrinked with "width" and "height" attributes).
 
 = If I want to use a "lazy load" plugin will it work? =
-We can ensure compatibility with [Unveil Lazy Load](https://wordpress.org/plugins/unveil-lazy-load/) and [WP images lazy loading](https://wordpress.org/plugins/wp-images-lazy-loading/) plugins. You also have to enable the "Compatible with LazyLoad" checkbox in the general settings.
+We can ensure compatibility with [Unveil Lazy Load](https://wordpress.org/plugins/unveil-lazy-load/), [WP images lazy loading](https://wordpress.org/plugins/wp-images-lazy-loading/) and [Lazy Load](https://wordpress.org/plugins/lazy-load/) plugins. 
 
 
 = Known Incompatibilities =
@@ -106,7 +108,7 @@ We can ensure compatibility with [Unveil Lazy Load](https://wordpress.org/plugin
 
 * The zoom doesn't work at all with the **WooCommerce Dynamic Gallery** plugin. 
 
-* The zoom will not work with the WooCommerce gallery on the **Avada** theme. The Avada theme changes entirely the default WooCommerce gallery with the [Flexslider gallery](https://woocommerce.com/flexslider/) and the zoom plugin does not support the Flexslider gallery. Please check the [PRO version](https://www.silkypress.com/wp-image-zoom-plugin/) of the plugin for compatibility with the Flexslider gallery. 
+* The zoom will not work with the WooCommerce gallery on the **Avada** theme. The Avada theme changes entirely the default WooCommerce gallery with the [Flexslider gallery](https://woocommerce.com/flexslider/) and the zoom plugin does not support the Flexslider gallery. Please check the [PRO version](https://www.silkypress.com/wp-image-zoom-plugin/?utm_source=wordpress&utm_campaign=iz_free&utm_medium=banner) of the plugin for compatibility with the Flexslider gallery. 
 
 = Credits =
 
@@ -130,6 +132,22 @@ We can ensure compatibility with [Unveil Lazy Load](https://wordpress.org/plugin
 7. Apply the zoom from Visual Composer, the Single Image element
 
 == Changelog ==
+
+= 1.6 =
+* Feature: compatibility with the Lazy Load plugin (https://wordpress.org/plugins/lazy-load/)
+* Fix: remove the "Compatible with LazyLoad (unveil)" option and apply the fix automatically if the $.unveil function is present
+
+= 1.5 =
+* Feature: plugin ready for translation
+* Feature: translation for Romanian
+
+= 1.4 =
+* Feature: "Exchange the thumbnail with the main image on WooCommerce products" option
+* Feature: compatibility with the Artcore theme 
+* Feature: show a notice about BWP Minify configurations
+
+= 1.3.1 =
+* Fix: remove the prettyPhoto only if WooCommerce is active and only on product pages
 
 = 1.3.0 =
 * Fix: PHP Notice when adding two arrays without checking first the variable type

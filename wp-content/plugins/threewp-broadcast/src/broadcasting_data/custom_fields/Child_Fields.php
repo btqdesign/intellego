@@ -27,10 +27,14 @@ class Child_Fields
 	{
 		$this->broadcasting_data = $broadcasting_data;
 
+		$blog_id = get_current_blog_id();
+
 		if ( ! isset( $this->broadcasting_data->custom_fields->child_fields ) )
 			$this->broadcasting_data->custom_fields->child_fields = [];
 
-		$this->items = &$this->broadcasting_data->custom_fields->child_fields;
+		$this->items = &$this->broadcasting_data->custom_fields->child_fields[ $blog_id ];
+
+		$this->load();
 	}
 
 	/**

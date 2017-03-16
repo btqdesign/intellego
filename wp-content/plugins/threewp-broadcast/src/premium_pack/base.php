@@ -34,7 +34,7 @@ class base
 		], $options );
 
 		$input = $options->form->select( $options->name )
-			->label_( $options->label )
+			->label( $options->label )
 			->value( $options->value );
 
 		// Add all available blogs as options.
@@ -90,7 +90,7 @@ class base
 					So instead of writing:
 
 					$mbd->lock_post = $form->checkbox( 'lock_post' )
-						->label_( 'Lock the post' )
+						->label( __( 'Lock the post', 'threewp_broadcast' ) )
 
 					You have to ask the plugin itself to translate the string first, before it is given to the form:
 

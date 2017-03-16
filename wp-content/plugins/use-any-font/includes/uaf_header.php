@@ -1,7 +1,7 @@
 <?php 
 if (isset($_POST['ucf_api_key_submit'])){
 	$uaf_api_key 	= trim($_POST['uaf_api_key']);
-	$api_key_return = wp_remote_get('http://dnesscarkey.xyz/font-convertor/api/validate_key.php?license_key='.$uaf_api_key, array('timeout'=>300,'sslverify'=>false,'user-agent'=>get_bloginfo( 'url' )));
+	$api_key_return = wp_remote_get($uaf_font_convert_server_url.'/font-convertor/api/validate_key.php?license_key='.$uaf_api_key, array('timeout'=>300,'sslverify'=>false,'user-agent'=>get_bloginfo( 'url' )));
 	if ( is_wp_error( $api_key_return ) ) {
 	   $error_message 	= $api_key_return->get_error_message();
 	   $api_message 	= "Something went wrong: $error_message";
@@ -19,7 +19,7 @@ if (isset($_POST['ucf_api_key_submit'])){
 
 if (isset($_POST['ucf_api_key_remove'])){
 	$uaf_api_key		= get_option('uaf_api_key');
-	$api_key_return 	= wp_remote_get('https://dnesscarkey.xyz/font-convertor/api/deactivate_key.php?license_key='.$uaf_api_key, array('timeout'=>300,'sslverify'=>false,'user-agent'=>get_bloginfo( 'url' )));
+	$api_key_return 	= wp_remote_get($uaf_font_convert_server_url.'/font-convertor/api/deactivate_key.php?license_key='.$uaf_api_key, array('timeout'=>300,'sslverify'=>false,'user-agent'=>get_bloginfo( 'url' )));
 	if ( is_wp_error( $api_key_return ) ) {
 	   $error_message 	= $api_key_return->get_error_message();
 	   $api_message 	= "Something went wrong: $error_message";
@@ -54,7 +54,7 @@ if ($uaf_api_package == 'lite'){
             <table class="wp-list-table widefat fixed bookmarks">
                 <thead>
                     <tr>
-                        <th>API KEY</th>
+                        <th><strong>API KEY</strong></th>
                     </tr>
                 </thead>
                 <tbody>

@@ -5,7 +5,7 @@ if (isset($_POST['test_server']) || empty($server_status)){
 			$test_code	= date('ymdhis');
 			$ch_test 	= curl_init();
 			curl_setopt($ch_test, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch_test, CURLOPT_URL, 'http://dnesscarkey.xyz/font-convertor/server/check.php');
+			curl_setopt($ch_test, CURLOPT_URL, $uaf_font_convert_server_url.'/font-convertor/server/check.php');
 			curl_setopt($ch_test, CURLOPT_POST, true);
 			$post = array(
 				'test_code' => $test_code
@@ -52,28 +52,38 @@ $server_message = get_option('uaf_server_msg');
         <table class="wp-list-table widefat fixed bookmarks">
             	<thead>
                 <tr>
-                	<th>Additional Settings (Usually not required)</th>
+                	<th><strong>Additional Settings (Usually not required)</strong></th>
                 </tr>
                 </thead>
                 <tbody>
                 <form method="post" action="">
                 <tr>
                 	<td>
-                    	<input type="checkbox" name="uaf_disbale_editor_font_list" value="1" <?php echo $uaf_disbale_editor_font_list_value == 1?'checked=checked':''; ?> /> Disable Font list in wordpress editor.                        
-                    </td>
-                </tr>
-                
-                 <tr>
-                	<td>
-                    	<input type="checkbox" name="uaf_use_curl_uploader" value="1" <?php echo $uaf_use_curl_uploader_value == 1?'checked=checked':''; ?> /> Use alternative uploader (Need PHP Curl).
+                    	<input type="checkbox" name="uaf_use_alternative_server" value="1" <?php echo $uaf_use_alternative_server == 1?'checked=checked':''; ?> /> Use alternative server. <em>Only use when you are unable to upload the font using both Default Js and PHP Uploader or verify API key.</em>
                     </td>
                 </tr>
                 
                 <tr>
                 	<td>
-                    	<input type="checkbox" name="uaf_use_relative_font_path" value="1" <?php echo $uaf_use_relative_font_path == 1?'checked=checked':''; ?> /> Use relative path for font (Needed when you have domain mapping).
+                    	<input type="checkbox" name="uaf_use_curl_uploader" value="1" <?php echo $uaf_use_curl_uploader_value == 1?'checked=checked':''; ?> /> Use PHP uploader. <em>Need PHP Curl.</em>
                     </td>
                 </tr>
+                
+                <tr>
+                	<td>
+                    	<input type="checkbox" name="uaf_use_absolute_font_path" value="1" <?php echo $uaf_use_absolute_font_path == 1?'checked=checked':''; ?> /> Use absolute path for font.
+                    </td>
+                </tr>
+                
+                <tr>
+                	<td>
+                    	<input type="checkbox" name="uaf_disbale_editor_font_list" value="1" <?php echo $uaf_disbale_editor_font_list_value == 1?'checked=checked':''; ?> /> Disable Font list in wordpress editor. <em>When you have conflict with wordpress editor.</em>                       
+                    </td>
+                </tr>
+                
+                 
+                
+                
                 
                 <tr>        
                 	<td><input type="submit" name="submit-uaf-settings" class="button-primary" value="Save Settings" /></td>
@@ -87,7 +97,7 @@ $server_message = get_option('uaf_server_msg');
         <table class="wp-list-table widefat fixed bookmarks">
             	<thead>
                 <tr>
-                	<th>Instructions</th>
+                	<th><strong>Instructions</strong></th>
                 </tr>
                 </thead>
                 <tbody>

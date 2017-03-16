@@ -2,9 +2,6 @@
 
 namespace plainview\sdk_broadcast\mail;
 
-if ( ! class_exists( '\\PHPMailer' ) )
-    require_once( __DIR__ . '/../thirdparty/phpmailer/class.phpmailer.php' );
-
 /**
 	@brief		Wrapper for PHPMailer.
 	@details	Provides a more Wordpress-friendly, logical interface to PHPMailer.

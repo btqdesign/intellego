@@ -319,8 +319,16 @@ trait terms_and_taxonomies
 	public function threewp_broadcast_collect_post_type_taxonomies( $action )
 	{
 		$bcd = $action->broadcasting_data;
+
+		// Syncing taxonomies doesn't go through the proper custom_fields setup (in order to retrieve blacklists and what not), so we have to do it, just in case.
+		$bcd->prepare_custom_fields();
+
 		$bcd->parent_blog_taxonomies = get_object_taxonomies( [ 'object_type' => $bcd->post->post_type ], 'array' );
 		$bcd->parent_post_taxonomies = [];
+
+		if ( ! isset( $bcd->taxonomy_term_meta ) OR ! is_object( $bcd->taxonomy_term_meta ) )
+			$bcd->taxonomy_term_meta = ThreeWP_Broadcast()->collection();
+
 		foreach( $bcd->parent_blog_taxonomies as $parent_blog_taxonomy => $taxonomy )
 		{
 			if ( isset( $bcd->post->ID ) )
@@ -347,6 +355,17 @@ trait terms_and_taxonomies
 				'taxonomy' => $taxonomy,
 				'terms'    => $o->terms,
 			];
+
+			// Store the term meta.
+			foreach( $o->terms as $term )
+			{
+				$meta = get_term_meta( $term->term_id );
+				if ( ! is_array( $meta ) )
+					$meta = [];
+				// We store the meta array as a collection for easier handling later.
+				$meta = ThreeWP_Broadcast()->collection( $meta );
+				$bcd->taxonomy_term_meta->collection( $bcd->parent_blog_id )->collection( 'terms' )->set( $term->term_id, $meta );
+			}
 		}
 	}
 
@@ -402,6 +421,7 @@ trait terms_and_taxonomies
 
 	/**
 		@brief		[Maybe] update a term.
+		@details	The "old" term is the term on the child. The "new" term is the term from the parent.
 		@since		2014-04-10 14:26:23
 	**/
 	public function threewp_broadcast_wp_update_term( $action )
@@ -434,5 +454,22 @@ trait terms_and_taxonomies
 		}
 		else
 			$this->debug( 'Will not update the term %s.', $action->new_term->name );
+
+		if ( isset( $action->broadcasting_data->taxonomy_term_meta ) )
+		{
+			$old_term_id = $action->old_term->term_id;
+			$new_term_id = $action->new_term->term_id;
+
+			$old_meta = $action->broadcasting_data->taxonomy_term_meta
+				->collection( $action->broadcasting_data->parent_blog_id )		// Extract the data from the parent blog
+				->collection( 'terms' )											// And extract the data from the terms subcollection
+				->get( $old_term_id );											// And get the collection for this old term ID.
+			foreach( $old_meta as $key => $values )
+			{
+				$value = reset( $values );		// Wordpress likes reporting back values in an array, even though I've never seen anyone store several values under one key.
+				$this->debug( 'Updating term %s with key %s and value %s', $new_term_id, $key, $value );
+				update_term_meta( $new_term_id, $key, $value );
+			}
+		}
 	}
 }

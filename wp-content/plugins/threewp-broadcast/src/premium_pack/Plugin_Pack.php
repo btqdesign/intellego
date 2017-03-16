@@ -12,12 +12,21 @@ abstract class Plugin_Pack
 {
 	use \plainview\sdk_broadcast\wordpress\updater\edd;
 
+	/**
+		@brief		The language domain to use.
+		@details	Use the same as the basic plugin in order to leech off its translations.
+		@since		2017-02-21 20:00:41
+	**/
+	public $language_domain = 'threewp_broadcast';
+
 	public function _construct()
 	{
+		$this->add_action( 'threewp_broadcast_broadcasting_started', 'dump_pack_info' );
 		$this->add_action( 'ThreeWP_Broadcast_Plugin_Pack_get_plugin_classes' );
 		$this->add_action( 'threewp_broadcast_plugin_pack_uninstall' );
 		$this->add_action( 'threewp_broadcast_plugin_pack_tabs' );
 		$this->edd_init();
+		$this->load_language();
 	}
 
 	// --------------------------------------------------------------------------------------------
@@ -30,7 +39,10 @@ abstract class Plugin_Pack
 	**/
 	public function edd_admin_license_tab_text()
 	{
-		return $this->p( "If the pack is not activating as it should due to an SSL error, add this to your wp-config.php file: <code>define( 'BROADCAST_PP_SSL_WORKAROUND', true );</code>" );
+		return $this->p_(
+			__( "If the pack is not activating as it should due to an SSL error, add this to your wp-config.php file: %s", 'threewp_broadcast' ),
+			"<code>define( 'BROADCAST_PP_SSL_WORKAROUND', true );</code>"
+		);
 	}
 
 	/**
@@ -56,6 +68,17 @@ abstract class Plugin_Pack
 	// --------------------------------------------------------------------------------------------
 	// ----------------------------------------- Misc functions
 	// --------------------------------------------------------------------------------------------
+
+	/**
+		@brief		Show the pack's license key.
+		@since		2016-11-28 16:56:33
+	**/
+	public function dump_pack_info()
+	{
+		$key = $this->get_site_option( 'edd_updater_license_key' );
+		$key = substr( $key, -8 );
+		ThreeWP_Broadcast()->debug( 'My license key is ~%s', $key );
+	}
 
 	public abstract function get_plugin_classes();
 

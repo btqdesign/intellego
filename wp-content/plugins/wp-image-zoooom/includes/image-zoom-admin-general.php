@@ -23,17 +23,26 @@ include_once( 'premium-tooltips.php' );
     .control-label{ height: auto; }
 </style>
 
+<script type="text/javascript">
+
+    jQuery(document).ready(function($) {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+    <?php $brand = '<img src="'. site_url() .'/wp-content/plugins/wp-image-zoooom/assets/images/silkypress_logo.png" /> <a href="https://www.silkypress.com/?utm_source=wordpress&utm_campaign=iz_free&utm_medium=banner" target="_blank">SilkyPress.com</a>';?>
+<h2><?php printf(esc_html__('WP Image Zoom by %1$s', 'wp-image-zoooom'), $brand); ?></h2>
+
 <div class="wrap">
 
-<h2>WP Image Zoom</h2>
 
-<h2 class="nav-tab-wrapper woo-nav-tab-wrapper">
+<h3 class="nav-tab-wrapper woo-nav-tab-wrapper">
 
-    <a href="?page=zoooom_settings&tab=general" class="nav-tab nav-tab-active"><?php echo __('General Settings', 'zoooom'); ?></a>
+    <a href="?page=zoooom_settings&tab=general" class="nav-tab nav-tab-active"><?php _e('General Settings', 'wp-image-zoooom'); ?></a>
 
-    <a href="?page=zoooom_settings&tab=settings" class="nav-tab"><?php echo __('Zoom Settings'); ?></a>
+    <a href="?page=zoooom_settings&tab=settings" class="nav-tab"><?php _e('Zoom Settings', 'wp-image-zoooom'); ?></a>
 
-</h2>
+</h3>
 
 <div class="panel panel-default">
     <div class="panel-body">
@@ -55,7 +64,7 @@ include_once( 'premium-tooltips.php' );
         <?php
             $iz_forms_helper->label_class = 'col-sm-6 control-label';
 
-        foreach ( array('enable_woocommerce', 'woo_cat', 'enable_mobile', 'remove_lightbox_thumbnails', 'remove_lightbox', 'force_lazyload', 'force_attachments', 'flexslider', 'huge_it_gallery' ) as $_field ) {
+        foreach ( array('enable_woocommerce', 'exchange_thumbnails', 'woo_cat', 'woo_variations', 'enable_mobile', 'remove_lightbox_thumbnails', 'remove_lightbox', 'force_attachments', 'flexslider', 'huge_it_gallery', 'enable_fancybox', 'enable_jetpack_carousel' ) as $_field ) {
             $this_settings = $iz_admin->get_settings( $_field);
             $this_settings['value'] = '';
             if ( isset( $settings[$_field] ) ) {
@@ -69,7 +78,7 @@ include_once( 'premium-tooltips.php' );
 <div class="form-group">
       <div class="col-lg-6">
         <input type="hidden" name="tab" value="general" />
-          <button type="submit" class="btn btn-primary"><?php echo __('Save changes', 'zoooom'); ?></button>
+          <button type="submit" class="btn btn-primary"><?php _e('Save changes', 'wp-image-zoooom'); ?></button>
       </div>
     </div>
 

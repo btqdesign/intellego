@@ -4,11 +4,25 @@
  * Security check. No one can access without Wordpress itself
  * 
  * */
-defined('ABSPATH') or die();	
-	
+defined('ABSPATH') or die();
+global $FileManager;
+$language_settings = unserialize(stripslashes($FileManager->options->options['file_manager_settings']['language']));
+if($language_settings['code'] != 'LANG'){
+	$language_code = $language_settings['code'];
+	$lang_file_url = $language_settings['file-url'];
+}
+
+if( !current_user_can('manage_options') ) die();
+wp_enqueue_style( 'fmp-jquery-ui-css' );
+wp_enqueue_style( 'fmp-elfinder-css' );
+wp_enqueue_style( 'fmp-elfinder-theme-css' );
+
+wp_enqueue_script('fmp-elfinder-script');
+// Loading lanugage file
+if( isset($lang_file_url) ) wp_enqueue_script('fmp-elfinder-lang', $lang_file_url, array('fmp-elfinder-script'));
 ?>
 
-<div id='file-manager-wrapper'>
+<div id='file-manager'>
 
 </div>
 
@@ -17,9 +31,10 @@ defined('ABSPATH') or die();
 PLUGINS_URL = '<?php echo plugins_url();?>';
 
 jQuery(document).ready(function(){
-	jQuery('#file-manager-wrapper').elfinder({
+	jQuery('#file-manager').elfinder({
 		url: ajaxurl,
-		customData:{action: 'connector'}
+		customData:{action: 'connector'},
+		lang: '<?php if( isset($language_code) ) echo $language_code?>',
 	});
 });
 
@@ -27,7 +42,7 @@ jQuery(document).ready(function(){
 
 <?php 
 
-if( isset( $this->options->options['file_manager_settings']['show_url_path'] ) && !empty( $this->options->options['file_manager_settings']['show_url_path']) && $this->options->options['file_manager_settings']['show_url_path'] == 'hide' ){
+if( isset( $FileManager->options->options['file_manager_settings']['show_url_path'] ) && !empty( $FileManager->options->options['file_manager_settings']['show_url_path']) && $FileManager->options->options['file_manager_settings']['show_url_path'] == 'hide' ){
 	
 ?>
 <style>

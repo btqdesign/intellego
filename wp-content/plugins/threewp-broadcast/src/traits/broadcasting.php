@@ -65,7 +65,7 @@ trait broadcasting
 				$bcd->broadcast_data = $this->get_post_broadcast_data( $bcd->parent_blog_id, $bcd->post->ID );
 
 				// Does this post type have parent support, so that we can link to a parent?
-				if ( $bcd->post_type_is_hierarchical && $bcd->post->post_parent > 0)
+				if ( $bcd->post->post_parent > 0)
 				{
 					// Load the parent's bcd
 					$bcd->parent_broadcast_data = $this->get_post_broadcast_data( $bcd->parent_blog_id, $bcd->post->post_parent );
@@ -89,7 +89,12 @@ trait broadcasting
 		else
 			$this->debug( 'Will not broadcast taxonomies.' );
 
-		$bcd->attachment_data = [];
+		// Only create the attachment_data array if necessary.
+		if ( ! isset( $bcd->attachment_data ) )
+			$bcd->attachment_data = [];
+		if ( ! is_array( $bcd->attachment_data ) )
+			$bcd->attachment_data = [];
+
 		$attached_files = get_children( 'post_parent='.$bcd->post->ID.'&post_type=attachment' );
 		$has_attached_files = count( $attached_files) > 0;
 		if ( $has_attached_files )
@@ -113,8 +118,7 @@ trait broadcasting
 
 		if ( $bcd->custom_fields !== false )
 		{
-			if ( ! is_object( $bcd->custom_fields ) )
-				$bcd->custom_fields = (object)[];
+			$bcd->prepare_custom_fields();
 
 			$this->debug( 'Custom fields: Will broadcast custom fields.' );
 
@@ -169,13 +173,6 @@ trait broadcasting
 			}
 			else
 				$this->debug( 'Custom fields: Post does not have a thumbnail (featured image).' );
-
-			$bcd->custom_fields->blacklist = array_filter( explode( ' ', $this->get_site_option( 'custom_field_blacklist' ) ) );
-			$this->debug( 'The custom field blacklist is: %s', $bcd->custom_fields->blacklist );
-			$bcd->custom_fields->protectlist = array_filter( explode( ' ', $this->get_site_option( 'custom_field_protectlist' ) ) );
-			$this->debug( 'The custom field protectlist is: %s', $bcd->custom_fields->protectlist );
-			$bcd->custom_fields->whitelist = array_filter( explode( ' ', $this->get_site_option( 'custom_field_whitelist' ) ) );
-			$this->debug( 'The custom field whitelist is: %s', $bcd->custom_fields->whitelist );
 
 			foreach( $bcd->custom_fields() as $custom_field => $ignore )
 			{
@@ -249,10 +246,22 @@ trait broadcasting
 
 		$this->debug( 'The attachment data is: %s', $bcd->attachment_data );
 
-		$this->debug( 'Beginning child broadcast loop.' );
+		$this->debug( 'Beginning child broadcast loop to blogs %s', $bcd->blogs );
 
 		foreach( $bcd->blogs as $child_blog )
 		{
+			if ( $child_blog->get_id() == $bcd->parent_blog_id )
+			{
+				$this->debug( 'Will not broadcast to our own parent blog.' );
+				continue;
+			}
+
+			if ( ! $this->blog_exists( $child_blog->get_id() ) )
+			{
+				$this->debug( 'Blog %s does not exist anymore. Skipping!', $child_blog->get_id() );
+				continue;
+			}
+
 			$child_blog->switch_to();
 			$bcd->current_child_blog_id = $child_blog->get_id();
 			$this->debug( 'Switched to blog %s (%s)', get_bloginfo( 'name' ), $bcd->current_child_blog_id );
@@ -269,6 +278,22 @@ trait broadcasting
 			$action = new actions\broadcasting_after_switch_to_blog;
 			$action->broadcasting_data = $bcd;
 			$action->execute();
+
+			$upload_dir_info = [
+				'ms_dir' => '/sites/' . get_current_blog_id(),
+				'ms_files_rewriting option' => get_option( 'ms_files_rewriting' ),
+				'upload_path option' => get_option( 'upload_path' ),
+			];
+
+			foreach( [ 'BLOGUPLOADDIR', 'UPLOADS' ] as $key )
+				if ( defined( $key ) )
+					$upload_dir_info[ $key ] = get_defined_constants()[ $key ];
+
+			$this->debug( 'Site URL is %s and upload dir is now %s which comes from %s',
+				get_option( 'siteurl' ),
+				wp_upload_dir(),
+				$upload_dir_info
+			);
 
 			if ( ! $action->broadcast_here )
 			{
@@ -318,9 +343,7 @@ trait broadcasting
 						$temp_post_data = $bcd->new_post;
 						$temp_post_data->ID = $child_post_id;
 
-						// Allow modification of post date.
-						$temp_post_data->edit_date = true;
-
+						$this->debug( 'Running wp_update_post with %s', $temp_post_data );
 						wp_update_post( $temp_post_data );
 						$bcd->new_post->ID = $child_post_id;
 						$need_to_insert_post = false;
@@ -338,6 +361,7 @@ trait broadcasting
 				$this->debug( 'Creating a new post: %s', $temp_post_data );
 				unset( $temp_post_data->ID );
 
+				$this->debug( 'Running wp_insert_post with %s', $temp_post_data );
 				$result = wp_insert_post( $temp_post_data, true );
 
 				// Did we manage to insert the post properly?
@@ -362,8 +386,30 @@ trait broadcasting
 
 			$bcd->new_post = get_post( $bcd->new_post( 'ID' ) );
 
+			// Force setting of the correct post dates.
+			$dated_post = clone( $bcd->post );
+			$dated_post->ID = $bcd->new_post->ID;
+			$this->set_post_date( $dated_post );
+
 			$bcd->equivalent_posts()->set( $bcd->parent_blog_id, $bcd->post->ID, $bcd->current_child_blog_id, $bcd->new_post( 'ID' ) );
 			$this->debug( 'Equivalent of %s/%s is %s/%s', $bcd->parent_blog_id, $bcd->post->ID, $bcd->current_child_blog_id, $bcd->new_post( 'ID' )  );
+
+			// Maybe remove the current attachments.
+			if ( $bcd->delete_attachments )
+			{
+				$attachments_to_remove = get_children( 'post_parent='.$bcd->new_post( 'ID' ) . '&post_type=attachment' );
+				$this->debug( '%s attachments to remove.', count( $attachments_to_remove ) );
+				foreach ( $attachments_to_remove as $attachment_to_remove )
+				{
+					$this->debug( 'Deleting existing attachment: %s', $attachment_to_remove->ID );
+					wp_delete_attachment( $attachment_to_remove->ID );
+				}
+			}
+			else
+				$this->debug( 'Not deleting child attachments.' );
+
+			// Copy the attachments
+			$this->copy_attachments_to_child( $bcd );
 
 			if ( $bcd->taxonomies )
 			{
@@ -453,23 +499,6 @@ trait broadcasting
 				$this->debug( 'Taxonomies: Finished.' );
 			}
 
-			// Maybe remove the current attachments.
-			if ( $bcd->delete_attachments )
-			{
-				$attachments_to_remove = get_children( 'post_parent='.$bcd->new_post( 'ID' ) . '&post_type=attachment' );
-				$this->debug( '%s attachments to remove.', count( $attachments_to_remove ) );
-				foreach ( $attachments_to_remove as $attachment_to_remove )
-				{
-					$this->debug( 'Deleting existing attachment: %s', $attachment_to_remove->ID );
-					wp_delete_attachment( $attachment_to_remove->ID );
-				}
-			}
-			else
-				$this->debug( 'Not deleting child attachments.' );
-
-			// Copy the attachments
-			$this->copy_attachments_to_child( $bcd );
-
 			// Maybe modify the post content with new URLs to attachments and what not.
 			$unmodified_post = (object)$bcd->new_post;
 			$modified_post = clone( $unmodified_post );
@@ -501,6 +530,7 @@ trait broadcasting
 			{
 				$this->debug( 'Modifying new post: %s', $modified_post );
 				wp_update_post( $modified_post );	// Or maybe it is.
+				$this->set_post_date( $modified_post );
 			}
 			else
 				$this->debug( 'No need to modify the post.' );
@@ -705,10 +735,12 @@ trait broadcasting
 			return $this->debug( 'No _POST available. Not broadcasting.' );
 
 		// Does this post_id match up with the one in the post?
-		$_post_id = $_POST[ 'ID' ];
-		if ( isset( $_post_id ) )
+		if ( isset( $_POST[ 'ID' ] ) )
+		{
+			$_post_id = intval( $_POST[ 'ID' ] );
 			if ( $_post_id != $post_id )
 				return $this->debug( 'Post ID %s does not match up with ID in POST %s.', $post_id, $_post_id );
+		}
 
 		// Is this post a child?
 		$broadcast_data = $this->get_post_broadcast_data( get_current_blog_id(), $post_id );
@@ -875,7 +907,6 @@ trait broadcasting
 				switch_to_blog( $blog_id );
 
 				$post_id = $bcd->meta_box_data->broadcast_data->get_linked_post_on_this_blog();
-				$unlink = false;
 
 				$post_action = new actions\post_action();
 				$post_action->action = $unchecked_child_blogs_action;
@@ -886,22 +917,23 @@ trait broadcasting
 				switch( $unchecked_child_blogs_action )
 				{
 					case 'delete':
-					case 'unlink':
-						$unlink = true;
+						$this->debug( 'Deleting child post %s', $post_id );
+						wp_delete_post( $post_id, true );
 						break;
-					break;
-				}
-
-				if ( $unlink )
-				{
-					$this->debug( 'Unlinking child post %s', $post_id );
-					$bcd->meta_box_data->broadcast_data->remove_linked_child( $blog_id );
-					$this->delete_post_broadcast_data( get_current_blog_id(), $post_id );
+					case 'trash':
+						$this->debug( 'Trashing child post %s', $post_id );
+						wp_delete_post( $post_id );
+						break;
+					case 'unlink':
+						$this->debug( 'Unlinking child post %s', $post_id );
+						$bcd->meta_box_data->broadcast_data->remove_linked_child( $blog_id );
+						$this->delete_post_broadcast_data( get_current_blog_id(), $post_id );
+						break;
 				}
 
 				restore_current_blog();
 
-				$this->debug( 'Resaving braodcast data.' );
+				$this->debug( 'Resaving broadcast data.' );
 				$this->set_post_broadcast_data( get_current_blog_id(), $bcd->post->ID, $bcd->meta_box_data->broadcast_data );
 			}
 		}

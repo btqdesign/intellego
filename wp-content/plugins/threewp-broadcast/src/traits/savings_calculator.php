@@ -26,30 +26,49 @@ trait savings_calculator
 		$r = '';
 
 		$fs = $form->fieldset( 'fs_new_post' );
-		$fs->legend->label( 'New post time' );
+		// Fieldset legend for time savings. Timings for new posts.
+		$fs->legend->label( __( 'New post time', 'threewp_broadcast' ) );
 
 		$new_post_basic_setup = $fs->number( 'new_post_basic_setup' )
-			->description_( "How many seconds it takes to switch blogs, start a new post and paste text into the title and content boxes. This varies depending on how efficient you are and how fast your webhost is. %s seconds is the default value.", $defaults[ 'new_post_basic_setup' ] )
-			->label( 'Basic setup' )
+			// Desc for time savings
+			->description( sprintf(
+				__( "How many seconds it takes to switch blogs, start a new post and paste text into the title and content boxes. This varies depending on how efficient you are and how fast your webhost is. %s seconds is the default value.", 'threewp_broadcast' ),
+				$defaults[ 'new_post_basic_setup' ]
+				)
+			)
+			// Label for time savings
+			->label( __( 'Basic setup', 'threewp_broadcast' ) )
 			->min( 0 )
 			->required()
 			->size( 2, 5 )
 			->value( $data->get_or_default( 'new_post_basic_setup' ) );
 
 		$time_per_attachment = $fs->number( 'time_per_attachment' )
-			->description_( "How many seconds to add for each image that is attached to the post. %s seconds is the default value to upload the image, caption it and then insert it into the post.", $defaults[ 'time_per_attachment' ] )
-			->label( 'Time per attachment' )
+			// Desc for time savings
+			->description( sprintf(
+				__( "How many seconds to add for each image that is attached to the post. %s seconds is the default value to upload the image, caption it and then insert it into the post.", 'threewp_broadcast' ),
+				$defaults[ 'time_per_attachment' ]
+				)
+			)
+			// Label for time savings
+			->label( __( 'Time per attachment', 'threewp_broadcast' ) )
 			->min( 0 )
 			->required()
 			->size( 2, 5 )
 			->value( $data->get_or_default( 'time_per_attachment' ) );
 
 		$fs = $form->fieldset( 'fs_post_updates' );
-		$fs->legend->label( 'Post update time' );
+		$fs->legend->label( __( 'Post update time', 'threewp_broadcast' ) );
 
 		$updated_post_discount = $fs->number( 'updated_post_discount' )
-			->description_( "How long, in percent, it takes to update a post, compared to created a brand new post. %s%% is a nice, round, number.", $defaults[ 'updated_post_discount' ] )
-			->label( 'Update time' )
+			// Desc for time savings
+			->description( sprintf(
+				__( "How long, in percent, it takes to update a post, compared to created a brand new post. %s%% is a nice, round, number.", 'threewp_broadcast' ),
+				$defaults[ 'updated_post_discount' ]
+				)
+			)
+			// Label for time savings
+			->label( __( 'Update time', 'threewp_broadcast' ) )
 			->min( 0 )
 			->max( 100 )
 			->required()
@@ -57,24 +76,30 @@ trait savings_calculator
 			->value( $data->get_or_default( 'updated_post_discount' ) );
 
 		$fs = $form->fieldset( 'fs_wage' );
-		$fs->legend->label( 'Hourly wage' );
+		// Fieldset legend for time savings
+		$fs->legend->label( __( 'Hourly wage', 'threewp_broadcast' ) );
 
 		$hourly_wage = $fs->number( 'hourly_wage' )
-			->description( "How much money per hour do you earn?" )
-			->label( 'Hourly wage' )
+			// Desc for time savings
+			->description( __( "How much money per hour do you earn?", 'threewp_broadcast' ) )
+			// Label for time savings
+			->label( __( 'Hourly wage', 'threewp_broadcast' ) )
 			->min( 0 )
 			->required()
 			->size( 5, 10 )
 			->value( $data->get_or_default( 'hourly_wage' ) );
 
 		$fs = $form->fieldset( 'fs_reset_savings' );
-		$fs->legend->label( 'Reset time saved' );
+		// Fieldset legend for time savings
+		$fs->legend->label( __( 'Reset time saved', 'threewp_broadcast' ) );
 
 		$reset_savings = $fs->secondary_button( 'reset_savings' )
-			->value( 'Reset the savings' );
+			// Button text
+			->value( __( 'Reset the savings', 'threewp_broadcast' ) );
 
 		$save = $form->primary_button( 'save' )
-			->value_( 'Save settings' );
+			// Button text
+			->value( __( 'Save settings', 'threewp_broadcast' ) );
 
 		if ( $form->is_posting() )
 		{
@@ -91,21 +116,23 @@ trait savings_calculator
 				] as $key )
 					$data->set( $key, $$key->get_filtered_post_value() );
 				$data->save();
-				$this->message( 'The values have been updated.' );
+				// Message after updating savings calculator.
+				$this->message( __( 'The values have been updated.', 'threewp_broadcast' ) );
 			}
 
 			if ( $reset_savings->pressed() )
 			{
 				$data->reset_stats();
-				$this->message( 'The savings have been reset.' );
+				// Message after resetting savings calculator.
+				$this->message( __( 'The savings have been reset.', 'threewp_broadcast' ) );
 			}
 		}
 
-		$r .= $this->p( 'This time savings tracker guesses roughly how much time you have saved by using Broadcast instead of manually copying out posts.' );
+		$r .= $this->p( __( 'This time savings tracker guesses roughly how much time you have saved by using Broadcast instead of manually copying out posts.', 'threewp_broadcast' ) );
 
 		$r .= $data->get_savings_table();
 
-		$r .= $this->p( 'Use the form below to help Broadcast more correctly guess how much time you have saved.' );
+		$r .= $this->p( __( 'Use the form below to help Broadcast more correctly guess how much time you have saved.', 'threewp_broadcast' ) );
 
 		$r .= $form->open_tag();
 		$r .= $form->display_form_table();
@@ -173,7 +200,9 @@ trait savings_calculator
 	**/
 	public function savings_calculator_tabs( $tabs )
 	{
-		$tabs->tab( 'savings' )			->callback_this( 'admin_menu_savings' )			->name_( 'Time savings' );
+		$tabs->tab( 'savings' )
+			->callback_this( 'admin_menu_savings' )
+			->name( __( 'Time savings', 'threewp_broadcast' ) );
 	}
 
 	/**

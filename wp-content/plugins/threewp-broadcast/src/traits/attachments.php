@@ -3,6 +3,7 @@
 namespace threewp_broadcast\traits;
 
 use threewp_broadcast\actions;
+use threewp_broadcast\attachment_data;
 
 trait attachments
 {
@@ -23,6 +24,11 @@ trait attachments
 	**/
 	public function copy_attachments_to_child( $bcd )
 	{
+		if ( $bcd->copied_attachments_to_blog->has( get_current_blog_id() ) )
+			return $this->debug( 'Already copied attachments to child blog.' );
+
+		$bcd->copied_attachments_to_blog->set( get_current_blog_id(), true );
+
 		$this->debug( 'Copying attachments to the child blog.' );
 
 		$bcd->copied_attachments = [];
@@ -44,7 +50,15 @@ trait attachments
 				$o->attachment_data->post->post_parent = 0;
 			}
 			$this->maybe_copy_attachment( $o );
-			$bcd->copied_attachments()->add( $attachment->post, get_post( $o->attachment_id ) );
+
+			// Preserve all of the attachment data.
+			$copied_attachment = get_post( $o->attachment_id );
+			$copied_attachment->attachment_data = attachment_data::from_attachment_id( $copied_attachment );
+
+			// Yepp, reverse reference in order to preserve the attachment data for future use.
+			$attachment->post->attachment_data = $attachment;
+
+			$bcd->copied_attachments()->add( $attachment->post, $copied_attachment );
 			$this->debug( 'Copied attachment %s to %s', $attachment->post->ID, $o->attachment_id );
 		}
 	}
@@ -121,6 +135,7 @@ trait attachments
 		$upload_dir = wp_upload_dir();
 
 		$target = $upload_dir[ 'path' ] . '/' . $attachment_data->filename_base;
+
 		if( ! $attachment_data->is_url() )
 		{
 			// Only copy the file if it is local.
@@ -128,6 +143,7 @@ trait attachments
 			copy( $source, $target );
 			$this->debug( 'Copy attachment: File sizes: %s %s ; %s %s', $source, filesize( $source ), $target, filesize( $target ) );
 			$target_path = $target;
+			$new_guid = $upload_dir[ 'url' ] . '/' . $attachment_data->filename_base;
 		}
 		else
 		{
@@ -135,6 +151,9 @@ trait attachments
 			$target = $source;
 			// PW 30/04/2015 - not accurate but required for wp_generate_attachment_metadata
 			$target_path = $upload_dir[ 'path' ] . '/' . $attachment_data->filename_base;
+
+			// In the case of URLs... use the existing URL.
+			$new_guid = $attachment_data->post->guid;
 		}
 
 		// And now create the attachment stuff.
@@ -142,7 +161,7 @@ trait attachments
 		$this->debug( 'Copy attachment: Checking filetype.' );
 		$wp_filetype = wp_check_filetype( $target, null );
 		$attachment = [
-			'guid' => $upload_dir[ 'url' ] . '/' . $attachment_data->filename_base,
+			'guid' => $new_guid,
 			'menu_order' => $attachment_data->post->menu_order,
 			'post_author' => $attachment_data->post->post_author,
 			'post_excerpt' => $attachment_data->post->post_excerpt,
@@ -153,8 +172,18 @@ trait attachments
 			'post_status' => 'inherit',
 		];
 		$this->debug( 'Copy attachment: Inserting attachment: %s', $attachment );
-		$attachment_id = wp_insert_attachment( $attachment, $target, $attachment_data->post->post_parent );
-		$action->set_attachment_id( $attachment_id );
+		$new_attachment_id = wp_insert_attachment( $attachment, $target, $attachment_data->post->post_parent );
+		$action->set_attachment_id( $new_attachment_id );
+
+		// Now set the post name to what it should be.
+		global $wpdb;
+		$query = sprintf( "UPDATE `%s` SET `post_name` = '%s' WHERE `ID` = %s",
+			$wpdb->posts,
+			$attachment_data->post->post_name,
+			$new_attachment_id
+		);
+		$this->debug( 'Renaming attachment to match original: %s', $query );
+		$this->query( $query );
 
 		// Now to maybe handle the metadata.
 		if ( ! $is_url )
@@ -202,7 +231,8 @@ trait attachments
 			}
 		}
 
-		$this->debug( 'Copy attachment: File sizes again: %s %s ; %s %s', $source, filesize( $source ), $target, filesize( $target ) );
+		if ( ! $is_url )
+			$this->debug( 'Copy attachment: File sizes again: %s %s ; %s %s', $source, filesize( $source ), $target, filesize( $target ) );
 		$action->finish();
 	}
 
@@ -213,15 +243,15 @@ trait attachments
 	public function threewp_broadcast_get_existing_attachment_actions( $action )
 	{
 		// Existing attachment action.
-		$s = $this->_( 'Use the existing attachment on the child blog' );
+		$s = __( 'Use the existing attachment on the child blog', 'threewp_broadcast' );
 		$action->add( 'use', $s );
 
 		// Existing attachment action.
-		$s = $this->_( 'Delete and then recopy the attachment' );
+		$s = __( 'Delete and then recopy the attachment', 'threewp_broadcast' );
 		$action->add( 'overwrite', $s );
 
 		// Existing attachment action.
-		$s = $this->_( 'Create a new attachment with a randomized suffix' );
+		$s = __( 'Create a new attachment with a randomized suffix', 'threewp_broadcast' );
 		$action->add( 'randomize', $s );
 	}
 
@@ -238,8 +268,6 @@ trait attachments
 
 		$key = get_current_blog_id();
 
-		$this->debug( 'Maybe copy attachment: Searching for attachment posts with the name %s.', $attachment_data->post->post_name );
-
 		// Start by assuming no attachments.
 		$attachment_posts = [];
 
@@ -249,11 +277,12 @@ trait attachments
 			$wpdb->posts,
 			$attachment_data->post->post_name
 		);
+		$this->debug( 'Maybe copy attachment: Searching for attachment posts with the name %s: %s', $attachment_data->post->post_name, $query );
 		$results = $this->query( $query );
+		$this->debug( 'Maybe copy attachment: Found %s attachment posts.', count( $results ) );
 		if ( count( $results ) > 0 )
 			foreach( $results as $result )
 				$attachment_posts[] = get_post( $result[ 'ID' ] );
-		$this->debug( 'Maybe copy attachment: Found %s attachment posts.', count( $attachment_posts ) );
 
 		// Is there an existing media file?
 		// Try to find the filename in the GUID.
@@ -301,77 +330,79 @@ trait attachments
 	{
 		foreach( $bcd->copied_attachments() as $a )
 		{
-			$this->debug( 'Trying to replace attachment %s with %s', $a->old->guid, $a->new->guid );
-			$count = 0;
+			// Replace all of the guids in this array.
+			$guids = [ $a->old->guid => $a->new->guid ];
 
-			// We are going to be pregging things in order to ensure that as an exact, local match as possible is replaced with new values
-			// This minimizes the risk of similar texts being replaced in the straight content.
-
-			// Modify anchors
-			preg_match_all( '/<a [^>]+>/', $content, $matches );
-			foreach( $matches[ 0 ] as $index => $old_match )
+			// If the file has different sizes, replace them all.
+			if ( @ isset( $a->old->attachment_data->file_metadata[ 'sizes' ] ) )		// Instead of having 30 checks, we just block the warning on this one.
 			{
-				// Replace the GUID with the new one.
-				$new_match = str_replace( $a->old->guid, $a->new->guid, $old_match, $count );
-				if ( $count > 0 )
+				$old_dirname = dirname( $a->old->guid );
+				$new_dirname = dirname( $a->new->guid );
+				foreach( $a->old->attachment_data->file_metadata[ 'sizes' ] as $size => $size_data )
 				{
-					$this->debug( 'Modified attachment guid from %s to %s: %s times', $a->old->guid, $a->new->guid, $count );
-					$content = str_replace( $old_match, $new_match, $content );
-					$old_match = $new_match;
-				}
-
-				// Modify the wp-att-XXX value.
-				$new_match = str_replace( 'wp-att-' . $a->old->ID, 'wp-att-' . $a->new->ID, $old_match, $count );
-				if ( $count > 0 )
-				{
-					$this->debug( 'Modified wp-att ID from %s to %s: %s times', $a->old->ID, $a->new->ID, $count );
-					$content = str_replace( $old_match, $new_match, $content );
-					$old_match = $new_match;
+					$file = $size_data[ 'file' ];
+					$guids [ $old_dirname . '/' . $file ] = $new_dirname . '/' . $file;
 				}
 			}
 
-			// Modify the image tags.
-			preg_match_all( '/<img [^>]+>/', $content, $matches );
-			foreach( $matches[ 0 ] as $index => $old_match )
+			foreach( $guids as $old_guid => $new_guid )
 			{
-				// And replace the IDs present in any image captions.
-				$new_match = str_replace( 'id="attachment_' . $a->old->ID . '"', 'id="attachment_' . $a->new->ID . '"', $old_match, $count );
-				if ( $count > 0 )
-				{
-					$this->debug( 'Modified attachment link from %s to %s: %s times', $a->old->ID, $a->new->ID, $count );
-					$content = str_replace( $old_match, $new_match, $content );
-					$old_match = $new_match;
-				}
+				$this->debug( 'Beginning to replace attachment %s with %s', $old_guid, $new_guid );
+				$count = 0;
 
-				// Modify the URLs of the images in their various sizes.
-				$old_attachment = $bcd->attachment_data[ $a->old->ID ];
-				$new_attachment = $bcd->copied_attachments()->get( $a->old->ID );
-				$new_attachment = wp_get_attachment_metadata( $new_attachment );
-				if ( isset( $new_attachment[ 'sizes' ] ) )
+				// We are going to be pregging things in order to ensure that as an exact, local match as possible is replaced with new values
+				// This minimizes the risk of similar texts being replaced in the straight content.
+				// The old_match = new_match lines are for preg blocks which chain the modifications.
+
+				// Modify anchors
+				preg_match_all( '/<a [^>]+>/', $content, $matches );
+				foreach( $matches[ 0 ] as $index => $old_match )
 				{
-					$old_guid = dirname( $a->old->guid );
-					$new_guid = dirname( $a->new->guid );
-					foreach( $new_attachment[ 'sizes' ] as $size_id => $size_data )
+					// Replace the GUID with the new one.
+					$new_match = str_replace( $old_guid, $new_guid, $old_match, $count );
+					if ( $count > 0 )
 					{
-						$filename = '/' . $size_data[ 'file' ];
-						$new_match = str_replace( $old_guid . $filename, $new_guid . $filename, $old_match, $count );
-						if ( $count > 0 )
-						{
-							$this->debug( 'Modified URL from %s to %s: %s times', $old_guid . $filename, $new_guid . $filename, $count );
-							$content = str_replace( $old_match, $new_match, $content );
-							$old_match = $new_match;
-						}
+						$this->debug( 'Modified attachment guid in link: %s times', $count );
+						$content = str_replace( $old_match, $new_match, $content );
+						$old_match = $new_match;
+					}
+
+					// Modify the wp-att-XXX value.
+					$new_match = str_replace( 'wp-att-' . $a->old->ID, 'wp-att-' . $a->new->ID, $old_match, $count );
+					if ( $count > 0 )
+					{
+						$this->debug( 'Modified wp-att: %s times', $count );
+						$content = str_replace( $old_match, $new_match, $content );
+						$old_match = $new_match;
 					}
 				}
 
-				// Modify the wp-image-XXX value.
-				$new_match = str_replace( 'wp-image-' . $a->old->ID, 'wp-image-' . $a->new->ID, $old_match, $count );
-				if ( $count > 0 )
+				// Modify the image tags.
+				preg_match_all( '/<img [^>]+>/', $content, $matches );
+				foreach( $matches[ 0 ] as $index => $old_match )
 				{
-					$this->debug( 'Modified wp-image ID from %s to %s: %s times', $a->old->ID, $a->new->ID, $count );
-					$content = str_replace( $old_match, $new_match, $content );
-					$old_match = $new_match;
+					// And replace the IDs present in any image captions.
+					$new_match = str_replace( 'id="attachment_' . $a->old->ID . '"', 'id="attachment_' . $a->new->ID . '"', $old_match, $count );
+					if ( $count > 0 )
+					{
+						$this->debug( 'Modified attachment ID: %s times', $count );
+						$content = str_replace( $old_match, $new_match, $content );
+						$old_match = $new_match;
+					}
+
+					// Modify the wp-image-XXX value.
+					$new_match = str_replace( 'wp-image-' . $a->old->ID, 'wp-image-' . $a->new->ID, $old_match, $count );
+					if ( $count > 0 )
+					{
+						$this->debug( 'Modified wp-image ID class: %s times', $count );
+						$content = str_replace( $old_match, $new_match, $content );
+						$old_match = $new_match;
+					}
 				}
+
+				// Replace whatever is left.
+				$content = str_replace( $old_guid, $new_guid, $content, $count );
+				$this->debug( 'Replaced %s misc occurrences.', $count, $old_guid, $new_guid );
 			}
 		}
 		return $content;

@@ -43,7 +43,7 @@ endif;
 <table class="wp-list-table widefat fixed bookmarks">
     <thead>
         <tr>
-            <th>Assign Font</th>
+            <th><strong>Assign Font</strong></th>
         </tr>
     </thead>
     <tbody>

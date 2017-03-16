@@ -41,7 +41,7 @@ class broadcasting_data
 		@var		$attachment_data
 		@since		20130603
 	**/
-	public $attachment_data;
+	public $attachment_data = [];
 
 	/**
 		@brief		[IN]: Array of child blog objects to which to broadcast.
@@ -58,6 +58,12 @@ class broadcasting_data
 		@since		2014-08-31 18:50:10
 	**/
 	public $broadcast_data;
+
+	/**
+		@brief		A collection of blog_id => true, showing to which blogs the attachments have been copied.
+		@since		2016-09-18 19:12:26
+	**/
+	public $copied_attachments_to_blog;
 
 	/**
 		@brief		The ID of the child blog we are currently working on.
@@ -219,6 +225,15 @@ class broadcasting_data
 	public $taxonomies = true;
 
 	/**
+		@brief		This is a collection of term meta used when syncing terms.
+		@details	The data is stored as ->taxonomy_term_meta->collection( blog_id )->collection( 'terms' )->collection[ term_id, term_meta_array ]
+					This is to allow add-ons to store their own data in their own collection, instead of the terms.
+					See the terms_and_taxonomies trait for more info.
+		@since		2017-02-14 12:58:30
+	**/
+	public $taxonomy_term_meta;
+
+	/**
 		@brief		[IN]: The wp_upload_dir() of the parent blog.
 		@var		$upload_dir
 		@since		20130603
@@ -254,6 +269,8 @@ class broadcasting_data
 		if ( isset( $options[ 'custom_fields' ] ) )
 			if ( is_object( $this->custom_fields ) )
 				$this->custom_fields = clone( $options[ 'custom_fields' ] );
+
+		$this->copied_attachments_to_blog = ThreeWP_Broadcast()->collection();
 
 		if ( ! $this->parent_post_id )
 			throw new Exception( 'Specify the parent post ID property when creating the broadcasting_data object.' );
@@ -343,14 +360,8 @@ class broadcasting_data
 		foreach( $blogs as $blog )
 		{
 			$blog_id = $blog->id;
-
-			switch_to_blog( $blog_id );
-
-			if ( get_current_blog_id() != $blog_id )
+			if ( ! ThreeWP_Broadcast()->blog_exists( $blog_id ) )
 				continue;
-
-			restore_current_blog();
-
 			$this->blogs->put( $blog->id, $blog );
 		}
 
@@ -440,6 +451,37 @@ class broadcasting_data
 		if ( $key === null )
 			return $this->new_post;
 		return $this->new_post->$key;
+	}
+
+	/**
+		@brief		Return the partial broadcast object.
+		@since		2016-12-03 20:59:53
+	**/
+	public function partial_broadcast()
+	{
+		if ( ! isset( $this->__partial_broadcast ) )
+			$this->__partial_broadcast = new \threewp_broadcast\broadcasting_data\Partial_Broadcast();
+		return $this->__partial_broadcast;
+	}
+
+	/**
+		@brief		Prepare the custom_fields property to store data.
+		@since		2017-02-22 13:09:13
+	**/
+	public function prepare_custom_fields()
+	{
+		if ( ! is_object( $this->custom_fields ) )
+			$this->custom_fields = (object)[];
+
+		if ( ! isset( $this->custom_fields->blacklist ) )
+		{
+			$this->custom_fields->blacklist = array_filter( explode( ' ', ThreeWP_Broadcast()->get_site_option( 'custom_field_blacklist' ) ) );
+			ThreeWP_Broadcast()->debug( 'The custom field blacklist is: %s', $this->custom_fields->blacklist );
+			$this->custom_fields->protectlist = array_filter( explode( ' ', ThreeWP_Broadcast()->get_site_option( 'custom_field_protectlist' ) ) );
+			ThreeWP_Broadcast()->debug( 'The custom field protectlist is: %s', $this->custom_fields->protectlist );
+			$this->custom_fields->whitelist = array_filter( explode( ' ', ThreeWP_Broadcast()->get_site_option( 'custom_field_whitelist' ) ) );
+			ThreeWP_Broadcast()->debug( 'The custom field whitelist is: %s', $this->custom_fields->whitelist );
+		}
 	}
 
 	/**

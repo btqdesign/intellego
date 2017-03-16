@@ -173,16 +173,28 @@ input[type=radio]
 	font-size: 1.1em;
 }
 
-/*	Donation Area */
-.donation{
-	bottom: 0;
-	float: left;
-	z-index: 100;
-	border-radius: 5px;
-	position:fixed;
-	background-color: #B10C0C;
+/**
+ * 
+ * Donation Style
+ * 
+ * */
+.fm-donate{
+	text-align: center;
+	margin: 10px;
 }
-/* End Of Donation Area */
+
+.fm-donate > form {
+	padding-bottom: 20px;
+}
+
+.fm-donate > p {
+	text-align: justify;
+}
+
+.fm-donate > h2{
+	color: #0073AA;
+	padding-top: 20px;
+}
 
 /*Editor Font Re-fix*/
 .ui-widget textarea {
@@ -260,4 +272,276 @@ input[type=radio]
    line-height:24px;
    border-radius:50%;
    box-shadow:0 0 1px #333;
+}
+
+
+/**
+ * 
+ * Style Rework
+ * 
+ * */
+ 
+/**
+ * 
+ * Header Style
+ * 
+ * */
+.fm-header{
+	box-shadow: 0 1px 0;
+	padding-left: 50px;
+	width: 94%;
+}
+
+.fm-header > h1 {
+	color: #0073AA;
+	display: inline-block;
+}
+
+.fm-header > ul {
+	display: inline-block;
+	float: right;
+}
+
+.fm-header > ul > li {
+	display: inline-block;
+	margin: 5px;
+	padding: 5px;
+}
+
+/**
+ * 
+ * Main Content Style
+ * 
+ * */
+.fm-container{
+	width: 98%;
+	min-height: 500px;
+/*
+	border: 2px solid black;
+*/
+	margin-top: 20px;
+}
+
+.col-main{
+	width: 69.6%;
+	min-height: 200px;
+/*
+	border: 2px solid red;
+*/
+	float: left;
+}
+
+.col-sidebar{
+	width: 29.6%;
+	min-height: 200px;
+/*
+	border: 2px solid red;
+*/
+	float: right;
+}
+
+.gb-fm-row{
+	width: 98%;
+	background-color: white;
+	min-height: 100px;
+	margin: 5px;
+	margin-bottom: 20px;
+}
+
+
+/**
+ * 
+ * File manager Style
+ * 
+ * */
+#file-manager{
+	min-height: 600px !important;
+}
+
+
+/**
+ * 
+ * Marketing Style
+ * 
+ * */
+.fm-marketing > a{
+	color: white;
+	text-decoration: none;
+	font-size: 120%;
+	padding: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: #D92519;
+}
+
+
+/**
+ * 
+ * Extension sidebar module
+ * 
+ * */
+.fm-extensions{
+	margin: 10px;
+}
+
+.fm-extensions > h2 {
+	color: #0073AA;
+	padding-top: 20px;
+	text-align: center;
+}
+
+/**
+ * 
+ * Data
+ * 
+ * */
+.fm-data{
+	border-left: 5px solid #0073AA;
+}
+
+.fm-data > table{
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.fm-data > table > tr > td{
+	padding: 5px;
+}
+
+.fm-call-toaction{
+	color: white;
+	background-color: #D92519;
+	font-size: 120%;
+	padding: 10px;
+	margin: 20px;
+}
+
+.fm-call-toaction:hover{
+	color: white;
+}
+
+/**
+ * 
+ * Footer Style
+ * 
+ * */
+.fm-footer{
+	width: 98%;
+/*
+	border: 2px solid black;
+*/
+	float: left;
+	background-color: #DDDDDD;
+	text-align: center;
+}
+
+.fm-footer > ul > li {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+/**
+ * Settings Page form styling
+ * */
+.fmp-settings h2{
+	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	font-weight: bold;
+}
+
+.fmp-settings > form > h4{
+	display: inline-block;
+	margin-left: 20px;
+}
+
+.fmp-settings table{
+	padding: 10px;
+	padding-left: 20px;
+}
+
+.fmp-settings table td {
+	padding: 10px;
+}
+
+.fmp-settings input[type=submit]{
+	padding: 10px 20px 10px 20px;
+	color: white;
+	font-size: 120%;
+	border-radius: 4px;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+	background: rgb(28, 184, 65);
+	cursor: pointer;
+}
+
+/**
+ * File edit full screen
+ * */
+div.ui-dialog:nth-child(7){
+	width: 760px !important;
+	top: 10px !important;
+	left: 10px !important;
+}
+
+.elfinder-file-edit{
+	height: 475px;
+}
+/**--------------------------------------------------**/
+
+/**
+ * File preview fullscreen problem fix
+ **/
+
+div.ui-helper-reset:nth-child(9){
+	position: absolute !important;
+	width: 760px !important;
+	height: auto !important;
+	top: 150px !important;
+	left: 190px !important;
+}
+
+.elfinder-quicklook-preview{
+	height: 510px;
+}
+
+div.elfinder-quicklook-navbar-icon:nth-child(2){
+	display: none;
+}
+/**------------------------------------**/
+
+/**
+ *
+ * Designing Logo
+ *
+ * */
+.fm-logo{
+	width: 50px;
+	height: auto;
+	position: relative;
+	top: 15px;
+	left: -15px;
+}
+
+/**
+ *
+ * File manager main view cross button hidden
+ *
+ * */
+span.ui-icon:nth-child(4){
+	display: none !important;
+}
+
+
+/**
+ *
+ * Themepack style
+ *
+ * */
+.fmtp_theme_screenshot{
+	max-width: 100px;
+}
+
+.fmtp_theme_wrapper{
+	display: inline-block;
+	width: 19%;
 }

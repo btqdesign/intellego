@@ -88,10 +88,21 @@ class FM_OptionsManager{
 			update_option($this->prefix,array());
 			$this->options = array();
 
-		} else return $this->options;
+		} else return $this->escaping_data( $this->options );
 
 	 }
 
+	/**
+	 *
+	 * @function escaping_data
+	 * @param array $options
+	 * Filters the options
+	 * 
+	 * */
+	public function escaping_data($options){
+		return $options;
+	}
+	
 	/**
 	 *
 	 * This function sets the value value of an option.

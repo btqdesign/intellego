@@ -1,66 +1,34 @@
-<?php defined('ABSPATH') or die()?>
+<?php 
+/**
+ * 
+ * @file index.php The manin admin view file that will show the actual file manager
+ * 
+ * */
 
-<?php
-	
-	$admin_page_url = admin_url()."admin.php?page={$this->prefix}";
-	
-	if( !isset($_GET['sub_page']) || empty($_GET['sub_page']) ) $_GET['sub_page'] = 'files';
-	// Escaping data
-	$_GET['sub_page'] = preg_replace( "/[<>#$%]/", "", $_GET['sub_page']);
-	// Sanitizing data
-	$_GET['sub_page'] = filter_var($_GET['sub_page'], FILTER_SANITIZE_STRING);
-	
-	/**
-	 * 
-	 * array(
-	 * 	'page_slug' => array('page_slug', 'page_path', 'name')
-	 * )
-	 * 
-	 * */
-	
-	$admin_menu_pages = array(
-		'files' => array( 'files', ABSPATH . 'wp-content/plugins/file-manager/views/admin/files.php', 'Files'),
-	);
-	
-	$admin_menu_pages = apply_filters('fm_admin_menu_sub_pages', $admin_menu_pages);
-	
-	// Enqueing admin assets
-	$this->admin_assets();
+// Security check
+if( !defined('ABSPATH') ) die();
+global $FileManager;
 ?>
-<div class="bootstart-admin-container">
+<?php require_once( 'header.php' ); ?>
 
-	<div class='bootstart-admin-header'>
-		<h2><img style="min-heigth:1.3em;" src='<?php echo $this->url('img/icon-24x24.png'); ?>' /> <?php echo $this->name; ?></h2>
-	</div>
+<div class='fm-container'>
 	
-	<?php if( count($admin_menu_pages) > 1): ?>
-	<div class="bootstart-admin-navigation" >
+	<div class='col-main'>
 		
-		
-		
-		<ul>
+		<div class='gb-fm-row'>
 			
-			<?php foreach($admin_menu_pages as $page): ?>
+		<?php include 'files.php'; ?>
 			
-				<li class="<?php if($_GET['sub_page']==$page[0]) echo 'bootstart-admin-active-page';?>"><a href="<?php echo $admin_page_url."&&sub_page={$page[0]}"?>"><?php echo $page[2]; ?></a></li>
-				
-			<?php endforeach; ?>
-			
-		</ul>
+		</div>
 		
-	</div>
-	<?php endif; ?>
-	
-	<div class='bootstart-admin-content'>
-
-		<?php include $admin_menu_pages[$_GET['sub_page']][1];?>
+		<div class='gb-fm-row fm-data'>
+			<?php require_once('utility.php'); ?>
+		</div>
 		
 	</div>
 	
-	<div class='bootstart-admin-sidebar'>
-		<?php require_once('sidebar.php'); ?>
-	</div>
-
-	<?php require_once('footer.php'); ?>
-
+	<?php require_once('sidebar.php'); ?>
+	
 </div>
+
+<?php require_once('footer.php'); ?>

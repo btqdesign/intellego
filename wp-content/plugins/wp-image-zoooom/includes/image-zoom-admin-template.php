@@ -19,15 +19,17 @@ include_once( 'premium-tooltips.php' );
 
 ?>
 
+<?php $brand = '<img src="'. site_url() .'/wp-content/plugins/wp-image-zoooom/assets/images/silkypress_logo.png" /> <a href="https://www.silkypress.com/?utm_source=wordpress&utm_campaign=iz_free&utm_medium=banner" target="_blank">SilkyPress.com</a>';?>
+<h2><?php printf(esc_html__('WP Image Zoom by %1$s', 'wp-image-zoooom'), $brand); ?></h2>
+
 <div class="wrap">
 
-<h2>WP Image Zoom</h2>
 
-<h2 class="nav-tab-wrapper woo-nav-tab-wrapper">
+<h3 class="nav-tab-wrapper woo-nav-tab-wrapper">
 
-    <a href="?page=zoooom_settings&tab=general" class="nav-tab "><?php echo __('General Settings', 'zoooom'); ?></a>
+    <a href="?page=zoooom_settings&tab=general" class="nav-tab"><?php _e('General Settings', 'wp-image-zoooom'); ?></a>
 
-    <a href="?page=zoooom_settings&tab=settings" class="nav-tab nav-tab-active"><?php echo __('Zoom Settings'); ?></a>
+    <a href="?page=zoooom_settings&tab=settings" class="nav-tab nav-tab-active"><?php _e('Zoom Settings', 'wp-image-zoooom'); ?></a>
 
 </h2>
 
@@ -43,7 +45,7 @@ include_once( 'premium-tooltips.php' );
 <form class="form-horizontal" method="post" action="" id="form_settings">
 
 <div class="form-group">
-        <?php echo load_steps('Step 1', 'Choose the Lens Shape'); ?>
+        <?php echo load_steps(__('Step 1', 'wp-image-zoooom'), __('Choose the Lens Shape', 'wp-image-zoooom')); ?>
 
         <?php 
             $lensShape = $iz_admin->get_settings( 'lensShape', $settings['lensShape']);
@@ -71,26 +73,26 @@ include_once( 'premium-tooltips.php' );
     <div style="clear: both; margin-bottom: 50px;"></div>
 
 
-    <?php echo load_steps('Step 2', 'Check your configuration changes on the image'); ?>
+    <?php echo load_steps(__('Step 2', 'wp-image-zoooom'), __('Check your configuration changes on the image', 'wp-image-zoooom')); ?>
     <img id="demo" src="<?php echo $assets_url ?>/images/img1_medium.png" data-zoom-image="<?php echo $assets_url ?>/images/img1_large.png" width="300" />
 
 
     <div style="clear: both; margin-bottom: 50px;"></div>
 
-    <?php echo load_steps('Step 3', 'Make more fine-grained configurations on the zoom'); ?>
+    <?php echo load_steps(__('Step 3', 'wp-image-zoooom'), __('Make more fine-grained configurations on the zoom', 'wp-image-zoooom')); ?>
     <ul class="nav nav-tabs">
         <li class="" id="tab_padding" style="width: 40px;"> &nbsp; </li>
         <li class="active" id="tab_general">
-        <a href="#general_settings" data-toggle="tab" aria-expanded="true"><?php _e('General'); ?></a>
+        <a href="#general_settings" data-toggle="tab" aria-expanded="true"><?php _e('General', 'wp-image-zoooom'); ?></a>
         </li>
         <li class="" id="tab_lens">
-        <a href="#lens_settings" data-toggle="tab" aria-expanded="false"><?php _e('Lens'); ?></a>
+        <a href="#lens_settings" data-toggle="tab" aria-expanded="false"><?php _e('Lens', 'wp-image-zoooom'); ?></a>
         </li>
         <li class="" id="tab_zoom_window">
-        <a href="#zoom_window_settings" data-toggle="tab" aria-expanded="false"><?php _e('Zoom Window'); ?></a>
+        <a href="#zoom_window_settings" data-toggle="tab" aria-expanded="false"><?php _e('Zoom Window', 'wp-image-zoooom'); ?></a>
         </li>
         <li class="" id="tab_custom_text">
-        <a href="#custom_text" data-toggle="tab" aria-expanded="false"><?php _e('Custom Text'); ?></a>
+        <a href="#custom_text" data-toggle="tab" aria-expanded="false"><?php _e('Custom Text', 'wp-image-zoooom'); ?></a>
         </li>
     </ul>
 
@@ -191,10 +193,10 @@ include_once( 'premium-tooltips.php' );
 </div><!-- close "tab-content" -->
 
 
-    <?php echo load_steps('Step 4', 'Don\'t forget to save the changes in order to apply them on the website'); ?>
+    <?php echo load_steps(__('Step 4', 'wp-image-zoooom'), __('Don\'t forget to save the changes in order to apply them on the website', 'wp-image-zoooom')); ?>
     <div class="form-group">
       <div class="col-lg-6">
-      <button type="submit" class="btn btn-primary"><?php echo __('Save changes', 'zoooom'); ?></button>
+      <button type="submit" class="btn btn-primary"><?php echo __('Save changes', 'wp-image-zoooom'); ?></button>
       </div>
     </div>
 
@@ -218,8 +220,8 @@ include_once( 'premium-tooltips.php' );
 
 function load_steps($step, $description) {
     return '<div class="steps">
-        <span class="steps_nr">'. __($step) .':</span>
-        <span class="steps_desc">' . __($description) . '</span>
+        <span class="steps_nr">'. $step .':</span>
+        <span class="steps_desc">' . $description . '</span>
         </div>' . "\n";
 }
 

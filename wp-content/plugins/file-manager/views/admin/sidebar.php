@@ -4,30 +4,25 @@
  * Security check. No one can access without Wordpress itself
  * 
  * */
-defined('ABSPATH') or die();
-
+if( !defined('ABSPATH') ) die();
+global $FileManager;
 ?>
 
-<?php if(!defined('FILE_MANAGER_PREMIUM')): ?>
-	<div class='sidebar-highlight'>
-		Features
-	</div>
-	<ul>
-		<li class='badge-free' data-badge='free'>Upload, Download, Delete</li>
-		<li class='badge-free' data-badge='free'>Copy, Move, Create, Rename, Archive, Extract, Edit</li>
-		<li class='badge-free' data-badge='free'>Supports all mime types</li>
-		<li class='badge-pro' data-badge='pro'>Frontend Support</li>
-		<li class='badge-pro' data-badge='pro'>File Sharing</li>
-		<li class='badge-pro' data-badge='pro'>File Type Control</li>
-		<li class='badge-pro' data-badge='pro'>User Permissions</li>
-		<li class='badge-pro' data-badge='pro'>UserRole Permissions</li>
-		<li class='badge-pro' data-badge='pro'>Bann User/UserRole</li>
+<div class='col-sidebar'>
+
+	<?php if(!defined('FILE_MANAGER_PREMIUM') || !defined('FILE_MANAGER_THEMEPACK')): ?>
 <!--
-		<li class='badge-pro' data-badge='pro'>FTP</li>
-		<li class='badge-pro' data-badge='pro'>Google Drive</li>
-		<li class='badge-pro' data-badge='pro'>Dropbox</li>
-		<li class='badge-pro' data-badge='pro'>18 Language Support</li>
-		<li class='badge-pro' data-badge='pro'>Multiple Themes</li>
+	<div class='gb-fm-row'><?php require_once( 'sales.php' ); ?></div>
 -->
-	</ul>
-<?php endif; ?>
+	
+	<div class='gb-fm-row'><?php require_once( 'donate.php' ); ?></div>
+	<?php endif; ?>
+	
+	<?php if(!defined('FILE_MANAGER_PREMIUM')): ?>
+	<div class='gb-fm-row'><?php require_once( 'extensions.php' ); ?></div>
+	<?php endif; ?>
+
+	<?php if(!defined('FILE_MANAGER_THEMEPACK')): ?>
+	<div class='gb-fm-row'><?php require_once( 'extension-themepack.php' ); ?></div>
+	<?php endif; ?>
+</div>

@@ -93,7 +93,7 @@ endif;
 <table class="wp-list-table widefat fixed bookmarks">
     <thead>
         <tr>
-            <th>Upload Fonts</th>
+            <th><strong>Upload Fonts</strong></th>
         </tr>
     </thead>
     <tbody>
@@ -196,7 +196,7 @@ jQuery('#open_add_font_form')
 	if(! $formValid.valid()) return false;
 	
 	jQuery.ajax( {
-      url: 'https://dnesscarkey.xyz/font-convertor/convertor/convert.php',
+      url: '<?php echo $uaf_font_convert_server_url; ?>/font-convertor/convertor/convert.php',
       type: 'POST',
       data: new FormData( this ),
       processData: false,

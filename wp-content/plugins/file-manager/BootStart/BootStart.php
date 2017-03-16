@@ -1,4 +1,15 @@
 <?php
+
+// Security Check
+defined('ABSPATH') or die();
+
+// Directory Seperator
+if( !defined( 'DS' ) ){
+	
+	PHP_OS == "Windows" || PHP_OS == "WINNT" ? define("DS", "\\") : define("DS", "/");
+	
+} 
+
 /**
  *
  * The starter file that holds everything togather.
@@ -24,14 +35,14 @@ abstract class FM_BootStart{
 	 * @var string $name name of the plugin
 	 *
 	 * */
-	 protected $name;
+	 public $name;
 
 	/**
 	 *
 	 * @var string $prefix Plugin wide prefix that will be used to differentiate from other plugin / or system vars
 	 *
 	 * */
-	 protected $prefix;
+	 public $prefix;
 
 	/**
 	 *
@@ -66,7 +77,7 @@ abstract class FM_BootStart{
 	 * @var object $options The object of the options class
 	 *
 	 * */
-	 protected $options;
+	public $options;
 
 	/**
 	 *
@@ -116,7 +127,7 @@ abstract class FM_BootStart{
 
 		// Upload folder path
 		$upload = wp_upload_dir();
-		$this->upload_path = $upload['basedir'] . '/' . $this->prefix;
+		$this->upload_path = $upload['basedir'] . DS . $this->prefix;
 
 		// Upload folder url
 		$upload = wp_upload_dir();
@@ -134,6 +145,9 @@ abstract class FM_BootStart{
 		
 		// Frontend asset loading
 		add_action('wp_enqueue_scripts', array(&$this, 'assets') );
+		
+		// Dashboard asset loading
+		add_action('admin_enqueue_scripts', array(&$this, 'admin_assets') );
 
 		// Adding a menu at admin area
 		add_action( 'admin_menu', array(&$this, 'menu') );
@@ -172,16 +186,15 @@ abstract class FM_BootStart{
 	 *
 	 * */
 	 public function assets(){
-
+		
+		$this->elfinder_assets(); // Loads all the assets necessary for elFinder
+		
 		// Including front-style.css
-		wp_enqueue_style($this->__('front-style'), $this->url('css/front-style.css'), false);
+		wp_register_style('fm-front-style', $this->url('css/front-style.css'), false);
 
 		// Including front-script.js
-		wp_enqueue_script($this->__('front-script'), $this->url('js/front-script.js'), array(), '1.0.0', true );
-
-		// Including media for media upload
-		wp_enqueue_media();
-			 
+		wp_register_script('fm-front-script', $this->url('js/front-script.js'), array(), '1.0.0', true );
+		 
 	 }
 
 	/*
@@ -191,31 +204,40 @@ abstract class FM_BootStart{
 	 * */
 	 public function admin_assets(){
 		
-		// Jquery UI CSS
-		wp_enqueue_style( $this->__('jquery-ui-css'), $this->url('jquery-ui-1.11.4/jquery-ui.min.css') );
-		
-		// Jquery UI theme
-		wp_enqueue_style( $this->__('jquery-ui-css-theme'), $this->url('jquery-ui-1.11.4/jquery-ui.theme.css') );
-		
-		// elFinder CSS
-		wp_enqueue_style( $this->__('elfinder-css'), $this->url('elFinder/css/elfinder.min.css') );
-		
-		// elFinder theme CSS
-		wp_enqueue_style( $this->__('elfinder-theme-css'), $this->url('elFinder/css/theme.css') );
+		$this->elfinder_assets(); // Loads all the assets necessary for elFinder
 		
 		// Including admin-style.css
-		wp_enqueue_style( $this->__('admin-style'), $this->url('css/admin-style.css') );
+		wp_register_style( 'fmp-admin-style', $this->url('css/admin-style.css') );
 
 		// Including admin-script.js
-		wp_enqueue_script( $this->__('admin-script'), $this->url('js/admin-script.js'), array('jquery') );
+		wp_register_script( 'fmp-admin-script', $this->url('js/admin-script.js'), array('jquery') );
+
+	}
+	
+	/**
+	 * 
+	 * @function elfinder_assets
+	 * @description Registers all the elfinder assets
+	 * 
+	 * */
+	public function elfinder_assets(){
+		
+		$jquery_ui_url = $this->url('jquery-ui-1.11.4/jquery-ui.min.css');
+		$jquery_ui_url = apply_filters('fm_jquery_ui_theme_hook', $jquery_ui_url);
+		
+		// Jquery UI CSS
+		wp_register_style( 'fmp-jquery-ui-css',  $jquery_ui_url);
+		
+		// elFinder CSS
+		wp_register_style( 'fmp-elfinder-css', $this->url('elFinder/css/elfinder.min.css'), array('fmp-jquery-ui-css') );
+		
+		// elFinder theme CSS
+		if($this->url('jquery-ui-1.11.4/jquery-ui.min.css') == $jquery_ui_url ) wp_register_style( 'fmp-elfinder-theme-css', $this->url('elFinder/css/theme.css'), array('fmp-elfinder-css') );
 		
 		// elFinder Scripts depends on jQuery UI core, selectable, draggable, droppable, resizable, dialog and slider.
-		wp_enqueue_script( $this->__('elfinder-script'), $this->url('elFinder/js/elfinder.full.js'), array('jquery', 'jquery-ui-core', 'jquery-ui-selectable', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-resizable', 'jquery-ui-dialog', 'jquery-ui-slider', ) );
+		wp_register_script( 'fmp-elfinder-script', $this->url('elFinder/js/elfinder.full.js'), array('jquery', 'jquery-ui-core', 'jquery-ui-selectable', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-resizable', 'jquery-ui-dialog', 'jquery-ui-slider', 'jquery-ui-tabs') );
 		
-		// Adding lightbox plugin for jquery
-		wp_enqueue_script( $this->__('fmp-lightbox-js'), $this->url('lightbox/js/lightbox.min.js'), array( 'jquery' ) );
-
-	 }
+	}
 
 	/**
 	 *
@@ -228,8 +250,25 @@ abstract class FM_BootStart{
 
 		if($this->menu_data['type'] == 'menu'){
 			
+			// Main Menu
 			add_menu_page( $this->name, $this->name, 'manage_options', $this->prefix, array(&$this, 'admin_panel'), $this->url('img/icon-24x24.png'), 7 );
+			
+			// Site Backup page
+			//~ add_submenu_page( $this->prefix, __( 'Site Backup' ), 'Site Backup', 'manage_options', $this->zip( 'Site Backup' ), array( &$this, 'site_backup' ) );
+			
+			// Settings Page
 			add_submenu_page( $this->prefix, __( 'File Manager Settings' ), 'Settings', 'manage_options', $this->zip( 'File Manager Settings' ), array( &$this, 'settings' ) );
+
+			if(!defined('FILE_MANAGER_PREMIUM')){
+				add_submenu_page( 
+					'file-manager', // Parent Slug
+					'File Manager Permission System(pro)', // Page title
+					'Permission System', // Menu title
+					'manage_options', // User capabilities
+					'file-manager-permission-system', // Menu Slug
+					create_function( '', 'include plugin_dir_path( __FILE__ ) . ".." . DS . "views" . DS . "admin" . DS . "permission_system.php";' )
+				);
+			}
 			
 		}
 
@@ -244,9 +283,22 @@ abstract class FM_BootStart{
 
 		if(!current_user_can('manage_options')) die( $this->render('', 'access-denied') );
 
-		$this->render('', 'admin/index');
+		$this->render('', 'admin' . DS . 'index');
 
 	 }
+	
+	/**
+	 * 
+	 * Site Backup
+	 * 
+	 * */
+	public function site_backup(){
+		
+		if(!current_user_can('manage_options')) die( $this->render('', 'access-denied') );
+
+		$this->render('', 'admin' . DS . 'site-backup');
+	
+	}
 	
 	/**
 	 * Adds a settings page
@@ -256,7 +308,7 @@ abstract class FM_BootStart{
 		
 		if(!current_user_can('manage_options')) die( $this->render('', 'access-denied') );
 
-		$this->render('', 'admin/settings');
+		$this->render('', 'admin' . DS . 'settings');
 		
 	}
 	
@@ -266,9 +318,9 @@ abstract class FM_BootStart{
 	 *
 	 * @param string $relative_path relative path to the this plugin root folder.
 	 * */
-	 protected function path($relative_path){
+	 public function path($relative_path){
 
-		return ABSPATH.'wp-content/plugins/'.$this->prefix.'/'.$relative_path;
+		return ABSPATH.'wp-content' . DS . 'plugins' . DS . $this->prefix. DS .$relative_path;
 
 	 }
 
@@ -281,7 +333,7 @@ abstract class FM_BootStart{
 	 * */
    	 public function url($string){
 
-		return plugins_url('/'.$this->prefix.'/'.$string);
+		return plugins_url( '/' . $this->prefix . '/' . $string );
 
 	 }
 
@@ -421,7 +473,7 @@ abstract class FM_BootStart{
 
 		}
 
-		include( $this->path('views/'.$view_file) );
+		include( $this->path( 'views' . DS . $view_file ) );
 
 	 }
 
@@ -463,3 +515,4 @@ abstract class FM_BootStart{
 		
 	}
 }
+

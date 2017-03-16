@@ -13,12 +13,14 @@ extends \threewp_broadcast\maintenance\checks\check
 {
 	public function get_description()
 	{
+		// Maintenance check description
 		return 'View individual broadcast data objects. This tool does not modify the database.';
 	}
 
 	public function get_name()
 	{
-		return 'View broadcast data';
+		// Maintenance check name
+		return __( 'View broadcast data', 'threewp_broadcast' );
 	}
 
 	public function step_start()
@@ -26,30 +28,35 @@ extends \threewp_broadcast\maintenance\checks\check
 		$o = new \stdClass;
 		$o->inputs = new \stdClass;
 		$o->form = $this->broadcast()->form2();
-		$o->r = ThreeWP_Broadcast()->p( 'Use the form below to look up the broadcast data (linking) either by specifying the ID of the row in the database or the combination of blog ID and post ID. Leave the row input empty to look up using blog and post IDs.' );
+		$o->r = ThreeWP_Broadcast()->p( __( 'Use the form below to look up the broadcast data (linking) either by specifying the ID of the row in the database or the combination of blog ID and post ID. Leave the row input empty to look up using blog and post IDs.', 'threewp_broadcast' ) );
 
 		$fs = $o->form->fieldset( 'fs_by_id' );
-		$fs->legend->label( 'Find broadcast data by ID' );
+		// Fieldset label - broadcast data is linking data
+		$fs->legend->label( __( 'Find broadcast data by ID', 'threewp_broadcast' ) );
 
 		$o->inputs->row_id = $fs->number( 'id' )
-			->description( 'The ID of the row in the database table.' )
+			// Input title
+			->description( __( 'The ID of the row in the database table.', 'threewp_broadcast' ) )
+			// Input label
 			->label( 'ID' );
 
 		$fs = $o->form->fieldset( 'fs_by_blog_and_post' );
-		$fs->legend->label( 'Find broadcast data by blog and post ID' );
+		// Fieldset label - broadcast data is linking data
+		$fs->legend->label( __( 'Find broadcast data by blog and post ID', 'threewp_broadcast' ) );
 
 		$o->inputs->blog_id = $fs->number( 'blog_id' )
-			->description( 'The ID of the blog. The current blog is the default.' )
-			->label( 'Blog ID' )
+			->description( __( 'The ID of the blog. The current blog is the default.', 'threewp_broadcast' ) )
+			->label( __( 'Blog ID', 'threewp_broadcast' ) )
 			->value( get_current_blog_id() );
 
 		$o->inputs->post_id = $fs->number( 'post_id' )
-			->description( 'The ID of the post.' )
-			->label( 'Post ID' )
+			->description( __( 'The ID of the post.', 'threewp_broadcast' ) )
+			->label( __( 'Post ID', 'threewp_broadcast' ) )
 			->value( '' );
 
 		$button = $o->form->primary_button( 'dump' )
-			->value( 'Find and display the broadcast data' );
+			// Button - broadcast data is link data
+			->value( __( 'Find and display the broadcast data', 'threewp_broadcast' ) );
 
 		if ( $o->form->is_posting() )
 		{
@@ -78,7 +85,7 @@ extends \threewp_broadcast\maintenance\checks\check
 		$o->results = $this->broadcast()->query( $query );
 		if ( count( $o->results ) !== 1 )
 		{
-			$o->r .= $this->broadcast()->error_( 'Row %s in the broadcast data table was not found!', $row_id );
+			$o->r .= $this->broadcast()->error_message()->_( __( 'Row %s in the broadcast data table was not found!', 'threewp_broadcast' ), $row_id );
 			return;
 		}
 

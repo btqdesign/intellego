@@ -86,8 +86,9 @@ class input
 		$o->indent = $this->indent();
 		$o->input = $placeholders->input;
 		$o->label = $placeholders->label;
-		if ( ! $this->description->is_empty() )
-			$o->description = $placeholders->description;
+		if ( $this->has_description )
+			if ( ! $this->description->is_empty() )
+				$o->description = $placeholders->description;
 		$input_string = $this->assemble_input_string( $o );
 
 		$r = sprintf( '%s%s%s',

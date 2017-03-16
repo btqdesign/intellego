@@ -29,7 +29,12 @@ class ImageZoooom_FormsHelper {
         $output .= '">' . PHP_EOL;
 
         $output .= "\t\t" . '<label class="'. $this->label_class .'">'. $args['label'] . PHP_EOL;
-        $output .= ( $disabled) ?  "\t\t" . '<img src="'.$this->assets_url().'/images/question_mark.svg" />' . PHP_EOL : '';
+        if ( $disabled ) {
+            $output .= "\t\t" . '<img src="'.$this->assets_url().'/images/question_mark.svg" />' . PHP_EOL;
+        }
+        if ( isset($args['description']) && !$disabled ) {
+            $output .= "\t\t" . $this->tooltip( $args['description'] ); 
+        }
         $output .= "\t\t" . '</label>' . PHP_EOL;
 
         echo $output;

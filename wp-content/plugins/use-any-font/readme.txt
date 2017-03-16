@@ -2,8 +2,8 @@
 Contributors: dnesscarkey
 Tags: use any font, any font, embed any font, font embed, font uploader, css3 font embed, @font-face embed, font conversion, webfont, ttf, opentype, custom fonts
 Requires at least: 3.0
-Tested up to: 4.5.2
-Stable tag: 4.5.1
+Tested up to: 4.7.3
+Stable tag: 4.7.1
 
 Embed any font in your website
 
@@ -109,6 +109,17 @@ You can check our <a href="http://dineshkarki.com.np/forums/forum/use-any-fonts"
 1. Screenshot #6. Assign fonts to custom elements.
 
 == Changelog ==
+
+= 4.7.1 =
+* Divi Theme Issue Fixes.
+
+= 4.7 =
+* Full Support For Divi Admin Visual Builder
+* Use of relative path as default nowonwards
+* Alternative server selection for font upload and API verification.
+
+= 4.6 =
+* Directly assign font to element using the class identical to font name.
 
 = 4.5.1 =
 * Fixed form validation js error.

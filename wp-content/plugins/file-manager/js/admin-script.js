@@ -37,4 +37,3 @@ JQ.fn.fManager = function(data){
 	JQ("#fmp_permission_wrapper_id").html(STR);
 	
 }
-

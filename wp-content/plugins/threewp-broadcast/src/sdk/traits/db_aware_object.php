@@ -7,11 +7,11 @@ namespace plainview\sdk_broadcast\traits;
 
 	@details	Used as a convenience to make normal objects easier to interface into the database.
 
-	A subtrait (Wordpress / Drupal) should be used, instead of this trait, because of the need to overload __db_delete and __db_update.
+	A subtrait for Wordpress should be used, instead of this trait, because of the need to overload __db_delete and __db_update.
 
 	@par		Usage
 
-	- use \plainview\sdk_broadcast\wordpress\db_aware_object or \plainview\drupal\db_aware_object.
+	- use \plainview\sdk_broadcast\wordpress\db_aware_object.
 	- Override the db_table() function.
 	- Override the keys() function.
 	- Override the id_key() method, alternatively put a static $id_key variable in your class.

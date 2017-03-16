@@ -13,15 +13,22 @@ if (isset($_POST['submit-uaf-settings'])){
 		$uaf_use_curl_uploader = '';
 	}
 	
-	if (isset($_POST['uaf_use_relative_font_path'])){
-		$uaf_use_relative_font_path = 1;
+	if (isset($_POST['uaf_use_absolute_font_path'])){
+		$uaf_use_absolute_font_path = 1;
 	} else {
-		$uaf_use_relative_font_path = '';
+		$uaf_use_absolute_font_path = '';
+	}
+	
+	if (isset($_POST['uaf_use_alternative_server'])){
+		$uaf_use_alternative_server = 1;
+	} else {
+		$uaf_use_alternative_server = '';
 	}
 	
 	update_option('uaf_disbale_editor_font_list', $uaf_disbale_editor_font_list);
 	update_option('uaf_use_curl_uploader', $uaf_use_curl_uploader);
-	update_option('uaf_use_relative_font_path', $uaf_use_relative_font_path);	
+	update_option('uaf_use_absolute_font_path', $uaf_use_absolute_font_path);	
+	update_option('uaf_use_alternative_server', $uaf_use_alternative_server);	
 	$settings_message = 'Settings Saved';
 	
 	uaf_write_css(); // Need to rewrite css for uaf_use_relative_font_path setting change 
@@ -39,6 +46,24 @@ if ($uaf_disbale_editor_font_list_value != 1):
 	add_filter('mce_buttons_2', 'wp_editor_fontsize_filter');
 	add_filter('tiny_mce_before_init', 'uaf_mce_before_init' );
 endif;
+
+// ADD FONTS to DIVI editor font List
+add_filter('et_websafe_fonts', 'uaf_send_fonts_divi_list',10,2);
+function uaf_send_fonts_divi_list($fonts){
+    $fontsRawData 	= get_option('uaf_font_data');
+	$fontsData		= json_decode($fontsRawData, true);
+	$fonts_uaf		= array();
+	if (!empty($fontsData)):
+		foreach ($fontsData as $key=>$fontData):
+			$fonts_uaf[$fontData['font_name']] = array(
+				'styles' 		=> '400',
+				'character_set' => 'cyrillic,greek,latin',
+				'type'			=> 'serif'
+			);	
+		endforeach;
+	endif;
+  	return array_merge($fonts_uaf,$fonts);
+}
 
 function uaf_client_css() {
 	$uaf_upload 	= wp_upload_dir();
@@ -84,8 +109,8 @@ function uaf_activate(){
 
 function uaf_update_check() { // MUST CHANGE WITH EVERY VERSION
     $uaf_version_check = get_option('uaf_current_version');
-	if ($uaf_version_check != '4.5.1'):
-		update_option('uaf_current_version', '4.5.1');
+	if ($uaf_version_check != '4.7.1'):
+		update_option('uaf_current_version', '4.7.1');
 		if ($uaf_version_check < 4.0):
 			uaf_create_folder();
 			uaf_move_file_to_newPath();
@@ -103,7 +128,14 @@ function uaf_settings_page() {
 	
 	$uaf_disbale_editor_font_list_value = get_option('uaf_disbale_editor_font_list');
 	$uaf_use_curl_uploader_value = get_option('uaf_use_curl_uploader');
-	$uaf_use_relative_font_path = get_option('uaf_use_relative_font_path');
+	$uaf_use_absolute_font_path = get_option('uaf_use_absolute_font_path');
+	$uaf_use_alternative_server = get_option('uaf_use_alternative_server');
+	
+	if ($uaf_use_alternative_server == 1){
+		$uaf_font_convert_server_url = 'https://dnesscarkey.com';
+	} else {
+		$uaf_font_convert_server_url = 'https://dnesscarkey.xyz';
+	}
 	
 	include('includes/uaf_header.php');
 	if ($uaf_use_curl_uploader_value == 1){
@@ -153,7 +185,11 @@ function uaf_move_file_to_newPath(){
 }
 
 function uaf_write_css(){
-	$uaf_use_relative_font_path = get_option('uaf_use_relative_font_path'); // Check if user want to use relative font path.
+	$uaf_use_absolute_font_path = get_option('uaf_use_absolute_font_path'); // Check if user want to use absolute font path.
+	
+	if (empty($uaf_use_absolute_font_path)){
+		$uaf_use_absolute_font_path = 0;
+	}
 	
 	$uaf_upload 	= wp_upload_dir();
 	$uaf_upload_dir = $uaf_upload['basedir'];
@@ -162,9 +198,9 @@ function uaf_write_css(){
 	$uaf_upload_url = $uaf_upload_url . '/useanyfont/';	
 	$uaf_upload_url = preg_replace('#^https?:#', '', $uaf_upload_url);
 	
-	if ($uaf_use_relative_font_path == 1){ // If user use relative path
+	if ($uaf_use_absolute_font_path == 0){ // If user use relative path
 		$url_parts = parse_url($uaf_upload_url);
-		$uaf_upload_url = "$url_parts[path]$url_parts[query]$url_parts[fragment]";
+		@$uaf_upload_url = "$url_parts[path]$url_parts[query]$url_parts[fragment]";
 	}
 	
 	ob_start();
@@ -178,6 +214,9 @@ function uaf_write_css(){
 				src: url('<?php echo $uaf_upload_url.$fontData['font_path'] ?>.eot');
 				src: local('<?php echo $fontData['font_name'] ?>'), url('<?php echo $uaf_upload_url.$fontData['font_path'] ?>.eot') format('embedded-opentype'), url('<?php echo $uaf_upload_url.$fontData['font_path'] ?>.woff') format('woff');
 			}
+            
+            .<?php echo $fontData['font_name'] ?>{font-family: '<?php echo $fontData['font_name'] ?>' !important;}
+            
 		<?php
 		endforeach;
 		endif;	
@@ -210,6 +249,9 @@ function uaf_write_css(){
 				src: url('<?php echo $uaf_upload_url.$fontData['font_path'] ?>.eot');
 				src: local('<?php echo $fontData['font_name'] ?>'), url('<?php echo $uaf_upload_url.$fontData['font_path'] ?>.eot') format('embedded-opentype'), url('<?php echo $uaf_upload_url.$fontData['font_path'] ?>.woff') format('woff');
 			}
+            
+            .et_gf_<?php echo $fontData['font_name'] ?>{background:none !important;font-family:<?php echo $fontData['font_name'] ?>;text-indent:0 !important;font-size:25px;}
+            
 		<?php
 		endforeach;
 		endif;

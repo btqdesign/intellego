@@ -3,12 +3,12 @@
  * Plugin Name: WP Image Zoom
  * Plugin URI: https://wordpress.org/plugins/wp-image-zoooom/
  * Description: Add zoom effect over the an image, whether it is an image in a post/page or the featured image of a product in a WooCommerce shop 
- * Version: 1.3.0
- * Author: Diana Burduja
+ * Version: 1.6
+ * Author: SilkyPress 
  * Author URI: https://www.silkypress.com
  * License: GPL2
  *
- * Text Domain: zoooom
+ * Text Domain: wp-image-zoooom
  * Domain Path: /languages/
  *
  */
@@ -24,7 +24,7 @@ if ( ! class_exists( 'ImageZoooom' ) ) :
  * @class ImageZoooom
  */
 final class ImageZoooom {
-    public $version = '1.3.0';
+    public static $version = '1.6';
     public $testing = false;
     public $free = true;
     protected static $_instance = null; 
@@ -49,14 +49,14 @@ final class ImageZoooom {
       * Cloning is forbidden.
       */
     public function __clone() {
-         _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'zoooom' ), '1.0' );
+         _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'wp-image-zoooom' ), '1.0' );
     }
 
     /**
      * Unserializing instances of this class is forbidden.
      */
     public function __wakeup() {
-        _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'zoooom' ), '1.0' );
+        _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'wp-image-zoooom' ), '1.0' );
     }
 
     /**
@@ -66,8 +66,9 @@ final class ImageZoooom {
      */
     public function __construct() {
          if ( is_admin() ) {
+            $this->load_plugin_textdomain();
             include_once( 'includes/image-zoom-admin.php' );
-            include_once( 'includes/image-zoom-notices.php' );
+            // include_once( 'includes/image-zoom-notices.php' );
             include_once( 'includes/image-zoom-warnings.php' );
          }
          add_action( 'template_redirect', array( $this, 'template_redirect' ) );
@@ -97,7 +98,7 @@ final class ImageZoooom {
         add_filter( 'the_content', array( $this, 'find_bigger_image' ), 40 );
 
         add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ) );
-        add_action( 'wp_head', array( $this, 'theme_bridge_compatibility' ) );
+        add_action( 'wp_head', array( $this, 'wp_head_compatibilities' ) );
 
         add_filter( 'wp_calculate_image_srcset', array( $this, 'wp_calculate_image_srcset' ), 40, 5  );
     }
@@ -131,7 +132,7 @@ final class ImageZoooom {
         if ( ! defined( 'WPB_VC_VERSION' ) ) return false;
         $param = WPBMap::getParam( 'vc_single_image', 'style' );
         if ( is_array( $param ) ) {
-            $param['value'][__( 'WP Image Zoooom', 'zoooom' )] = 'zoooom';
+            $param['value'][__( 'WP Image Zoooom', 'wp-image-zoooom' )] = 'zoooom';
             vc_update_shortcode_param( 'vc_single_image', $param );
         }
     }
@@ -221,12 +222,17 @@ final class ImageZoooom {
 
 
     /**
-     * Theme Bridge compatibility
+     * wp_head compatibilities 
      */
-    function theme_bridge_compatibility() {
-        if ( get_template() != 'bridge' ) return false;
+    function wp_head_compatibilities() {
+        $theme = get_template();
+        if ( strpos( $theme, 'bridge') !== false ) { 
+            echo '<style type="text/css"> .wrapper { z-index: 40 !important; } </style>' . PHP_EOL;
+        }
 
-        echo '<style type="text/css"> .wrapper { z-index: 40 !important; } </style>' . PHP_EOL;
+        if ( strpos( $theme, 'artcore') !== false ) {
+            echo '<style type="text/css"> .sidebar-menu-push { z-index: 40 !important; } </style>' . PHP_EOL;
+        } 
     }
 
 
@@ -242,17 +248,19 @@ final class ImageZoooom {
         }
 
         // Load the jquery.image_zoom.js
-        wp_register_script( 'image_zoooom', $this->plugins_url( '/assets/js/jquery.image_zoom'.$prefix.'.js' ), array( 'jquery' ), $this->version, false);
+        wp_register_script( 'image_zoooom', $this->plugins_url( '/assets/js/jquery.image_zoom'.$prefix.'.js' ), array( 'jquery' ), self::$version, false);
         wp_enqueue_script( 'image_zoooom' );
 
         // Load the image_zoom-init.js
-        wp_register_script( 'image_zoooom-init', $this->plugins_url( '/assets/js/image_zoom-init.js' ), array( 'jquery' ), $this->version, false);
+        wp_register_script( 'image_zoooom-init', $this->plugins_url( '/assets/js/image_zoom-init.js' ), array( 'jquery' ), self::$version, false);
         wp_localize_script( 'image_zoooom-init', 'IZ', $this->get_localize_vars());
         wp_enqueue_script( 'image_zoooom-init' );
 
         // Remove the prettyPhoto
-        wp_dequeue_script( 'prettyPhoto' );
-        wp_dequeue_script( 'prettyPhoto-init' );
+        if ( $this->woocommerce_is_active() && function_exists('is_product') && is_product() ) {
+            wp_dequeue_script( 'prettyPhoto' );
+            wp_dequeue_script( 'prettyPhoto-init' );
+        }
     }
 
     function get_localize_vars() {
@@ -261,8 +269,8 @@ final class ImageZoooom {
 
         $default = array(
             'with_woocommerce' => '1',
+            'exchange_thumbnails' => '1',
             'woo_categories' => (isset($general['woo_cat']) && $general['woo_cat'] == 1 ) ? '1' : '0',
-            'lazy_load' => ( isset($general['force_lazyload']) && $general['force_lazyload'] == 1 ) ? '1' : '0',
             'options' => $options,
         );
 
@@ -275,6 +283,9 @@ final class ImageZoooom {
 
         if ( isset($general['enable_woocommerce']) && empty($general['enable_woocommerce']))
             $default['with_woocommerce'] = '0';
+
+        if ( isset($general['exchange_thumbnails']) && empty($general['exchange_thumbnails']))
+            $default['exchange_thumbnails'] = '0';
 
         return $default;
     }
@@ -374,6 +385,9 @@ final class ImageZoooom {
         if (!isset($general['enable_woocommerce']))
             $general['enable_woocommerce'] = true;
 
+        if (!isset($general['exchange_thumbnails']))
+            $general['exchange_thumbnails'] = true;
+
         if ( !isset( $general['enable_mobile'] ) )
             $general['enable_mobile'] = false;
 
@@ -386,11 +400,14 @@ final class ImageZoooom {
             $general['woo_cat'] = false;
         } 
 
-        if ( !isset( $general['force_lazyload'] ) )
-            $general['force_lazyload'] = false;
-
        return $general; 
     }
+
+	public function load_plugin_textdomain() {
+		load_plugin_textdomain( 'wp-image-zoooom', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
+	}
+
+
 
 }
 

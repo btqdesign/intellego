@@ -102,12 +102,12 @@ class ImageZoooom_Notices {
 
 
         if ( $notice == '12_days' ) {
-            $link = 'https://www.silkypress.com/wp-image-zoooom-pro-offer/';
+            $link = 'https://www.silkypress.com/wp-image-zoooom-pro-offer/?utm_source=wordpress&utm_campaign=iz_free&utm_medium=banner';
         } else {
-            $link = 'https://www.silkypress.com/wp-image-zoooom-pro-special-offer/?a=' . $this->convert_numbers_letters( $this->activation_time );
+            $link = 'https://www.silkypress.com/wp-image-zoooom-pro-special-offer/?a=' . $this->convert_numbers_letters( $this->activation_time ) . '&utm_source=wordpress&utm_campaign=iz_offer&utm_medium=banner';
         }
 
-        $lower_part = sprintf( '<div style="margin-top: 7px;"><a href="%s">%s</a> | <a href="#" class="dismiss_notice"  target="_parent">%s</a></div>', $link, 'Get WP Image Zoooom PRO', 'Dismiss this notice' ); 
+        $lower_part = sprintf( '<div style="margin-top: 7px;"><a href="%s" target="_blank">%s</a> | <a href="#" class="dismiss_notice"  target="_parent">%s</a></div>', $link, 'Get WP Image Zoooom PRO', 'Dismiss this notice' ); 
 
         switch ( $notice ) {
             case '1_day' :

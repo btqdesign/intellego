@@ -9,181 +9,6 @@ namespace plainview\sdk_broadcast;
 
 	This base class contains the version of the SDK. Upon changing any part of the SDK, bump the version in here.
 
-	@par			Changelog
-
-	- 20160718		Wordpress: Newer updater.
-	- 20160630		Wordpress: db trait should use static:: not self::.
-	- 20160621		Form: File input has accepts() function for restricting file types.
-	- 20160414		Wordpress: Allow updated SSL workaround to be forced on.
-	- 20160330		Wordpress: Updater has built in Redhat SSL Workaround.
-	- 20160210		Wordpress: Message boxes should be dismissable.
-	- 20160207		Wordpress: wp_die should not double output messages.
-	- 20160204		Wordpress: edd_admin_license_tab_text
-	- 20160112		form: select inputs can now be sorted.
-	- 20160102		Deleted Wordpress options_object class.
-	- 20160102		Added object_stores trait to replace Wordpress Options_Object.
-	- 20151227		Wordpress: Removed old tabs functionality. Use only the tabs classes now.
-	- 20151227		Wordpress: Split tabs into nav tabs and subsubsub tabs.
-	- 20151225		Wordpress: Added menu_page() instead of add_submenu_page() methods.
-	- 20151225		form: Old form class retired. form() is now an alias for form2().
-	- 20151225		form2: Added sort order trait to inputs.
-	- 20151225		Wordpress: Added deprecated_function().
-	- 20151224		Wordpress: Allow tabs to be sorted using ->order();
-	- 20151223		Wordpress: Update EDD updater. Less validity checks. Better fail message.
-	- 20151222		Wordpress: Added row_actions();
-	- 20151221		Wordpress: Added message boxes.
-	- 20151221		Wordpress: Removed send_mail(). Use ->mail() instead.
-	- 20151215		Wordpress: Allow db object to load several IDs at once.
-	- 20151206		Wordpress: Table grouping + js.
-	- 20151203		Wordpress tables: Remove hover effect.
-	- 20151202		Wordpress: Do not base64 options object.
-	- 20151129		HTML: Added data convenience method and test.
-	- 20151106		Collections/html: Redone handling, with test.
-	- 20151105		Wordpress: add wp_editor form2 input type.
-	- 20151028		Wordpress: do not activate pack plugins if no action is selected.
-	- 20151028		Wordpress: prevent array_intersect warning if the user does not have capabilities on this blog.
-	- 20151025		Wordpress: Bulk action column has a unique ID.
-	- 20151024		Wordpress: Add Options_Object class.
-	- 20151009		Wordpress: Update plugin pack table.
-	- 20151003		Wordpress: More detailed debug trait.
-	- 20151003		Wordpress: Allow custom directory for language file.
-	- 20151002		Wordpress: use get_current_user_id() to return the current user's ID.
-	- 20150804		Moved to bitbucket.
-	- 20150725		Wordpress: Allow saving debug info to file.
-	- 20150721		Wordpress: get_user_capabilities and user_has_roles.
-	- 20150711		Wordpress plugin pack table allows selecting of checkboxes via plugin name.
-	- 20150708		Wordpress updater has its own namespace.
-	- 20150707		Wordpress tabs are now elements also.
-	- 20150624		Update Wordpress updater to 1.6
-	- 20150608		Wordpress plugin pack: allow plugin grouping by specifying @group in comment.
-	- 20150604		Wordpress debug trait now escapes the variables.
-	- 20150519		Mail: add sprintf support to the html, subject and text methods.
-	- 20150518		Table: Add titlef convenience method.
-	- 20150511		Fix harmless warning in Wordpress plugin pack.
-	- 20150507		Added drupal db_load() method.
-	- 20150424		Form2: container->input() returns container inputs also. Including test.
-	- 20150419		Added textarea_to_array function.
-	- 20150409		Do not clone the Wordpress wpdb upon insert. Let's hope that bug is fixed...
-	- 20150209		Collection->collection() added.
-	- 20150208		Wordpress udpater: Don't freeze if the server cannot be reached.
-	- 20150204		Wordpress widefat table has hover effect on rows.
-	- 20150202		Wrap the Wordpress input table fieldsets in a div.
-	- 20150202		Wordpress form table fieldset legends are displayed as plain h3.
-	- 20150116		array_rekey works with objects as values.
-	- 20150113		Wordpress forms should use the current scheme.
-	- 20150112		Wordpress debug flushes contents only if available. Thanks Flynsarmy.
-	- 20141228		Return false if no instance is available.
-	- 20141205		Plugin pack must call internal plugin methods.
-	- 20141204		Added scripts/sdk_restore.sh. Updated rename and update scripts.
-	- 20141203		Removed SDK versioning from Wordpress base.
-	- 20141203		Added scripts/sdk_update.sh
-	- 20141201		Added scripts/sdk_rename.sh
-	- 20141116		Form2: Fix radios input.
-	- 20141113		Wordpress: Plugin pack uses a get_plugin_classes action.
-	- 20141109		Wordpress: New EDD updater version.
-	- 20141103		Wordpress: Updater only needs one key. Checks less often.
-	- 20141030		Table: Element attribute modifications return this.
-	- 20141029		Wordpress: Updater works with multisites properly.
-	- 20141028		Wordpress: Plugin pack download link.
-	- 20141028		Wordpress: Plugin pack cleans plugin duplicates.
-	- 20141018		Wordpress: Fix action execute() and set_boolean.
-	- 20141016		Wordpress: Allow force new version check.
-	- 20141016		Wordpress: Plugin pack ignores non-existent plugins better.
-	- 20141013		Wordpress: Better plugin URL http/https handling.
-	- 20140928		Wordpress: Plugin pack fixes. paths(). Path fixes.
-	- 20140918		Wordpress: Added EasyDigitalDownloads licensing + updater support.
-	- 20140910		Form2: file input has not value.
-	- 20140903		Form2: Number input allows negative numbers.
-	- 20140822		Form2: append_prefix() now takes arrays as parameters also.
-	- 20140717		Wordpress plugin pack plugins are loaded with correct filename.
-	- 20140716		Fix uninstall for Wordpress plugin pack.
-	- 20140715		Fixed old form namespace.
-	- 20140711		form2: get_raw_post_value()
-	- 20140708		Wordpress: gmt_offset()
-	- 20140612		Wordpress: better path compatability with Windows servers.
-	- 20140611		Added human_bytes()
-	- 20140610		Added collections/sort_by_key
-	- 20140606		current_url fix for naughty webhosts that have HTTPS set to "Off".
-	- 20140518		Wordpress get_site_option default behaviour.
-	- 20140512		Fixed form2: clashing validation trait in some versions of PHP.
-	- 20140510		wordpress
-	- 20140508		Fixed form2 containers validation.
-	- 20140504		collections\html added.
-	- 20140502		wordpress
-	- 20140501		wordpress\traits\debug
-	- 20140427		wordpress\actions\action class.
-	- 20140418		wordpress wp_die()
-	- 20140413		wordpress - new roles handling
-	- 20140412		wordpress/db trait - fixed insert bug.
-	- 20140406		wordpress
-	- 20140331		Fixed Drupal db_aware_object path.
-	- 20140218		form2
-	- 20140203		Wordpress form
-	- 20140114		current_url SSL workaround for Microsoft IIS. *sigh*
-	- 20140110		Fixed add() bug in tree.
-	- 20140106		collections\collection.
-	- 20131211		wordpress
-	- 20131210		wordpress
-	- 20131209		tree class added.
-	- 20131112		form2
-	- 20131111		Check for mb extension before strtolower and strtoupper
-	- 20131109		form2
-	- 20131019		wordpress table top()
-	- 20131018		wordpress
-	- 20131016		wordpress roles, wordpress table bulk actions
-	- 20131015		form2
-	- 20131009		form2
-	- 20131008		current_url recognized HTTPS properly.
-	- 20131007		wordpress\base
-	- 20131006		wordpress\tabs
-	- 20131005		collections\collection
-	- 20131004		wordpress
-	- 20131002		collections\collection
-	- 20131001		form2
-	- 20130929		form2
-	- 20130925		form2
-	- 20130910		form2
-	- 20130902		wordpress/tabs improvements.
-	- 20130826		breadcrumb fix.
-	- 20130825		is_private_ip()
-	- 20130820		form2
-	- 20130819		form2
-	- 20130815		form2
-	- 20130814		form2
-	- 20130812		Version bump.
-	- 20130809		wordpress\tabs.
-	- 20130809		wordpress, human_time(), human_time_span().
-	- 20130807		form2
-	- 20130806		form2
-	- 20130803		table.
-	- 20130730		form2 select count(), breadcrumbs, table.
-	- 20130729		html\element
-	- 20130723		form2, instance() fixed, is_email checks for empty, mail bcc, wordpress\\traits\\foundation.
-	- 20130722		wordpress\\base
-	- 20130719		Unit tests using phpunit. Navigation class. Default wordpress sv language file.
-	- 20130717		add_query_arg and remove_query_arg
-	- 20130716		base::current_url disabled when running CLI.
-	- 20130712		form2 \n
-					wpautop()
-	- 20130702		form2
-	- 20130606		form2
-	- 20130604		current_url
-	- 20130530		wordpress tabs.
-	- 20130527		table
-	- 20130524		form2
-	- 20130515		mail \n
-					New: temp_directory() and temp_file().
-	- 20130507		Table.
-	- 20130506		Wordpress tabs. \n
-					HTML namespace. \n
-					New: uuid().
-	- 20130505		New: Wordpress tabs accept parameters \n
-					New: Wordpress CLI.
-	- 20130504		New: string_to_emails() added $mx parameter.
-	- 20130501		array_rekey: force conversion of arrays to arrays (from objects).
-	- 20130430		Added thirdparty/phpmailer.
-	- 20130426		implode_html has switch the parameter order. $array is now first.
-
 	@author			Edward Plainview		edward@plainview.se
 	@copyright		GPL v3
 **/
@@ -201,7 +26,7 @@ class base
 		@since		20130630
 		@var		$sdk_version
 	**/
-	protected $sdk_version = 20160718;
+	protected $sdk_version = 20170224;
 
 	/**
 		@brief		Constructor.
@@ -211,23 +36,6 @@ class base
 	{
 		$classname = get_class( $this );
 		self::$instance[ $classname ] = $this;
-	}
-
-	/**
-		@brief		Builds a URL with parameters.
-		@details
-
-		Taken from Wordpress.
-
-		See documentation for add_query_arg at: http://codex.wordpress.org/Function_Reference/add_query_arg
-
-		@since		20130717
-	**/
-	public static function add_query_arg()
-	{
-		if ( ! function_exists( '\\plainview\\sdk_broadcast\\thirdparty\\wordpress\\add_query_arg' ) )
-			require_once( __DIR__ . '/thirdparty/wordpress/functions.php' );
-		return call_user_func_array( '\\plainview\\sdk_broadcast\\thirdparty\\wordpress\\add_query_arg', func_get_args() );
 	}
 
 	/**
@@ -712,23 +520,6 @@ class base
 	}
 
 	/**
-		@brief		Remove a query argument from a url.
-		@details
-
-		Taken from Wordpress.
-
-		See documentation for remove_query_arg at: http://codex.wordpress.org/Function_Reference/remove_query_arg
-
-		@since		20130717
-	**/
-	public static function remove_query_arg()
-	{
-		if ( ! function_exists( '\\plainview\\sdk_broadcast\\thirdparty\\thirdparty\wordpress\\remove_query_arg' ) )
-			require_once( __DIR__ . '/thirdparty/wordpress/functions.php' );
-		return call_user_func_array( '\\plainview\\sdk_broadcast\\thirdparty\\wordpress\\remove_query_arg', func_get_args() );
-	}
-
-	/**
 		@brief		Recursively removes a directory.
 		@details	Assumes that all files in the directory, and the dir itself, are writeable.
 		@param		string		$directory		Directory to remove.
@@ -890,85 +681,14 @@ class base
 	}
 
 	/**
-	 	@brief		Replaces double line-breaks with paragraph elements.
-	 	@details	Taken from the Wordpress wpautop() function.
-	 	@param		string		$pee		The text which has to be formatted.
-	 	@param		bool		$br			Optional. If set, this will convert all remaining line-breaks after paragraphing. Default true.
-	 	@return		string		Text which has been converted into correct paragraph tags.
-	 	@since		20130712
+		@brief
+		@since		2017-02-21 07:43:53
 	**/
-	public static function wpautop($pee, $br = true) {
-		$pre_tags = array();
+	public static function wpautop( $string )
+	{
+		if ( ! function_exists( 'wpautop' ) )
+			require_once( 'wpautop.php' );
 
-		if ( trim($pee) === '' )
-			return '';
-
-		$pee = $pee . "\n"; // just to make things a little easier, pad the end
-
-		if ( strpos($pee, '<pre') !== false ) {
-			$pee_parts = explode( '</pre>', $pee );
-			$last_pee = array_pop($pee_parts);
-			$pee = '';
-			$i = 0;
-
-			foreach ( $pee_parts as $pee_part ) {
-				$start = strpos($pee_part, '<pre');
-
-				// Malformed html?
-				if ( $start === false ) {
-					$pee .= $pee_part;
-					continue;
-				}
-
-				$name = "<pre wp-pre-tag-$i></pre>";
-				$pre_tags[$name] = substr( $pee_part, $start ) . '</pre>';
-
-				$pee .= substr( $pee_part, 0, $start ) . $name;
-				$i++;
-			}
-
-			$pee .= $last_pee;
-		}
-
-		$pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
-		// Space things out a little
-		$allblocks = '(?:table|thead|tfoot|caption|col|colgroup|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|select|option|form|map|area|blockquote|address|math|style|p|h[1-6]|hr|fieldset|noscript|samp|legend|section|article|aside|hgroup|header|footer|nav|figure|figcaption|details|menu|summary)';
-		$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
-		$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
-		$pee = str_replace(array("\r\n", "\r"), "\n", $pee); // cross-platform newlines
-		if ( strpos($pee, '<object') !== false ) {
-			$pee = preg_replace('|\s*<param([^>]*)>\s*|', "<param$1>", $pee); // no pee inside object/embed
-			$pee = preg_replace('|\s*</embed>\s*|', '</embed>', $pee);
-		}
-		$pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
-		// make paragraphs, including one at the end
-		$pees = preg_split('/\n\s*\n/', $pee, -1, PREG_SPLIT_NO_EMPTY);
-		$pee = '';
-		foreach ( $pees as $tinkle )
-			$pee .= '<p>' . trim($tinkle, "\n") . "</p>\n";
-		$pee = preg_replace('|<p>\s*</p>|', '', $pee); // under certain strange conditions it could create a P of entirely whitespace
-		$pee = preg_replace('!<p>([^<]+)</(div|address|form)>!', "<p>$1</p></$2>", $pee);
-		$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee); // don't pee all over a tag
-		$pee = preg_replace("|<p>(<li.+?)</p>|", "$1", $pee); // problem with nested lists
-		$pee = preg_replace('|<p><blockquote([^>]*)>|i', "<blockquote$1><p>", $pee);
-		$pee = str_replace('</blockquote></p>', '</p></blockquote>', $pee);
-		$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)!', "$1", $pee);
-		$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee);
-		if ( $br ) {
-			$pee = preg_replace_callback('/<(script|style).*?<\/\\1>/s', function( $matches )
-				{
-					return str_replace("\n", "<WPPreserveNewline />", $matches[0]);
-				}, $pee);
-			$pee = preg_replace('|(?<!<br />)\s*\n|', "<br />\n", $pee); // optionally make line breaks
-			$pee = str_replace('<WPPreserveNewline />', "\n", $pee);
-		}
-		$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*<br />!', "$1", $pee);
-		$pee = preg_replace('!<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)!', '$1', $pee);
-		$pee = preg_replace( "|\n</p>$|", '</p>', $pee );
-
-		if ( !empty($pre_tags) )
-			$pee = str_replace(array_keys($pre_tags), array_values($pre_tags), $pee);
-
-		return $pee;
+		return wpautop( $string );
 	}
 }

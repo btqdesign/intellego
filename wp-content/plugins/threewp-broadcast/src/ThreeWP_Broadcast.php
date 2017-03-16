@@ -76,6 +76,20 @@ class ThreeWP_Broadcast
 	public $display_premium_pack_info = true;
 
 	/**
+		@brief		An array of incompatible plugins that prevent Broadcast from working.
+		@since		2017-01-16 17:14:35
+	**/
+	public static $incompatible_plugins = [
+		'post-type-switcher/post-type-switcher.php',
+	];
+
+	/**
+		@brief		The language domain to use.
+		@since		2017-02-21 20:00:41
+	**/
+	public $language_domain = 'threewp_broadcast';
+
+	/**
 		@brief		Caches permalinks looked up during this page view.
 		@see		post_link()
 		@since		20130923
@@ -131,6 +145,8 @@ class ThreeWP_Broadcast
 
 		if ( $this->get_site_option( 'canonical_url' ) )
 			$this->add_action( 'wp_head', 1 );
+
+		$this->admin_menu_trait_init();
 
 		$this->permalink_cache = (object)[];
 	}
@@ -498,6 +514,16 @@ class ThreeWP_Broadcast
 	}
 
 	/**
+		@brief		Checks whether a blog exists.
+		@details	Yes, Wordpress' switch_to_blog() doesn't do that check and ALWAYS RETURNS TRUE (!!!!).
+		@since		2017-01-18 20:10:26
+	**/
+	public function blog_exists( $blog_id )
+	{
+		return get_blog_status( $blog_id, 'blog_id' ) == $blog_id;
+	}
+
+	/**
 		@brief		Convenience function to return a Plainview SDK Collection.
 		@since		2014-10-31 13:21:06
 	**/
@@ -579,6 +605,37 @@ class ThreeWP_Broadcast
 	}
 
 	/**
+		@brief		Return a collection of add-on pack info.
+		@since		2016-12-05 14:50:20
+	**/
+	public function get_addon_packs_info()
+	{
+		$r = $this->collection();
+
+		$pack = $r->collection( '3rdparty' );
+		$pack->set( 'name', '3rd party' );
+		$pack->set( 'version_define', 'BROADCAST_3RD_PARTY_PACK_VERSION' );
+
+		$pack = $r->collection( 'control' );
+		$pack->set( 'name', 'Control' );
+		$pack->set( 'version_define', 'BROADCAST_CONTROL_PACK_VERSION' );
+
+		$pack = $r->collection( 'efficiency' );
+		$pack->set( 'name', 'Efficiency' );
+		$pack->set( 'version_define', 'BROADCAST_EFFICIENCY_PACK_VERSION' );
+
+		$pack = $r->collection( 'premium' );
+		$pack->set( 'name', 'Premium' );
+		$pack->set( 'version_define', 'BROADCAST_PREMIUM_PACK_VERSION' );
+
+		$pack = $r->collection( 'utilities' );
+		$pack->set( 'name', 'Utilities' );
+		$pack->set( 'version_define', 'BROADCAST_UTILITIES_PACK_VERSION' );
+
+		return $r;
+	}
+
+	/**
 		@brief		Return an array of post types available on this blog.
 		@details	Excludes the nav menu item post type.
 		@since		2014-11-16 23:10:09
@@ -599,6 +656,8 @@ class ThreeWP_Broadcast
 	{
 		global $wp_filter;
 		$filters = $wp_filter[ $hook ];
+		if ( is_object( $filters ) )
+			$filters = $filters->callbacks;
 		ksort( $filters );
 		$hook_callbacks = [];
 		//$wp_filter[$tag][$priority][$idx] = array('function' => $function_to_add, 'accepted_args' => $accepted_args);
@@ -672,6 +731,11 @@ class ThreeWP_Broadcast
 		$row->td()->text_( 'Broadcast version' );
 		$row->td()->text( $this->plugin_version );
 
+		global $wp_version;
+		$row = $table->body()->row();
+		$row->td()->text_( 'Wordpress version' );
+		$row->td()->text( $wp_version );
+
 		$row = $table->body()->row();
 		$row->td()->text_( 'PHP version' );
 		$row->td()->text( phpversion() );
@@ -680,9 +744,15 @@ class ThreeWP_Broadcast
 		$row->td()->text_( 'Wordpress upload directory array' );
 		$row->td()->text( '<pre>' . var_export( wp_upload_dir(), true ) . '</pre>' );
 
+		$this->paths[ 'ABSPATH' ] = ABSPATH;
+		$this->paths[ 'WP_PLUGIN_DIR' ] = WP_PLUGIN_DIR;
+		$row = $table->body()->row();
+		$row->td()->text_( 'Plugin paths' );
+		$row->td()->text( '<pre>' . var_export( $this->paths(), true ) . '</pre>' );
+
 		$row = $table->body()->row();
 		$row->td()->text_( 'PHP maximum execution time' );
-		$text = $this->p_( '%s seconds', ini_get ( 'max_execution_time' ) );
+		$text = $this->p( __( '%s seconds', ini_get ( 'max_execution_time' ), 'threewp_broadcast' ) );
 		$row->td()->text( $text );
 
 		$row = $table->body()->row();
@@ -707,7 +777,7 @@ class ThreeWP_Broadcast
 
 <code>ini_set('display_errors','On');</code>
 <code>define('WP_DEBUG', true);</code>
-",		$this->p_( 'Add the following lines to your wp-config.php to help find out why errors or blank screens are occurring:' ) ) );
+",		$this->p( __( 'Add the following lines to your wp-config.php to help find out why errors or blank screens are occurring:' ) ), 'threewp_broadcast' ) );
 		$row->td()->text( $text );
 
 		$row = $table->body()->row();
@@ -831,6 +901,23 @@ class ThreeWP_Broadcast
 				$this->__plugin_pack->plugins_ready = true;
 		}
 		return $this->__plugin_pack;
+	}
+
+	/**
+		@brief		Forces changes to the post dates.
+		@details	Accepts all four post date columns.
+		@since		2017-02-07 14:57:41
+	**/
+	public function set_post_date( $post_data )
+	{
+		$sets = [];
+		foreach( [ 'post_modified', 'post_modified_gmt', 'post_date', 'post_date_gmt' ] as $key )
+			if ( isset( $post_data->$key ) )
+				$sets[ $key ] = $post_data->$key;
+		if ( count( $sets ) < 1 )
+			return;
+		global $wpdb;
+		$wpdb->update( $wpdb->posts, $sets, [ 'ID' => $post_data->ID ] );
 	}
 
 	/**

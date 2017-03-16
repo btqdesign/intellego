@@ -72,9 +72,12 @@ class controller
 		$table = $this->broadcast->table();
 
 		$row = $table->head()->row();
-		$row->th()->text( 'Check' );
-		$row->th()->text( 'Description' );
-		$row->th()->text( 'Actions' );
+		// Table column header. Type of maintenance check.
+		$row->th()->text( __( 'Check', 'threewp_broadcast' ) );
+		// Table column header. Description of maintenance check.
+		$row->th()->text( __( 'Description', 'threewp_broadcast' ) );
+		// Table column header. Actions available for this maintenance check.
+		$row->th()->text( __( 'Actions', 'threewp_broadcast' ) );
 
 		foreach( $this->data->checks as $check )
 		{
@@ -97,9 +100,9 @@ class controller
 
 		$this->data->save();
 
-		$r .= $this->broadcast->p( 'This <strong>experimental</strong> function allows the broadcast database to be checked and repaired. Make a backup of your Wordpress installation before using the repair functions.' );
+		$r .= $this->broadcast->p( __( 'This function allows the broadcast database to be checked and repaired. Make a backup of your Wordpress installation before using the repair functions.', 'threewp_broadcast' ) );
 
-		$r .= $this->broadcast->p( 'Below is a table of available checks / tools. Click on the name of the check to use it.' );
+		$r .= $this->broadcast->p( __( 'Below is a table of available checks / tools. Click on the name of the check to use it.', 'threewp_broadcast' ) );
 
 		$r .= $form->open_tag();
 		$r .= $table;

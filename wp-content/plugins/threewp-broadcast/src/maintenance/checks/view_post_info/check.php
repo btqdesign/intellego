@@ -13,12 +13,14 @@ class check
 {
 	public function get_description()
 	{
-		return 'View post information including metadata.';
+		// Maintenance check description
+		return __( 'View post information including metadata.', 'threewp_broadcast' );
 	}
 
 	public function get_name()
 	{
-		return 'View post info';
+		// Maintenance check name
+		return __( 'View post info', 'threewp_broadcast' );
 	}
 
 	public function step_start()
@@ -26,15 +28,16 @@ class check
 		$o = new \stdClass;
 		$o->inputs = new \stdClass;
 		$o->form = $this->broadcast()->form2();
-		$o->r = ThreeWP_Broadcast()->p( 'Use the form below to look up the broadcast data (linking) either by specifying the ID of the row in the database or the combination of blog ID and post ID. Leave the row input empty to look up using blog and post IDs.' );
+		$o->r = '';
 
 		$o->inputs->post_id = $o->form->number( 'post_id' )
-			->description( 'The ID of the post to view' )
-			->label( 'Post ID' )
+			->description( __( 'The ID of the post to view', 'threewp_broadcast' ) )
+			->label( __( 'Post ID', 'threewp_broadcast' ) )
 			->value( 0 );
 
 		$button = $o->form->primary_button( 'dump' )
-			->value( 'Find and display the post info' );
+			// Button
+			->value( __( 'Find and display the post info', 'threewp_broadcast' ) );
 
 		if ( $o->form->is_posting() )
 		{
@@ -56,7 +59,8 @@ class check
 
 		if ( ! $post )
 		{
-			$o->r .= $this->broadcast()->message( sprintf( 'Post %s does not exist.', $post_id ) );
+			// Post 123 does not
+			$o->r .= $this->broadcast()->message( sprintf( __( 'Post %s does not exist.', 'threewp_broadcast' ), $post_id ) );
 			return;
 		}
 

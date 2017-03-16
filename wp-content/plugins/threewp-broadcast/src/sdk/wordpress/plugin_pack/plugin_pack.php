@@ -138,9 +138,9 @@ abstract class plugin_pack
 		$row = $table->head()->row();
 		$table->bulk_actions()
 			->form( $form )
-			->add( $this->_( 'Activate plugin' ), 'activate_plugin' )
-			->add( $this->_( 'Deactivate plugin' ), 'deactivate_plugin' )
-			->add( $this->_( 'Uninstall plugin' ), 'uninstall_plugin' )
+			->add( $this->_( 'Activate' ), 'activate_plugin' )
+			->add( $this->_( 'Deactivate' ), 'deactivate_plugin' )
+			->add( $this->_( 'Uninstall' ), 'uninstall_plugin' )
 			->cb( $row );
 		$row->th()->text( __( 'Plugin' ) );
 		$row->th()->text( __( 'Description' ) );

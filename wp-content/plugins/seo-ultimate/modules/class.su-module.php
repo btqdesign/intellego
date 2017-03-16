@@ -378,7 +378,11 @@ class SU_Module {
 	 * 
 	 * @since 6.0
 	 */
-	function admin_page_init() { }
+	function admin_page_init() {
+
+		add_filter( 'admin_body_class', 'su_add_admin_body_class' );
+	
+	}
 	
 	/**
 	 * Is called at WordPress' admin_init hook when the post editor is loaded.
@@ -3068,7 +3072,7 @@ class SU_Module {
 			</div>
 			<div id="sdf-promo-carousel"></div>
 			<p>Remove these ads?<br />
-			<a href="https://seoultimateplus.com/?ref=su-rmv-ad" target="_blank" title="Upgrade to SEO Ultimate+">Upgrade to SEO Ultimate+</a></p>
+			<a href="https://www.seoultimateplus.com/breaking-news" target="_blank" title="Upgrade to SEO Ultimate+">Upgrade to SEO Ultimate+</a></p>
 			<?php
 		}	
 	}

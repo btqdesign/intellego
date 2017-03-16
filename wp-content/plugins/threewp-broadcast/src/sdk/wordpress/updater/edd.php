@@ -45,7 +45,8 @@ trait edd
 		$r = '';
 		$status = $this->edd_get_cached_license_status();
 
-		$r .= $this->edd_admin_license_tab_text();
+		if ( ! $status )
+			$status = (object)[ 'license' => 'none' ];
 
 		switch( $status->license )
 		{
@@ -116,13 +117,25 @@ trait edd
 						$this->edd_activate_license();
 						$status = $this->edd_get_cached_license_status();
 						if ( $status->license == 'valid' )
-							$this->message( 'The license has been activated! Automatic plugin updates are now activated.' );
+							$r .= $this->info_message_box()->_( 'The license has been activated! Automatic plugin updates are now activated.' );
 						else
-							$this->error( 'The license could not be activated. Please try again later or contact the plugin author.' );
+						{
+							switch( $status->error )
+							{
+								case 'expired':
+									$r .= $this->error_message_box()->_( 'The license could not be activated. It expired %s!', $status->expires );
+								break;
+								case 'missing':
+									$r .= $this->error_message_box()->_( 'The license could not be activated. Invalid key specified.' );
+								break;
+								default:
+									$r .= $this->error_message_box()->_( 'The license could not be activated. The error was: %s', $status->error );
+							}
+						}
 					}
 					catch( Exception $e )
 					{
-						$this->error( $e->getMessage() );
+						$r .= $this->error_message_box()->_( $e->getMessage() );
 					}
 				}
 
@@ -132,42 +145,46 @@ trait edd
 					$this->edd_deactivate_license();
 					$status = $this->edd_get_cached_license_status();
 					if ( $status->license == 'deactivated' )
-						$this->message( 'The license has been deactivated! Automatic plugin updates are now deactived.' );
+						$r .= $this->info_message_box()->_( 'The license has been deactivated! Automatic plugin updates are now deactived.' );
 					else
-						$this->error( 'The license could not be deactivated. Please try again later or contact the plugin author.' );
+						$r .= $this->error_message_box()->_( 'The license could not be deactivated. Please try again later or contact the plugin author.' );
 				}
 
 				if ( isset( $delete_button ) && $delete_button->pressed() )
 				{
 					$this->edd_delete_license();
 					$this->edd_clear_cached_license_status();
-					$this->message( 'The license data has been deleted.' );
+					$r .= $this->info_message_box()->_( 'The license data has been deleted.' );
 				}
 
 				if ( isset( $download_button ) && $download_button->pressed() )
 				{
 					$response = $this->edd_remote_get( [ 'edd_action' => 'get_version' ] );
 					$response = json_decode( wp_remote_retrieve_body( $response ) );
-					$this->message_( 'The latest version of the plugin can be downloaded from <a href="%s">here</a>.', $response->download_link );
+					$r .= $this->info_message_box()->_( 'The latest version of the plugin can be downloaded from <a href="%s">here</a>.', $response->download_link );
 				}
 
 				if ( $refresh_button->pressed() )
 				{
 					$this->edd_clear_cached_license_status();
-					$this->message( 'The license data has been refreshed!' );
+					$r .= $this->info_message_box()->_( 'The license data has been refreshed!' );
 				}
 
 				if ( $clear_plugin_transient->pressed() )
 				{
 					set_site_transient( 'update_plugins', null );
 					$this->edd_clear_cached_license_status();
-					$this->message( "Wordpress' update counter has been reset." );
+					$r .= $this->info_message_box()->_( "Wordpress' update counter has been reset." );
 				}
 
 				$_POST = [];
-				return $this->edd_admin_license_tab();
+				$r .= $this->edd_admin_license_tab();
+				echo $r;
+				return;
 			}
 		}
+
+		$r .= $this->edd_admin_license_tab_text();
 
 		if ( isset( $table ) )
 			$r .= $table;
@@ -298,10 +315,14 @@ trait edd
 
 		$status = $this->edd_get_cached_license_status();
 
+		// Ignore invalid statuses completely. This is hopefully just temporary.
+		if ( ! $status )
+			return;
+
 		if ( $status->license == 'valid' )
 		{
 			// Check that the license has not expired.
-			$expires = strtotime( $status->expires );
+			$expires = $this->edd_maybe_to_time( $status->expires );
 			if ( $expires < time() )
 			{
 				$status->license = 'expired';
@@ -425,8 +446,8 @@ trait edd
 		$table = $this->table();
 		$table->caption()->text( 'Information about your license' );
 
-		$expires = strtotime( $status->expires );
-		if ( $expires < time() )
+		$status->expires = $this->edd_maybe_to_time( $status->expires );
+		if ( $status->expires < time() )
 			$status->license = 'expired';
 
 		switch( $status->license )
@@ -434,15 +455,15 @@ trait edd
 			case 'deactivated':
 			case 'site_inactive':
 				$inactive = true;
-				$rows[ 'Status' ] = sprintf( 'Valid but inactive. Expires %s', $status->expires );
+				$rows[ 'Status' ] = sprintf( 'Valid but inactive. Expires %s', date( 'Y-m-d', $status->expires ) );
 				break;
 			case 'expired':
 				$inactive = true;
-				$rows[ 'Status' ] = sprintf( '<strong>Expired</strong> %s', $status->expires );
+				$rows[ 'Status' ] = sprintf( '<strong>Expired</strong> %s!', date( 'Y-m-d', $status->expires ) );
 				break;
 			case 'valid':
 				$valid = true;
-				$rows[ 'Status' ] = sprintf( 'Valid until %s' , $status->expires );
+				$rows[ 'Status' ] = sprintf( 'Valid until %s', date( 'Y-m-d', $status->expires ) );
 				break;
 			default:
 				$rows[ 'Status' ] = 'No license';
@@ -457,7 +478,8 @@ trait edd
 			$rows[ 'Payment ID' ] = $status->payment_id;
 
 			if ( $valid )
-				$rows[ 'Activations left' ] = $status->activations_left;
+				if ( $status->activations_left != 'unlimited' )
+					$rows[ 'Activations left' ] = $status->activations_left;
 		}
 
 		foreach( $rows as $key => $value )
@@ -477,6 +499,18 @@ trait edd
 	public function edd_get_url()
 	{
 		throw new Exception( 'Override edd_get_url' );
+	}
+
+	/**
+		@brief		Maybe convert this parameter to a time value, if it is a date.
+		@since		2017-02-01 16:28:14
+	**/
+	public function edd_maybe_to_time( $string )
+	{
+		$r = $string;
+		if ( strpos( $string, '-' ) !== false )
+			$r = strtotime( $string );
+		return $r;
 	}
 
 	/**

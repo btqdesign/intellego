@@ -26,8 +26,8 @@ class ImageZoooom_Admin {
      */
     public function admin_menu() {
         add_menu_page(
-            __( 'WP Image Zoom', 'zoooom' ),
-            __( 'WP Image Zoom', 'zoooom' ),
+            __( 'WP Image Zoom', 'wp-image-zoooom' ),
+            __( 'WP Image Zoom', 'wp-image-zoooom' ),
             'administrator',
             'zoooom_settings',
             array( $this, 'admin_settings_page' ),
@@ -43,21 +43,22 @@ class ImageZoooom_Admin {
             return false;
 
         $iz = ImageZoooom();
+        $v = ImageZoooom::$version;
 
         // Register the javascript files
         if ( $iz->testing == true ) {
-//            wp_register_script( 'bootstrap', $iz->plugins_url( '/assets/js/bootstrap.min.js' ), array( 'jquery' ), $iz->version, true  );
-            wp_register_script( 'bootstrap', $iz->plugins_url( '/assets/js/bootstrap.3.2.0.min.js' ), array( 'jquery' ), $iz->version, true  );
-            wp_register_script( 'image_zoooom', $iz->plugins_url( '/assets/js/jquery.image_zoom.js' ), array( 'jquery' ), $iz->version, true );
+//            wp_register_script( 'bootstrap', $iz->plugins_url( '/assets/js/bootstrap.min.js' ), array( 'jquery' ), $v, true  );
+            wp_register_script( 'bootstrap', $iz->plugins_url( '/assets/js/bootstrap.3.2.0.min.js' ), array( 'jquery' ), $v, true  );
+            wp_register_script( 'image_zoooom', $iz->plugins_url( '/assets/js/jquery.image_zoom.js' ), array( 'jquery' ), $v, true );
             if ( !isset($_GET['tab']) || $_GET['tab'] == 'settings' ) {
-                wp_register_script( 'zoooom-settings', $iz->plugins_url( '/assets/js/image_zoom.settings.free.js' ), array( 'image_zoooom' ), $iz->version, true );
+                wp_register_script( 'zoooom-settings', $iz->plugins_url( '/assets/js/image_zoom.settings.free.js' ), array( 'image_zoooom' ), $v, true );
             }
         } else {
-//          wp_register_script( 'bootstrap', $iz->plugins_url( '/assets/js/bootstrap.min.js' ), array( 'jquery' ), $iz->version, true  );
-            wp_register_script( 'bootstrap', $iz->plugins_url( '/assets/js/bootstrap.3.2.0.min.js' ), array( 'jquery' ), $iz->version, true  );
-            wp_register_script( 'image_zoooom', $iz->plugins_url( '/assets/js/jquery.image_zoom.min.js' ), array( 'jquery' ), $iz->version, true );
+//          wp_register_script( 'bootstrap', $iz->plugins_url( '/assets/js/bootstrap.min.js' ), array( 'jquery' ), $v, true  );
+            wp_register_script( 'bootstrap', $iz->plugins_url( '/assets/js/bootstrap.3.2.0.min.js' ), array( 'jquery' ), $v, true  );
+            wp_register_script( 'image_zoooom', $iz->plugins_url( '/assets/js/jquery.image_zoom.min.js' ), array( 'jquery' ), $v, true );
             if ( !isset($_GET['tab']) || $_GET['tab'] == 'settings' ) {
-                wp_register_script( 'zoooom-settings', $iz->plugins_url( '/assets/js/image_zoom.settings.min.js' ), array( 'image_zoooom' ), $iz->version, true );
+                wp_register_script( 'zoooom-settings', $iz->plugins_url( '/assets/js/image_zoom.settings.min.js' ), array( 'image_zoooom' ), $v, true );
             }
         }
 
@@ -67,11 +68,11 @@ class ImageZoooom_Admin {
         wp_enqueue_script( 'zoooom-settings' );
 
         // Register the css files
-        wp_register_style( 'bootstrap', $iz->plugins_url( '/assets/css/bootstrap.min.css' ), array(), $iz->version );
+        wp_register_style( 'bootstrap', $iz->plugins_url( '/assets/css/bootstrap.min.css' ), array(), $v );
         if ( $iz->testing == true ) {
-            wp_register_style( 'zoooom', $iz->plugins_url( '/assets/css/style.css' ), array(), $iz->version );
+            wp_register_style( 'zoooom', $iz->plugins_url( '/assets/css/style.css' ), array(), $v );
         } else {
-            wp_register_style( 'zoooom', $iz->plugins_url( '/assets/css/style.min.css' ), array(), $iz->version );
+            wp_register_style( 'zoooom', $iz->plugins_url( '/assets/css/style.min.css' ), array(), $v );
         }
 
         // Enqueue the css files
@@ -86,186 +87,206 @@ class ImageZoooom_Admin {
     public function get_settings( $id  = '' ) {
         $settings = array(
             'lensShape' => array(
-                'label' => __('Lens Shape', 'zoooom'),
+                'label' => __('Lens Shape', 'wp-image-zoooom'),
                 'values' => array(
-                    'none' => array('/images/lens_shape_none.svg', __('No Lens', 'zoooom')),
-                    'round' => array('/images/lens_shape_circle.svg', __('Circle Lens', 'zoooom')),
-                    'square' => array('/images/lens_shape_square.svg', __('Square Lens', 'zoooom')),
-                    'zoom_window' => array('/images/type_zoom_window.svg', __('With Zoom Window', 'zoooom')),
+                    'none' => array('/images/lens_shape_none.svg', __('No Lens', 'wp-image-zoooom')),
+                    'round' => array('/images/lens_shape_circle.svg', __('Circle Lens', 'wp-image-zoooom')),
+                    'square' => array('/images/lens_shape_square.svg', __('Square Lens', 'wp-image-zoooom')),
+                    'zoom_window' => array('/images/type_zoom_window.svg', __('With Zoom Window', 'wp-image-zoooom')),
                 ),
                 'value' => 'zoom_window',
                 'input_form' => 'buttons',
             ),
             'cursorType' => array(
-                'label' => __('Cursor Type', 'zoooom'),
+                'label' => __('Cursor Type', 'wp-image-zoooom'),
                 'values' => array(
-                    'default' => array('/images/cursor_type_default.svg', __('Default', 'zoooom' ) ),
-                    'pointer' => array('/images/cursor_type_pointer.svg', __('Pointer', 'zoooom' ) ),
-                    'crosshair' => array('/images/cursor_type_crosshair.svg', __('Crosshair', 'zoooom' ) ),
-                    'move' => array('/images/cursor_type_move.svg', __('Move', 'zoooom' ) ),
+                    'default' => array('/images/cursor_type_default.svg', __('Default', 'wp-image-zoooom' ) ),
+                    'pointer' => array('/images/cursor_type_pointer.svg', __('Pointer', 'wp-image-zoooom' ) ),
+                    'crosshair' => array('/images/cursor_type_crosshair.svg', __('Crosshair', 'wp-image-zoooom' ) ),
+                    'move' => array('/images/cursor_type_move.svg', __('Move', 'wp-image-zoooom' ) ),
                 ),
                 'value' => 'default',
                 'input_form' => 'buttons',
             ),
             'zwEasing' => array(
-                'label' => __('Animation Easing Effect', 'zoooom' ),
+                'label' => __('Animation Easing Effect', 'wp-image-zoooom' ),
                 'value' => 12,
-                'description' => __('A number between 0 and 200 to represent the degree of the Animation Easing Effect', 'zoooom' ),
+                'description' => __('A number between 0 and 200 to represent the degree of the Animation Easing Effect', 'wp-image-zoooom' ),
                 'input_form' => 'input_text',
             ),
 
             'lensSize' => array(
-                'label' => __('Lens Size', 'zoooom' ),
+                'label' => __('Lens Size', 'wp-image-zoooom' ),
                 'post_input' => 'px',
                 'value' => 200,
-                'description' => __('For Circle Lens it means the diameters, for Square Lens it means the width', 'zoooom' ),
+                'description' => __('For Circle Lens it means the diameters, for Square Lens it means the width', 'wp-image-zoooom' ),
                 'input_form' => 'input_text',
             ),
             'borderThickness' => array(
-                'label' => __('Border Thickness', 'zoooom' ),
+                'label' => __('Border Thickness', 'wp-image-zoooom' ),
                 'post_input' => 'px',
                 'value' => 1,
                 'input_form' => 'input_text',
             ),
             'borderColor' => array(
-                'label' => __('Border Color', 'zoooom' ),
+                'label' => __('Border Color', 'wp-image-zoooom' ),
                 'value' => '#ffffff',
                 'input_form' => 'input_color',
             ),
             'lensFade' => array(
-                'label' => __('Fade Time', 'zoooom' ),
+                'label' => __('Fade Time', 'wp-image-zoooom' ),
                 'post_input' => 'sec',
                 'value' => 1,
-                'description' => __('The amount of time it takes for the Lens to slowly appear or dissapear', 'zoooom'),
+                'description' => __('The amount of time it takes for the Lens to slowly appear or dissapear', 'wp-image-zoooom'),
                 'input_form' => 'input_text',
             ),
             'tint' => array(
-                'label' => __('Tint', 'zoooom'),
+                'label' => __('Tint', 'wp-image-zoooom'),
                 'value' => false,
-                'description' => __('A color that will layed on top the of non-magnified image in order to emphasize the lens', 'zoooom'),
+                'description' => __('A color that will layed on top the of non-magnified image in order to emphasize the lens', 'wp-image-zoooom'),
                 'input_form' => 'checkbox',
             ),
             'tintColor' =>array(
-                'label' => __('Tint Color', 'zoooom'),
+                'label' => __('Tint Color', 'wp-image-zoooom'),
                 'value' => '#ffffff',
                 'input_form' => 'input_color',
             ),
             'tintOpacity' => array(
-                'label' => __('Tint Opacity', 'zoooom'),
+                'label' => __('Tint Opacity', 'wp-image-zoooom'),
                 'value' => '0.5',
                 'post_input' => '%',
                 'input_form' => 'input_text',
             ),
             'zwWidth' => array(
-                'label' => __('Zoom Window Width', 'zoooom'),
+                'label' => __('Zoom Window Width', 'wp-image-zoooom'),
                 'post_input' => 'px',
                 'value' => 400,
                 'input_form' => 'input_text',
             ),
             'zwHeight' => array(
-                'label' => __('Zoom Window Height', 'zoooom'),
+                'label' => __('Zoom Window Height', 'wp-image-zoooom'),
                 'post_input' => 'px',
                 'value' => 360,
                 'input_form' => 'input_text',
             ),
             'zwPadding' => array(
-                'label' => __('Distance from the Main Image', 'zoooom'),
+                'label' => __('Distance from the Main Image', 'wp-image-zoooom'),
                 'post_input' => 'px',
                 'value' => 10,
                 'input_form' => 'input_text',
             ),
             'zwBorderThickness' => array(
-                'label' => __('Border Thickness', 'zoooom'),
+                'label' => __('Border Thickness', 'wp-image-zoooom'),
                 'post_input' => 'px',
                 'value' => 4,
                 'input_form' => 'input_text',
             ),
             'zwShadow' => array(
-                'label' => __('Shadow Thickness', 'zoooom'),
+                'label' => __('Shadow Thickness', 'wp-image-zoooom'),
                 'post_input' => 'px',
                 'value' => 4,
                 'input_form' => 'input_text',
-                'description' => __('Use 0px to remove the shadow', 'zoooom'),
+                'description' => __('Use 0px to remove the shadow', 'wp-image-zoooom'),
             ),
             'zwBorderColor' => array(
-                'label' => __('Border Color', 'zoooom'),
+                'label' => __('Border Color', 'wp-image-zoooom'),
                 'value' => '#888888',
                 'input_form' => 'input_color',
             ),
             'zwBorderRadius' => array(
-                'label' => __('Rounded Corners', 'zoooom'),
+                'label' => __('Rounded Corners', 'wp-image-zoooom'),
                 'post_input' => 'px',
                 'value' => 0,
                 'input_form' => 'input_text',
             ),
             'zwFade' => array(
-                'label' => __('Fade Time', 'zoooom'),
+                'label' => __('Fade Time', 'wp-image-zoooom'),
                 'post_input' => 'sec',
                 'value' => 0,
-                'description' => __('The amount of time it takes for the Zoom Window to slowly appear or disappear', 'zoooom'),
+                'description' => __('The amount of time it takes for the Zoom Window to slowly appear or disappear', 'wp-image-zoooom'),
                 'input_form' => 'input_text',
             ),
             'enable_woocommerce' => array(
-                'label' => __('Enable the zoom on WooCommerce products', 'zoooom'),
+                'label' => __('Enable the zoom on WooCommerce products', 'wp-image-zoooom'),
                 'value' => true,
                 'input_form' => 'checkbox',
             ),
+            'exchange_thumbnails' => array(
+                'label' => __('Exchange the thumbnail with main image on WooCommerce products', 'wp-image-zoooom'),
+                'value' => true,
+                'input_form' => 'checkbox',
+                'description' => __('On a WooCommerce gallery, when clicking on a thumbnail, not only the main image will be replaced with the thumbnail\'s image, but also the thumbnail will be replaced with the main image', 'wp-image-zoooom'),
+            ),
             'enable_mobile' => array(
-                'label' => __('Enable the zoom on mobile devices', 'zoooom'),
+                'label' => __('Enable the zoom on mobile devices', 'wp-image-zoooom'),
                 'value' => false,
                 'input_form' => 'checkbox',
             ),
             'woo_cat' => array(
-                'label' => __('Enable the zoom on WooCommerce category pages', 'zoooom'),
+                'label' => __('Enable the zoom on WooCommerce category pages', 'wp-image-zoooom'),
                 'value' => false,
                 'input_form' => 'checkbox',
             ),
 
             'force_woocommerce' => array(
-                'label' => __('Force it to work on WooCommerce', 'zoooom'),
+                'label' => __('Force it to work on WooCommerce', 'wp-image-zoooom'),
                 'value' => true,
-                'input_form' => 'checkbox',
-            ),
-            'force_lazyload' => array(
-                'label' => __('Compatible with LazyLoad (unveil.js)', 'zoooom'),
-                'value' => false,
                 'input_form' => 'checkbox',
             ),
         );
 
         $pro_fields = array(
             'remove_lightbox_thumbnails' => array(
-                'label' => __('Remove the Lightbox on thumbnail images', 'zoooom'),
+                'label' => __('Remove the Lightbox on thumbnail images', 'wp-image-zoooom'),
                 'value' => false,
                 'pro' => true,
                 'input_form' => 'checkbox',
             ),
             'remove_lightbox' => array(
-                'label' => __('Remove the Lightbox', 'zoooom'),
+                'label' => __('Remove the Lightbox', 'wp-image-zoooom'),
+                'value' => false,
+                'pro' => true,
+                'input_form' => 'checkbox',
+            ),
+            'woo_variations' => array(
+                'label' => __('Enable on WooCommerce variation products', 'wp-image-zoooom'),
                 'value' => false,
                 'pro' => true,
                 'input_form' => 'checkbox',
             ),
             'force_attachments' => array(
-                'label' => __('Enable on attachments pages', 'zoooom'),
+                'label' => __('Enable on attachments pages', 'wp-image-zoooom'),
                 'value' => false,
                 'pro' => true,
                 'input_form' => 'checkbox',
             ),
             'flexslider' => array(
-                'label' => __('FlexSlider container class', 'zoooom'),
+                'label' => __('FlexSlider container class', 'wp-image-zoooom'),
                 'value' => '',
                 'pro' => true,
                 'input_form' => 'input_text',
             ),
+            'enable_fancybox' => array(
+                'label' => __('Enable inside <a href="http://fancyapps.com/fancybox/" target="_blank">fancyBox</a> lightbox', 'wp-image-zoooom'),
+                'value' => false,
+                'pro' => true,
+                'input_form' => 'checkbox',
+            ),
+                'enable_jetpack_carousel' => array(
+                'label' => __('Enable inside <a href="https://jetpack.com/ support/carousel/" target="_blank">Jetpack Carousel</a> lightbox', 'wp-image-zoooom'),
+                'value' => false,
+                'pro' => true,
+                'input_form' => 'checkbox',
+            ),
+
             'huge_it_gallery' => array(
-                'label' => __('Huge IT Gallery id', 'zoooom'),
+                'label' => __('Huge IT Gallery id', 'wp-image-zoooom'),
                 'value' => '',
                 'pro' => true,
                 'input_form' => 'input_text',
             ),
             'onClick' => array(
-                'label' => __('Enable the zoom on ...', 'zoooom'),
+                'label' => __('Enable the zoom on ...', 'wp-image-zoooom'),
                 'values' => array(
                     'false' => 'mouse hover',
                     'true' => 'mouse click',
@@ -275,52 +296,52 @@ class ImageZoooom_Admin {
                 'pro' => true,
             ),
             'ratio' => array(
-                'label' => __('Zoom Level', 'zoooom'),
+                'label' => __('Zoom Level', 'wp-image-zoooom'),
                 'values' => array(
-                    'default' => array( '/images/zoom_level_default.svg', __('Default', 'zoooom') ),
-                    '1.5' => array( '/images/zoom_level_15.svg', __('1,5 times', 'zoooom') ),
-                    '2' => array( '/images/zoom_level_2.svg', __('2 times', 'zoooom') ),
-                    '2.5' => array( '/images/zoom_level_25.svg', __('2,5 times', 'zoooom') ),
-                    '3' => array( '/images/zoom_level_3.svg', __('3 times', 'zoooom') ),
+                    'default' => array( '/images/zoom_level_default.svg', __('Default', 'wp-image-zoooom') ),
+                    '1.5' => array( '/images/zoom_level_15.svg', __('1,5 times', 'wp-image-zoooom') ),
+                    '2' => array( '/images/zoom_level_2.svg', __('2 times', 'wp-image-zoooom') ),
+                    '2.5' => array( '/images/zoom_level_25.svg', __('2,5 times', 'wp-image-zoooom') ),
+                    '3' => array( '/images/zoom_level_3.svg', __('3 times', 'wp-image-zoooom') ),
                 ),
                 'value' => 'default',
                 'input_form' => 'buttons',
                 'pro' => true,
             ),
             'lensColour' => array(
-                'label' => __('Lens Color', 'zoooom' ),
+                'label' => __('Lens Color', 'wp-image-zoooom' ),
                 'value' => '#ffffff',
                 'pro' => true,
                 'input_form' => 'input_color',
             ),
             'lensOverlay' => array(
-                'label' => __('Show as Grid', 'zoooom' ),
+                'label' => __('Show as Grid', 'wp-image-zoooom' ),
                 'value' => false,
                 'pro' => true,
                 'input_form' => 'checkbox',
             ),
             'zwResponsive' => array(
-                'label' => __('Responsive', 'zoooom'),
+                'label' => __('Responsive', 'wp-image-zoooom'),
                 'input_form' => 'checkbox',
                 'pro' => true,
                 'value' => false,
             ),
             'zwResponsiveThreshold' => array(
-                'label' => __('Responsive Threshold', 'zoooom'),
+                'label' => __('Responsive Threshold', 'wp-image-zoooom'),
                 'pro' => true,
                 'post_input' => 'px',
                 'value' => '',
                 'input_form' => 'input_text',
             ),
             'zwPositioning' => array(
-                'label' => __('Positioning', 'zoooom'),
+                'label' => __('Positioning', 'wp-image-zoooom'),
                 'values' => array(
-                    'right_top' => array('/images/type_zoom_window_right_top.svg', __('Right Top', 'zoooom')),
-                    'right_bottom' => array('/images/type_zoom_window_right_bottom.svg', __('Right Bottom', 'zoooom')),
-                    'right_center' => array('/images/type_zoom_window_right_center.svg', __('Right Center', 'zoooom')),
-                    'left_top' => array('/images/type_zoom_window_left_top.svg', __('Left Top', 'zoooom')),
-                    'left_bottom' => array('/images/type_zoom_window_left_bottom.svg', __('Left Bottom', 'zoooom')),
-                    'left_center' => array('/images/type_zoom_window_left_center.svg', __('Left Center', 'zoooom')),
+                    'right_top' => array('/images/type_zoom_window_right_top.svg', __('Right Top', 'wp-image-zoooom')),
+                    'right_bottom' => array('/images/type_zoom_window_right_bottom.svg', __('Right Bottom', 'wp-image-zoooom')),
+                    'right_center' => array('/images/type_zoom_window_right_center.svg', __('Right Center', 'wp-image-zoooom')),
+                    'left_top' => array('/images/type_zoom_window_left_top.svg', __('Left Top', 'wp-image-zoooom')),
+                    'left_bottom' => array('/images/type_zoom_window_left_bottom.svg', __('Left Bottom', 'wp-image-zoooom')),
+                    'left_center' => array('/images/type_zoom_window_left_center.svg', __('Left Center', 'wp-image-zoooom')),
                 ),
                 'pro' => true,
                 'value' => '',
@@ -328,39 +349,39 @@ class ImageZoooom_Admin {
                 'input_form' => 'buttons',
             ),
             'mousewheelZoom' => array(
-                'label' => __('Mousewheel Zoom', 'zoooom'),
+                'label' => __('Mousewheel Zoom', 'wp-image-zoooom'),
                 'value' => '',
                 'pro' => true,
                 'input_form' => 'checkbox',
             ),
             'customText' => array(
-                'label' => __('Text on the image', 'zoooom'),
-                'value' => __('', 'zoooom'),
+                'label' => __('Text on the image', 'wp-image-zoooom'),
+                'value' => __('', 'wp-image-zoooom'),
                 'input_form' => 'input_text',
                 'pro' => true,
             ),
             'customTextSize' => array(
-                'label' => __('Text Size', 'zoooom'),
+                'label' => __('Text Size', 'wp-image-zoooom'),
                 'post_input' => 'px',
                 'value' => '',
                 'input_form' => 'input_text',
                 'pro' => true,
             ),
             'customTextColor' => array(
-                'label' => __('Text Color', 'zoooom'),
+                'label' => __('Text Color', 'wp-image-zoooom'),
                 'value' => '',
                 'input_form' => 'input_color',
                 'pro' => true,
             ),            
             'customTextAlign' => array(
-                'label' => __('Text Align', 'zoooom'),
+                'label' => __('Text Align', 'wp-image-zoooom'),
                 'values' => array(
-                    'top_left' => array('/images/text_align_top_left.svg', __('Top Left', 'zoooom' ) ),
-                    'top_center' => array('/images/text_align_top_center.svg', __('Top Center', 'zoooom' ) ),
-                    'top_right' => array('/images/text_align_top_right.svg', __('Top Right', 'zoooom' ) ),
-                    'bottom_left' => array('/images/text_align_bottom_left.svg', __('Bottom Left', 'zoooom' ) ),
-                    'bottom_center' => array('/images/text_align_bottom_center.svg', __('Bottom Center', 'zoooom' ) ),
-                    'bottom_right' => array('/images/text_align_bottom_right.svg', __('Bottom Right', 'zoooom' ) ),
+                    'top_left' => array('/images/text_align_top_left.svg', __('Left Top', 'wp-image-zoooom' ) ),
+                    'top_center' => array('/images/text_align_top_center.svg', __('Center Top', 'wp-image-zoooom' ) ),
+                    'top_right' => array('/images/text_align_top_right.svg', __('Right Top', 'wp-image-zoooom' ) ),
+                    'bottom_left' => array('/images/text_align_bottom_left.svg', __('Left Bottom', 'wp-image-zoooom' ) ),
+                    'bottom_center' => array('/images/text_align_bottom_center.svg', __('Center Bottom', 'wp-image-zoooom' ) ),
+                    'bottom_right' => array('/images/text_align_bottom_right.svg', __('Right Bottom', 'wp-image-zoooom' ) ),
                 ),
                 'value' => '',
                 'input_form' => 'buttons',
@@ -392,7 +413,7 @@ class ImageZoooom_Admin {
                 check_admin_referer('iz_general');
                 $new_settings = $this->validate_general( $_POST );
                 update_option( 'zoooom_general', $new_settings );
-                $this->add_message( 'success', '<b>'.__('Your settings have been saved.', 'zoooom') . '</b>' );
+                $this->add_message( 'success', '<b>'.__('Your settings have been saved.', 'wp-image-zoooom') . '</b>' );
             }
 
             $template = ImageZoooom()->plugin_dir_path() . "/includes/image-zoom-admin-general.php";
@@ -409,7 +430,7 @@ class ImageZoooom_Admin {
             $new_settings_js = $this->generate_js_settings( $new_settings );
             update_option( 'zoooom_settings', $new_settings );
             update_option( 'zoooom_settings_js', $new_settings_js );
-            $this->add_message( 'success', '<b>'.__('Your settings have been saved.', 'zoooom') . '</b>' );
+            $this->add_message( 'success', '<b>'.__('Your settings have been saved.', 'wp-image-zoooom') . '</b>' );
         }
 
         $template = ImageZoooom()->plugin_dir_path() . "/includes/image-zoom-admin-template.php";
@@ -526,30 +547,30 @@ class ImageZoooom_Admin {
         if( $post == null ) {
             return array(
                 'enable_woocommerce' => true,
+                'exchange_thumbnails' => true,
                 'enable_mobile' => false,
                 'woo_cat' => false,
                 'force_woocommerce' => true,
-                'force_lazyload' => false,
             );
         }
 
         if ( ! isset( $post['enable_woocommerce'] ) ) 
             $post['enable_woocommerce'] = false;
+        if ( ! isset( $post['exchange_thumbnails'] ) ) 
+            $post['exchange_thumbnails'] = false;
         if ( ! isset( $post['enable_mobile'] ) ) 
             $post['enable_mobile'] = false;
         if ( ! isset( $post['woo_cat'] ) ) 
             $post['woo_cat'] = false;
         if ( ! isset( $post['force_woocommerce'] ) ) 
             $post['force_woocommerce'] = false;
-        if ( ! isset( $post['force_lazyload'] ) ) 
-            $post['force_lazyload'] = false;
 
         $new_settings = array(
             'enable_woocommerce' => $this->validateCheckbox('enable_woocommerce', $post['enable_woocommerce']),
+            'exchange_thumbnails' => $this->validateCheckbox('exchange_thumbnails', $post['exchange_thumbnails']),
             'enable_mobile' => $this->validateCheckbox('enable_mobile', $post['enable_mobile']),
             'woo_cat' => $this->validateCheckbox('woo_cat', $post['woo_cat']),
             'force_woocommerce' => $this->validateCheckbox('force_woocommerce', $post['force_woocommerce']),
-            'force_lazyload' => $this->validateCheckbox('force_lazyload', $post['force_lazyload']),
         );
 
         return $new_settings;
@@ -566,7 +587,7 @@ class ImageZoooom_Admin {
 
         if ( !is_bool($value) ) {
             $value = $settings[$id]['value'];
-            $this->add_message('info', __('Unrecognized <b>'.$settings[$id]['label'].'</b>. The value was reset to default', 'zoooom') );
+            $this->add_message('info', __('Unrecognized <b>'.$settings[$id]['label'].'</b>. The value was reset to default', 'wp-image-zoooom') );
         } else {
         }
         return $value;
@@ -581,7 +602,10 @@ class ImageZoooom_Admin {
 
         if ( !preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $value) ) {
             $value = $settings[$id]['value'];
-            $this->add_message('info', __('Unrecognized <b>'.$settings[$id]['label'].'</b>. The value was reset to <b>'.$settings[$id]['value'] . '</b>', 'zoooom') );
+            $message = __('Unrecognized <b>%1$s</b>. The value was reset to <b>%2$s</b>', 'wp-image-zoooom');
+            $message = wp_kses($message, array('b' => array()));
+            $message = sprintf($message, $settings[$id]['label'], $settings[$id]['value']);
+            $this->add_message('info', $message);
         }
         return $value;
     }
@@ -595,7 +619,10 @@ class ImageZoooom_Admin {
 
         if ( !array_key_exists($value, $settings[$id]['values']) ) {
             $value = $settings[$id]['value'];
-            $this->add_message('info', __('Unrecognized <b>'.$settings[$id]['label'].'</b>. The value was reset to <b>'.$settings[$id]['value'] . '</b>', 'zoooom') );
+            $message = __('Unrecognized <b>%1$s</b>. The value was reset to <b>%2$s</b>', 'wp-image-zoooom');
+            $message = wp_kses($message, array('b' => array()));
+            $message = sprintf($message, $settings[$id]['label'], $settings[$id]['value']);
+            $this->add_message('info', $message);
         }
         return $value;
     }
@@ -612,7 +639,10 @@ class ImageZoooom_Admin {
 
         if ( !is_numeric($value) || $new_value < $min || $new_value > $max ) {
             $new_value = $settings[$id]['value'];
-            $this->add_message('info', __('<b>'.$settings[$id]['label'].'</b> accepts values between '.$min.' and '.$max .'. Your value was reset to <b>' . $settings[$id]['value'] .'</b>', 'zoooom') );
+            $message = __('<b>%1$s</b> accepts values between %2$s and %3$s. Your value was reset to <b>%4$s</b>', 'wp-image-zoooom');
+            $message = wp_kses($message, array('b' => array()));
+            $message = sprintf($message, $settings[$id]['label'], $settings[$id]['value']);
+            $this->add_message('info', $message);
         }
         return $new_value;
     }

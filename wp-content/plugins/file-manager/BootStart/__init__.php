@@ -12,6 +12,7 @@ $modules = array(
 
 	'BootStart',
 	'OptionsManager',
+	'SiteBackup'
 
 );
 
