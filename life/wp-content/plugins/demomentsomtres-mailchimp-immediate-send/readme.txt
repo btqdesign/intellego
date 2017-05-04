@@ -3,16 +3,22 @@ Contributors: marcqueralt
 Tags: mailchimp, email, newsletter, notification
 Donate link: http://demomentsomtres.com/english/wordpress-plugins/mailchimp-immediate-send/
 Requires at least: 3.7
-Tested up to: 3.9.1
+Tested up to: 4.7.2
 Stable tag: head
 
 == Description ==
+
+** WARNING ON UPDATE TO MAILCHIMP VERSION 3.X **
+
+**If you have DeMomentSomTres Mailchimp Subscribe installed, you MUST upgrade BOTH plugins. You MUST, first, deactivate both plugins and then perform the upgrade. After that you can activate the plugins.**
+
+**If you fail to follow these recommendations, you may get a 500 error in your server due to class redeclaration.**
 
 The DeMomentSomTres Mailchimp Immediate Send plugin allows you to send an automatic message to all the subscribers of some list on content publication.
 
 This plugin is **not** an alternative to Mandrill the MailChimp platform for transactional email.
 
-You can get more information at [DeMomentSomTres Digital Marketing Agency](http://demomentsomtres.com/english/wordpress-plugins/mailchimp-immediate-send/).
+You can get more information at [DeMomentSomTres Digital Marketing Agency](http://demomentsomtres.com/en/wordpress-plugins/mailchimp-immediate-send/).
 
 = Features =
 
@@ -21,6 +27,14 @@ You can get more information at [DeMomentSomTres Digital Marketing Agency](http:
 * Selection based on multiple taxonomy terms.
 * Template Support.
 * Edit area configuration.
+
+= Filters =
+
+The following filters are added to the plugin:
+
+* dms3immediate-campaign: customize the campaign name
+* dms3immediate-message: customize the message text
+* dms3immediate-title: customize the message subject
 
 = History & Raison d’être =
 
@@ -34,9 +48,14 @@ So we decide tu build this component that creates an adhoc campaign "regular cam
 
 This portfolio plugin can be installed as any other WordPress plugin. 
 
+= WARNING ON UPDATE TO MAILCHIMP VERSION 3.X =
+If you have DeMomentSomTres Mailchimp Subscribe installed, you MUST upgrade BOTH plugins. You MUST, first, deactivate both plugins and then perform the upgrade. After that you can activate the plugins. 
+
+If you fail to follow these recommendations, you will get a 500 error in your server due to class redeclaration.
+
 = Requirements =
 
-* Uses [DeMomentSomTresTools Plugin](http://demomentsomtres.com/english/wordpress-plugins/demomentsomtres-tools/).
+It manages the requirements by itself.
 
 == Frequently Asked Questions ==
 
@@ -78,6 +97,39 @@ The message is stored as a campaign named as the list where it is sent with a YY
 TBD
 
 == Changelog ==
+= 3.201704251008 =
+* Bug with TGMPA that did not detect requirements.
+= 3.201704112011 =
+* Bug Fatal Error if Titan Framework was not present.
+= 3.20170302259 =
+* TGMPA updated to 2.6.1
+= 3.201703012005 =
+* Bug: campaign settings
+* Bug: unable to send campaign if groups informed
+* Prevent update when background save is executed that forced messages to be sent when Broken Link checked is used to its job.
+* Option not to send the campaigns. Only created.
+* Translation compatible with WordPress Translate
+= 3.201702280929 =
+* update of version numbering
+= 3.20170222c =
+* Update of term names
+= 3.20170222b =
+* Admin bug
+= 3.20170222 =
+* DeMomentSomTres Tools is not required anymore
+* Admin redesigned
+* Filters added
+* Code rebuild
+* Sections can be choosen from a select
+* Performance optimization
+* Freemius added
+* TGM used to manage dependencies
+
+= 2.9.1 =
+* Mailchimp library changed: changed maximum templates retrieved
+
+= 2.9 =
+* Compatibility with Mailchimp API v3.0
 
 = 2.3 =
 * Events manager compatibility and compatibility with plugins using - in terms and taxonomies slugs

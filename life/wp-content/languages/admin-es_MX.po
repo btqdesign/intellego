@@ -927,7 +927,7 @@ msgstr "La hora universal (%1$s) es %2$s."
 msgid "There is a pending change of the admin email to %s."
 msgstr "Hay un cambio pendiente del correo electrónico del administrador a %s."
 
-#: wp-admin/install.php:390
+#: wp-admin/install.php:376
 msgid "WordPress has been installed. Thank you, and enjoy!"
 msgstr "WordPress ya está instalado. ¡Gracias y disfrútalo!"
 
@@ -3721,19 +3721,19 @@ msgstr "Los menús se pueden mostrar en distintas ubicaciones definidas por tu t
 msgid "Your theme does not natively support menus, but you can use them in sidebars by adding a &#8220;Custom Menu&#8221; widget on the <a href=\"%s\">Widgets</a> screen."
 msgstr "Tu tema no soporta menús de manera nativa pero puedes usarlos en las barras laterales añadiendo un widget de &#8220;Menú personalizado&#8221; en la pantalla de <a href=\"%s\">Widgets</a>."
 
-#: wp-admin/install.php:369
+#: wp-admin/install.php:365
 msgid "Sorry, that isn&#8217;t a valid email address. Email addresses look like <code>username@example.com</code>."
 msgstr "Lo siento, no es una dirección de correo electrónica válida. Las direcciones de correo electrónico deben parecerse a <code>usuario@ejemplo.com</code>."
 
-#: wp-admin/install.php:364
+#: wp-admin/install.php:361
 msgid "You must provide an email address."
 msgstr "Debes facilitar una dirección de correo electrónico"
 
-#: wp-admin/install.php:359
+#: wp-admin/install.php:357
 msgid "Your passwords do not match. Please try again."
 msgstr "Tus contraseñas no coinciden. Inténtalo de nuevo."
 
-#: wp-admin/install.php:354
+#: wp-admin/install.php:353
 msgid "The username you provided has invalid characters."
 msgstr "El nombre de usuario que has facilitado tiene caracteres no válidos."
 
@@ -8751,7 +8751,7 @@ msgstr "Añadir nuevo"
 msgid "Add New Link"
 msgstr "Añadir enlace"
 
-#: wp-admin/install.php:388
+#: wp-admin/install.php:374
 msgid "Success!"
 msgstr "¡Lo lograste!"
 
