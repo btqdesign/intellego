@@ -22,7 +22,7 @@ class WPBackItUp_DataAccess {
 
 		} catch(Exception $e) {
 			error_log($e);
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
 		}
 	}
 
@@ -63,7 +63,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool
 	 */
 	public function insert_job_items($sql_values) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$sql_insert = "INSERT INTO $wpdb->wpbackitup_job_item
@@ -86,7 +86,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool
 	 */
 	public function insert_job_item($job_id, $group_id, $item, $size_kb, $create_date) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$sql = $wpdb->prepare(
@@ -121,7 +121,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool
 	 */
 	public function insert_job_items_with_offset($sql_values) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$sql_insert = "INSERT INTO $wpdb->wpbackitup_job_item
@@ -148,7 +148,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_queued_active_job_count( $job_types ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$job_types_list = self::get_delimited_list($job_types);
 
@@ -178,7 +178,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_jobs_by_status( $job_type,$job_status_array, $limit=100 ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$job_status_list = self::get_delimited_list($job_status_array);
 
@@ -193,7 +193,7 @@ class WPBackItUp_DataAccess {
 		    ",$job_type, $limit);
 
 		$query_result=$this->get_rows($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 	}
@@ -209,7 +209,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_jobs_by_name( $job_type, $job_name,$job_status_array=null ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info( $this->log_name, __METHOD__, 'Begin' );
+		WPBackItUp_Logger::log_info( $this->log_name, __METHOD__, 'Begin' );
 
 		if ( ! empty( $job_status_array ) ) {
 
@@ -238,7 +238,7 @@ class WPBackItUp_DataAccess {
 		}
 
 		$query_result=$this->get_rows($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 	}
@@ -255,7 +255,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool true on success/ false on error
 	 */
 	public function create_job($job_id,$job_type,$job_run_type,$job_name,$job_status) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$sql = $wpdb->prepare(
@@ -279,7 +279,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_job_by_id( $job_id ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"SELECT *
@@ -289,7 +289,7 @@ class WPBackItUp_DataAccess {
 		    ",$job_id);
 
 		$query_result=$this->get_row($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 	}
@@ -304,7 +304,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool
 	 */
 	public function update_job_status( $job_id, $job_status ) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$sql = $wpdb->prepare(
@@ -330,7 +330,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool
 	 */
 	public function update_job_run_type( $job_id, $job_run_type ) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$sql = $wpdb->prepare(
@@ -355,7 +355,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool
 	 */
 	public function update_job_meta( $job_id, $job_meta ) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$sql = $wpdb->prepare(
@@ -383,7 +383,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool|int ID on success/ false on error
 	 */
 	public function create_task( $job_id, $task_name) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$sql = $wpdb->prepare(
@@ -408,7 +408,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_job_tasks( $job_id, $status_array ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$status_list = self::get_delimited_list($status_array);
 
@@ -422,7 +422,7 @@ class WPBackItUp_DataAccess {
 		    ",$job_id);
 
 		$query_result=$this->get_rows($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 
@@ -438,7 +438,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool true on allocated, false on not allocated,
 	 */
 	public function allocate_task( $task_id ) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$allocation_id = current_time('timestamp');
@@ -476,7 +476,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_task_by_id( $task_id ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"SELECT *
@@ -486,7 +486,7 @@ class WPBackItUp_DataAccess {
 		    ",$task_id);
 
 		$query_result=$this->get_row($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 	}
@@ -500,7 +500,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool true on success, false on failure
 	 */
 	public function update_task( $task ) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$sql = $wpdb->prepare(
@@ -538,7 +538,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_job_item_job_list(){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		$sql_select = "SELECT DISTINCT job_id FROM $wpdb->wpbackitup_job_item";
 		return $this->get_rows($sql_select);
 	}
@@ -557,7 +557,7 @@ class WPBackItUp_DataAccess {
 	 */
 	function get_batch_open_items($batch_id,$batch_size,$job_id,$group_id){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$item_status_list = self::get_delimited_list(array(WPBackItUp_Job_Item::OPEN,WPBackItUp_Job_Item::QUEUED,WPBackItUp_Job_Item::ERROR));
 
@@ -606,7 +606,7 @@ class WPBackItUp_DataAccess {
 	 */
 	function get_completed_items_by_batch_id($job_id,$group_id,$batch_id){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql_select = $wpdb->prepare(
 			"SELECT * FROM $wpdb->wpbackitup_job_item
@@ -633,7 +633,7 @@ class WPBackItUp_DataAccess {
 	 */
 	function get_item_batch_ids($job_id,$group_id) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql_select = $wpdb->prepare(
 			"SELECT DISTINCT batch_id FROM $wpdb->wpbackitup_job_item
@@ -660,7 +660,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_item_by_id( $item_id ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"SELECT *
@@ -670,7 +670,7 @@ class WPBackItUp_DataAccess {
 		    ",$item_id);
 
 		$query_result=$this->get_row($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 	}
@@ -685,7 +685,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function delete_job_by_id( $job_id ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql_update = $wpdb->prepare(
 			"DELETE FROM $wpdb->wpbackitup_job_control
@@ -713,7 +713,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function delete_job_tasks( $job_id,$limit=9999999 ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"DELETE FROM $wpdb->wpbackitup_job_task
@@ -741,7 +741,7 @@ class WPBackItUp_DataAccess {
 	 */
 	function delete_job_items($job_id, $limit=9999999){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"DELETE FROM $wpdb->wpbackitup_job_item
@@ -767,7 +767,7 @@ class WPBackItUp_DataAccess {
 	 */
 	function get_open_item_count($job_id,$group_id){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$item_status_list = self::get_delimited_list(array(WPBackItUp_Job_Item::OPEN,WPBackItUp_Job_Item::QUEUED,WPBackItUp_Job_Item::ERROR));
 
@@ -782,7 +782,7 @@ class WPBackItUp_DataAccess {
 		    ",WPBackItUp_Job_Item::JOB_ITEM_RECORD,$job_id,$group_id);
 
 		$row=$this->get_row($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($row,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($row,true));
 
 		return $row->item_count;
 	}
@@ -798,7 +798,7 @@ class WPBackItUp_DataAccess {
 	 */
 	function get_error_item_count($job_id,$group_id){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"SELECT count(*) as item_count FROM $wpdb->wpbackitup_job_item
@@ -810,7 +810,7 @@ class WPBackItUp_DataAccess {
 		    ",WPBackItUp_Job_Item::JOB_ITEM_RECORD,$job_id,$group_id,WPBackItUp_Job_Item::COMPLETE);
 
 		$row=$this->get_row($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($row,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($row,true));
 
 		return $row->item_count;
 	}
@@ -826,7 +826,7 @@ class WPBackItUp_DataAccess {
 	 */
 	function update_item_batch_complete($job_id,$batch_id,$file_count){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"UPDATE  $wpdb->wpbackitup_job_item
@@ -853,7 +853,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool
 	 */
 	public function update_item_status( $item_id, $item_status ) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$sql = $wpdb->prepare(
@@ -880,7 +880,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function update_job_start_time( $job_id, $job_start_time ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"UPDATE  $wpdb->wpbackitup_job_control
@@ -904,7 +904,7 @@ class WPBackItUp_DataAccess {
 	 * @return bool
 	 */
 	public function update_job_end_time( $job_id, $job_end_time ) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		global $wpdb;
 
 		$sql = $wpdb->prepare(
@@ -930,7 +930,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_user_by_login( $user_login,$table_prefix=null ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin.');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin.');
 
 		$users_table = $wpdb->users;
 		if (!is_null( $table_prefix )){
@@ -945,7 +945,7 @@ class WPBackItUp_DataAccess {
 		    ",$user_login);
 
 		$query_result=$this->get_row($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 	}
@@ -957,7 +957,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_user_by_id( $user_id ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"SELECT *
@@ -967,7 +967,7 @@ class WPBackItUp_DataAccess {
 		    ",$user_id);
 
 		$query_result=$this->get_row($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 	}
@@ -983,7 +983,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_duplicate_users( $user_id, $user_login ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"SELECT *
@@ -994,7 +994,7 @@ class WPBackItUp_DataAccess {
 		    ",$user_id,$user_login);
 
 		$query_result=$this->get_rows($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 	}
@@ -1010,10 +1010,10 @@ class WPBackItUp_DataAccess {
 	 */
 	public function update_snapshot_currentuser( $current_user, $table_prefix) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		if ( empty( $current_user )) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__, 'User login is not valid:' . var_export( $current_user,true));
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__, 'User login is not valid:' . var_export( $current_user,true));
 			return false;
 		}
 
@@ -1031,7 +1031,7 @@ class WPBackItUp_DataAccess {
 		);
 
 		$snapshot_user_id = $this->get_scalar($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Snapshot User Id (null means doesnt exist):'. var_export( $snapshot_user_id,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Snapshot User Id (null means doesnt exist):'. var_export( $snapshot_user_id,true));
 
 		//Delete user and user meta if exists in snapshot DB
 		if (! empty($snapshot_user_id)) {
@@ -1046,7 +1046,7 @@ class WPBackItUp_DataAccess {
 
 			$sql_rtn = $this->query($sql);
 			if (false=== $sql_rtn ) {
-				WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Could not delete usermeta from snapshot table.');
+				WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Could not delete usermeta from snapshot table.');
 				return false;
 			}
 
@@ -1060,7 +1060,7 @@ class WPBackItUp_DataAccess {
 
 			$sql_rtn = $this->query($sql);
 			if (false=== $sql_rtn ) {
-				WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Could not delete users from snapshot table.');
+				WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Could not delete users from snapshot table.');
 				return false;
 			}
 
@@ -1097,7 +1097,7 @@ class WPBackItUp_DataAccess {
 
 		$sql_rtn = $this->query($sql);
 		if (false=== $sql_rtn ) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Could not add users into snapshot table.');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Could not add users into snapshot table.');
 			return false;
 		}
 
@@ -1109,11 +1109,11 @@ class WPBackItUp_DataAccess {
 		);
 
 		$snapshot_user_id = $this->get_scalar($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Snapshot User Id (null means doesnt exist):'. var_export( $snapshot_user_id,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Snapshot User Id (null means doesnt exist):'. var_export( $snapshot_user_id,true));
 
 		//Delete user and user meta if exists in snapshot DB
 		if ( empty($snapshot_user_id)) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Could not find new user ID in snapshot table.');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Could not find new user ID in snapshot table.');
 			return false;
 		}
 
@@ -1137,12 +1137,12 @@ class WPBackItUp_DataAccess {
 
 		$sql_rtn = $this->query($sql);
 		if (false=== $sql_rtn ) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Could add user meta  into snapshot table.');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Could add user meta  into snapshot table.');
 			return false;
 		}
 
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Current user added to snapshot table.');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Current user added to snapshot table.');
 		return true;
 
 	}
@@ -1158,15 +1158,15 @@ class WPBackItUp_DataAccess {
 	 */
 	public function update_snapshot_table_prefix( $snapshot_prefix, $backup_table_prefix) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		if ( empty( $snapshot_prefix )) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__, 'Snapshot prefix is not valid:' . var_export( $snapshot_prefix,true));
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__, 'Snapshot prefix is not valid:' . var_export( $snapshot_prefix,true));
 			return false;
 		}
 
 		if ( empty( $backup_table_prefix )) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__, 'Backup table prefix is not valid:' . var_export( $backup_table_prefix,true));
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__, 'Backup table prefix is not valid:' . var_export( $backup_table_prefix,true));
 			return false;
 		}
 
@@ -1184,7 +1184,7 @@ class WPBackItUp_DataAccess {
 
 		$sql_rtn = $this->query($sql);
 		if (false=== $sql_rtn ) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Could update table prefix in options snapshot table.');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Could update table prefix in options snapshot table.');
 			return false;
 		}
 
@@ -1203,12 +1203,12 @@ class WPBackItUp_DataAccess {
 
 		$sql_rtn = $this->query($sql);
 		if (false=== $sql_rtn ) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Could not delete users from snapshot table.');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Could not delete users from snapshot table.');
 			return false;
 		}
 
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Current user added to snapshot table.');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Current user added to snapshot table.');
 		return true;
 
 	}
@@ -1224,7 +1224,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function update_create_user_by_login( $db_user, $table_prefix=null) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$users_table = $wpdb->users;
 		if (!is_null( $table_prefix )){
@@ -1307,7 +1307,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function create_user( $db_user ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"INSERT INTO $wpdb->users
@@ -1352,7 +1352,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function delete_users_except( $id, $limit=5000 ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"DELETE FROM $wpdb->users
@@ -1375,7 +1375,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_user_count() {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = "SELECT count(*) as user_count FROM  $wpdb->users";
 		$result = $this->get_row($sql);
@@ -1390,7 +1390,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_usermeta_count() {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = "SELECT count(distinct user_id) as user_count FROM  $wpdb->usermeta";
 		$result = $this->get_row($sql);
@@ -1408,7 +1408,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function delete_usermeta_except( $id, $limit=5000 ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"DELETE FROM $wpdb->usermeta
@@ -1425,12 +1425,12 @@ class WPBackItUp_DataAccess {
 
 	public function get_options_wpbackitup() {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql ="SELECT * FROM $wpdb->options WHERE option_name LIKE 'wp-backitup%' ";
 
 		$query_result=$this->get_rows($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 
@@ -1439,7 +1439,7 @@ class WPBackItUp_DataAccess {
 
 	public function update_create_option($option_name,$option_value,$autoload,$table_prefix=null) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		//does option already exist
 		$option = $this->get_option_by_name($option_name,$table_prefix);
@@ -1503,7 +1503,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function update_option($option_name,$option_value,$table_prefix=null) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		//does option already exist
 		$option = $this->get_option_by_name($option_name,$table_prefix);
@@ -1538,7 +1538,7 @@ class WPBackItUp_DataAccess {
 
 	public function get_option_by_name( $option_name,$table_prefix=null ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		//replace the table prefix with the job_id
 		$options_table = $wpdb->options;
@@ -1555,7 +1555,7 @@ class WPBackItUp_DataAccess {
 		    ",$option_name);
 
 		$query_result=$this->get_rows($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 	}
@@ -1583,7 +1583,7 @@ class WPBackItUp_DataAccess {
 
 		$value = $this->get_scalar($sql);
 		if (empty($value)) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Option not found:'. $option_name);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Option not found:'. $option_name);
 		}
 
 		return $value;
@@ -1598,7 +1598,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_usermeta_by_id( $user_id ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"SELECT *
@@ -1608,14 +1608,14 @@ class WPBackItUp_DataAccess {
 		    ",$user_id);
 
 		$query_result=$this->get_rows($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 	}
 
 	public function get_usermeta_by_id_metakey( $user_id,$meta_key ) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"SELECT *
@@ -1626,7 +1626,7 @@ class WPBackItUp_DataAccess {
 		    ",$user_id,$meta_key);
 
 		$query_result=$this->get_row($sql);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($query_result,true));
 
 		return $query_result;
 	}
@@ -1642,7 +1642,7 @@ class WPBackItUp_DataAccess {
 	 */
 	public function update_create_usermeta($user_id,$meta_key,$meta_value) {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		//does usermeta already exist
 		$user_meta = $this->get_usermeta_by_id_metakey($user_id,$meta_key);
@@ -1694,7 +1694,7 @@ class WPBackItUp_DataAccess {
 	 */
 	function get_tables($table_prefix=null){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = "SHOW TABLES";
 		if (! is_null($table_prefix)){
@@ -1727,7 +1727,7 @@ class WPBackItUp_DataAccess {
 
 	public function get_table_rows() {
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$sql = $wpdb->prepare(
 			"SELECT 
@@ -1751,7 +1751,7 @@ class WPBackItUp_DataAccess {
 		}
 
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Results:'.var_export($table_list,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Results:'.var_export($table_list,true));
 		return $tables;
 
 	}
@@ -1766,10 +1766,10 @@ class WPBackItUp_DataAccess {
 
 		if (!empty($base_directory)){
 			$base_directory.='/bin/';
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'MySQL install path found:' .$base_directory);
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'MySQL install path found:' .$base_directory);
 			return $base_directory;
 		}
-		WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'MySQL install path NOT found');
+		WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'MySQL install path NOT found');
 		return false;
 	}
 
@@ -1790,18 +1790,18 @@ class WPBackItUp_DataAccess {
 	 */
 	public function query($sql){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,$sql);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,$sql);
 		$wpdb_result = $wpdb->query($sql);
 		//$last_query = $wpdb->last_query;
 		$last_error = $wpdb->last_error;
 
-		//WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Last Query:' .var_export( $last_query,true ) );
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Query Result: ' .($wpdb_result=== FALSE?'Query Error': $wpdb_result));
+		//WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Last Query:' .var_export( $last_query,true ) );
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Query Result: ' .($wpdb_result=== FALSE?'Query Error': $wpdb_result));
 
 		if ($wpdb_result === FALSE && !empty($last_error)) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Last Error:' .var_export( $last_error,true ) );
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Last Error:' .var_export( $last_error,true ) );
 		}
 
 		return $wpdb_result;
@@ -1815,18 +1815,18 @@ class WPBackItUp_DataAccess {
 	 */
 	public function get_row($sql){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,$sql);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,$sql);
 		$wpdb_result = $wpdb->get_row($sql);
 		$last_query = $wpdb->last_query;
 		$last_error = $wpdb->last_error;
 
-		//WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Last Query:' .var_export( $last_query,true ));
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Query Result: ' .($wpdb_result==null?'NULL': $wpdb->num_rows));
+		//WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Last Query:' .var_export( $last_query,true ));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Query Result: ' .($wpdb_result==null?'NULL': $wpdb->num_rows));
 
 		if (null == $wpdb_result && !empty($last_error)) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Last Error:' .var_export( $last_query,true ));
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Last Error:' .var_export( $last_query,true ));
 		}
 
 		return $wpdb_result;
@@ -1841,18 +1841,18 @@ class WPBackItUp_DataAccess {
  */
 	public function get_rows($sql,$output=OBJECT){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,$sql);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,$sql);
 		$wpdb_result = $wpdb->get_results($sql,$output);
 		//$last_query = $wpdb->last_query;
 		$last_error = $wpdb->last_error;
 
-		//WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Last Query:' .var_export( $last_query,true ));
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Query Result: ' .($wpdb_result==null?'NULL': $wpdb->num_rows));
+		//WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Last Query:' .var_export( $last_query,true ));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Query Result: ' .($wpdb_result==null?'NULL': $wpdb->num_rows));
 
 		if (null == $wpdb_result && ! empty($last_error)) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Last Error:' .var_export( $last_error,true ));
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Last Error:' .var_export( $last_error,true ));
 		}
 
 		return $wpdb_result;
@@ -1867,16 +1867,16 @@ class WPBackItUp_DataAccess {
 	 */
 	private function get_col($sql,$column_index=0){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,$sql);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,$sql);
 		$wpdb_result = $wpdb->get_col($sql,$column_index);
 		$last_error = $wpdb->last_error;
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Query Result: ' .($wpdb_result==null?'NULL': $wpdb->num_rows));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Query Result: ' .($wpdb_result==null?'NULL': $wpdb->num_rows));
 
 		if (null == $wpdb_result && ! empty($last_error)) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Last Error:' .var_export( $last_error,true ));
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Last Error:' .var_export( $last_error,true ));
 		}
 
 		return $wpdb_result;

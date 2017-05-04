@@ -39,7 +39,7 @@ class WPBackItUp_Mutex {
 
     private function attemptLock(){
         $lockFilePath = $this->getLockFilePath();
-        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin:' .$lockFilePath);
+        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin:' .$lockFilePath);
         if (PHP_OS == 'WINNT'){
             if(file_exists($lockFilePath)){
                 $unlinked = @unlink($lockFilePath);
@@ -48,7 +48,7 @@ class WPBackItUp_Mutex {
         }
 
         $fileHandle = $this->getFileHandle();
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File Handle:' .var_export($fileHandle,true));
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Handle:' .var_export($fileHandle,true));
 
         if(!$fileHandle){
             return false;
@@ -96,19 +96,19 @@ class WPBackItUp_Mutex {
 	 * @return bool
 	 */
 	public function releaseLock(){
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
         $close_rtn=true;
 
 	    $fh = $this->fileHandle;
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File Handle:' .var_export($fh,true));
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Handle:' .var_export($fh,true));
 
         if (null!=$fh ) {
-            $flock_rtn = flock($fh, LOCK_UN);
-            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Flock Unlock:' .var_export($flock_rtn,true));
+            $flock_rtn = @flock($fh, LOCK_UN);
+            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Flock Unlock:' .var_export($flock_rtn,true));
 
-            $close_rtn = fclose($fh);
-            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Close File:' .var_export($close_rtn,true));
+            $close_rtn = @fclose($fh);
+            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Close File:' .var_export($close_rtn,true));
         }
 
 	    //delete file & release reference

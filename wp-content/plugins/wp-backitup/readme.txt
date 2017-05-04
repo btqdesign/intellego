@@ -1,17 +1,18 @@
-=== Backup & Restore WPBackItUp ===
-Contributors: wpbackitup, cssimmon, alaminopu, imranshuvo
-Donate link: https://www.wpbackitup.com
-Tags: backup, backups, restore, migrate, clone, duplicate, multisite, database, archive, malware, download, mysql
+=== WordPress Backup & Restore Plugin - WPBackItUp ===
+Contributors: wpbackitup, cssimmon, alaminopu, imranshuvo, backup
+Tags: backup, backups, back up, backup plugin, database backup, multisite backup, full backup, database, restore, migrate, clone, malware
 Requires at least: 3.8.0
-Tested up to: 4.7.2
-Stable tag: 1.14.1
+Tested up to: 4.7.4
+Stable tag: 1.14.4
+Author URI: https://www.wpbackitup.com
+Donate link: https://www.wpbackitup.com
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Backup, restore, clone, duplicate or migrate your site effortlessly with WPBackItUp.
+Backup, restore, clone, duplicate or migrate your site effortlessly with WPBackItUp. Backup every setting, post, comment, revision, plugin, theme, media file, upload, backup everything with a single click.
 
 == Description ==
-With WPBackItUp you're **protected** against hackers, malware, host outages, and even your own mistakes. WPBackItUp backs up every setting, post, comment, revision, plugin, theme, media file and upload with just a single click.  WPBackItUp creates compressed backups of your entire website and no matter how large your site, backups can be quickly and easily downloaded right from your WordPress dashboard.
+With [WPBackItUp](https://www.wpbackitup.com/?utm_medium=partner&utm_source=wordpress.org&utm_campaign=plugin+directory&utm_content=description&utm_term=main) you're **protected** against hackers, malware, host outages, and even your own mistakes. WPBackItUp backs up every setting, post, comment, revision, plugin, theme, media file and upload with just a single click.  WPBackItUp creates compressed backups of your entire website and no matter how large your site, backups can be quickly and easily downloaded right from your WordPress dashboard.
 
 WPBackItUp has been available to the WordPress community since **2012** and is used to create millions of backups every year.  It's one of the most widely **tested**, **reliable**, and **highly rated** backup plugins available!  And with our long history, you can feel confident that we are going to be around for many years to come.
 
@@ -195,10 +196,22 @@ Our online documentation and full list of FAQs can be found at [support.wpbackit
 
 
 == Changelog ==
+= 1.14.4 =
+*Release Date -  April 6,2017
+
+* FIX: Fix for backup upload error
+
+= 1.14.3 =
+*Release Date -  March 16,2017
+
+* UPDATE: Added new admin notice class
+* UPDATE: Added new logging class
+* UPDATE: Add support for extremely large databases(500+ SQL files)
+
 = 1.14.2 =
 *Release Date -  March 7, 2017
 
-* FIX: Fix issue with undefined index on $_GET['page']
+* FIX:  Correct issue with undefined index on admin notices
 
 = 1.14.1 =
 *Release Date -  February 16, 2017

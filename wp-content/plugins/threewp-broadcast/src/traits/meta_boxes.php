@@ -150,10 +150,20 @@ trait meta_boxes
 			return;
 		}
 
-		if ( $meta_box_data->broadcast_data->get_linked_parent() !== false)
+		$linked_parent = $meta_box_data->broadcast_data->get_linked_parent();
+		if ( $linked_parent !== false)
 		{
+			switch_to_blog( $linked_parent[ 'blog_id' ] );
+			// http://broadcast2.it.ed/wp-admin/post.php?post=1435&action=edit
+			$edit_url = get_edit_post_link( $linked_parent[ 'post_id' ] );
+			restore_current_blog();
 			$meta_box_data->html->put( 'already_broadcasted',  sprintf( '<p>%s</p>',
-				$this->_( 'This post is a broadcasted child post. It cannot be broadcasted further.' )
+				sprintf(
+					// broadcasted is linked.
+					__( 'This post is a %sbroadcasted%s child post. It cannot be broadcasted further.', 'threewp_broadcast' ),
+					'<a href="' . $edit_url . '">',
+					'</a>'
+					)
 			) );
 			$action->finish();
 			return;

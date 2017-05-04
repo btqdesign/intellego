@@ -5,6 +5,8 @@ namespace threewp_broadcast\traits;
 use threewp_broadcast\actions;
 use threewp_broadcast\attachment_data;
 
+use \Exception;
+
 trait attachments
 {
 	/**
@@ -51,15 +53,22 @@ trait attachments
 			}
 			$this->maybe_copy_attachment( $o );
 
-			// Preserve all of the attachment data.
-			$copied_attachment = get_post( $o->attachment_id );
-			$copied_attachment->attachment_data = attachment_data::from_attachment_id( $copied_attachment );
+			try
+			{
+				// Preserve all of the attachment data.
+				$copied_attachment = get_post( $o->attachment_id );
+				$copied_attachment->attachment_data = attachment_data::from_attachment_id( $copied_attachment );
 
-			// Yepp, reverse reference in order to preserve the attachment data for future use.
-			$attachment->post->attachment_data = $attachment;
+				// Yepp, reverse reference in order to preserve the attachment data for future use.
+				$attachment->post->attachment_data = $attachment;
 
-			$bcd->copied_attachments()->add( $attachment->post, $copied_attachment );
-			$this->debug( 'Copied attachment %s to %s', $attachment->post->ID, $o->attachment_id );
+				$bcd->copied_attachments()->add( $attachment->post, $copied_attachment );
+				$this->debug( 'Copied attachment %s to %s', $attachment->post->ID, $o->attachment_id );
+			}
+			catch ( Exception $e )
+			{
+				$this->debug( 'Error while copying the attachment: %s', $e->getMessage() );
+			}
 		}
 	}
 
@@ -208,7 +217,9 @@ trait attachments
 					{
 						// Some values need to handle completely different upload paths (from different months, for example).
 						case '_wp_attached_file':
-							$value = $attach_data[ 'file' ];
+							// Some files, like MP3s, don't have this key.
+							if ( isset( $attach_data[ 'file' ] ) )
+								$value = $attach_data[ 'file' ];
 							break;
 					}
 					update_post_meta( $action->attachment_id, $key, $value );

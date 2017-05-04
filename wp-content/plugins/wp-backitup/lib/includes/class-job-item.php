@@ -56,14 +56,14 @@ class WPBackItUp_Job_Item {
 
 		} catch(Exception $e) {
 			error_log($e); //Log to debug
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
 		}
 	}
 
 	function __destruct() {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End');
 	}
 
 	/**
@@ -102,7 +102,7 @@ class WPBackItUp_Job_Item {
 	 *
 	 */
 	public static function get_item_by_id($item_id) {
-		WPBackItUp_LoggerV2::log_info( self::DEFAULT_LOG_NAME, __METHOD__, 'Begin' );
+		WPBackItUp_Logger::log_info( self::DEFAULT_LOG_NAME, __METHOD__, 'Begin' );
 
 		$db        = new WPBackItUp_DataAccess();
 		$db_item = $db->get_item_by_id( $item_id);
@@ -123,7 +123,7 @@ class WPBackItUp_Job_Item {
 	 * @return array|bool
 	 */
 	public static function get_item_batch_by_group($job_id,$batch_size,$group_id) {
-		WPBackItUp_LoggerV2::log_info( self::DEFAULT_LOG_NAME, __METHOD__, 'Begin' );
+		WPBackItUp_Logger::log_info( self::DEFAULT_LOG_NAME, __METHOD__, 'Begin' );
 
 		$batch_id=current_time( 'timestamp' );
 
@@ -150,7 +150,7 @@ class WPBackItUp_Job_Item {
 	 * @return mixed
 	 */
 	public static function get_open_item_count($job_id,$group_id) {
-		WPBackItUp_LoggerV2::log_info( self::DEFAULT_LOG_NAME, __METHOD__, 'Begin' );
+		WPBackItUp_Logger::log_info( self::DEFAULT_LOG_NAME, __METHOD__, 'Begin' );
 
 		$db        = new WPBackItUp_DataAccess();
 		$remaining_count = $db->get_open_item_count($job_id,$group_id);
@@ -167,7 +167,7 @@ class WPBackItUp_Job_Item {
 	 * @return mixed
 	 */
 	public function setStatus($item_status){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$db        = new WPBackItUp_DataAccess();
 		$updated = $db->update_item_status($this->item_id,$item_status);

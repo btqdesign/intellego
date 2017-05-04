@@ -40,11 +40,11 @@ class WPBackItUp_Cleanup_Processor extends WPBackItUp_Background_Process {
 	 * @return mixed  False when task is complete|return updated item for further processing
 	 */
 	protected function task( $item ) {
-		WPBackItUp_LoggerV2::log_info(self::CLEANUP_LOG_NAME,__METHOD__,'Task to process:'. var_export( $item,true ));
+		WPBackItUp_Logger::log_info(self::CLEANUP_LOG_NAME,__METHOD__,'Task to process:'. var_export( $item,true ));
 
 		//Items should always be array
 		if (! is_array($item )){
-			WPBackItUp_LoggerV2::log_error(self::CLEANUP_LOG_NAME,__METHOD__,'Task was not array:'. var_export( $item,true ));
+			WPBackItUp_Logger::log_error(self::CLEANUP_LOG_NAME,__METHOD__,'Task was not array:'. var_export( $item,true ));
 			return false;
 		}
 
@@ -52,7 +52,7 @@ class WPBackItUp_Cleanup_Processor extends WPBackItUp_Background_Process {
 			case "cleanup-zip":
 				//if only one left then all are deleted
 				if (count($item)<=1) {
-					WPBackItUp_LoggerV2::log_info(self::CLEANUP_LOG_NAME,__METHOD__,'No more files to delete.');
+					WPBackItUp_Logger::log_info(self::CLEANUP_LOG_NAME,__METHOD__,'No more files to delete.');
 					return false;
 				}
 
@@ -60,9 +60,9 @@ class WPBackItUp_Cleanup_Processor extends WPBackItUp_Background_Process {
 				
 				$file_system = new WPBackItUp_FileSystem();
 				if (true===$file_system->delete_files( $item )){
-					WPBackItUp_LoggerV2::log_info(self::CLEANUP_LOG_NAME,__METHOD__,'Files deleted successfully.');
+					WPBackItUp_Logger::log_info(self::CLEANUP_LOG_NAME,__METHOD__,'Files deleted successfully.');
 				} else {
-					WPBackItUp_LoggerV2::log_error(self::CLEANUP_LOG_NAME,__METHOD__,'File delete error');
+					WPBackItUp_Logger::log_error(self::CLEANUP_LOG_NAME,__METHOD__,'File delete error');
 				}
 				
 				return false;
@@ -71,7 +71,7 @@ class WPBackItUp_Cleanup_Processor extends WPBackItUp_Background_Process {
 			case "cleanup-files":
 				//if only one left then all are deleted
 				if (count($item)<=1) {
-					WPBackItUp_LoggerV2::log_info(self::CLEANUP_LOG_NAME,__METHOD__,'No more files to delete.');
+					WPBackItUp_Logger::log_info(self::CLEANUP_LOG_NAME,__METHOD__,'No more files to delete.');
 					return false;
 				}
 
@@ -79,9 +79,9 @@ class WPBackItUp_Cleanup_Processor extends WPBackItUp_Background_Process {
 
 				$file_system = new WPBackItUp_FileSystem();
 				if (true===$file_system->delete_files( $item )){
-					WPBackItUp_LoggerV2::log_info(self::CLEANUP_LOG_NAME,__METHOD__,'Files deleted successfully.');
+					WPBackItUp_Logger::log_info(self::CLEANUP_LOG_NAME,__METHOD__,'Files deleted successfully.');
 				} else {
-					WPBackItUp_LoggerV2::log_error(self::CLEANUP_LOG_NAME,__METHOD__,'File delete error');
+					WPBackItUp_Logger::log_error(self::CLEANUP_LOG_NAME,__METHOD__,'File delete error');
 				}
 
 				return false;
@@ -89,7 +89,7 @@ class WPBackItUp_Cleanup_Processor extends WPBackItUp_Background_Process {
 
 
 			default: //task not defined
-				WPBackItUp_LoggerV2::log_error(self::CLEANUP_LOG_NAME,__METHOD__,'Task Undefined.');
+				WPBackItUp_Logger::log_error(self::CLEANUP_LOG_NAME,__METHOD__,'Task Undefined.');
 				return false;
 		}
 

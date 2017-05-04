@@ -55,7 +55,7 @@ class WPBackItUp_Encryption {
 			$this->passphrase = $passphrase;
 
 		} catch ( Exception $e ) {
-			WPBackItUp_LoggerV2::log_error( $this->log_name, __METHOD__, 'Constructor Exception: ' . $e );
+			WPBackItUp_Logger::log_error( $this->log_name, __METHOD__, 'Constructor Exception: ' . $e );
 			throw $e;
 		}
 	}
@@ -76,7 +76,7 @@ class WPBackItUp_Encryption {
 
 		//check version dependency
 		if (version_compare(PHP_VERSION, self::$php_required, '<')) {
-			WPBackItUp_LoggerV2::log_error( self::$default_log, __METHOD__,sprintf( 'PHP Version less than %s. Current PHP version is: %s ',self::$php_required,PHP_VERSION));
+			WPBackItUp_Logger::log_error( self::$default_log, __METHOD__,sprintf( 'PHP Version less than %s. Current PHP version is: %s ',self::$php_required,PHP_VERSION));
 			return false;
 		}
 
@@ -90,7 +90,7 @@ class WPBackItUp_Encryption {
 
 		//mcrypt is just for testing...
 		if (! extension_loaded('mcrypt')) {
-			WPBackItUp_LoggerV2::log_error( self::$default_log, __METHOD__, 'mcrypt is not installed');
+			WPBackItUp_Logger::log_error( self::$default_log, __METHOD__, 'mcrypt is not installed');
 			return false;
 		}
 
@@ -114,14 +114,14 @@ class WPBackItUp_Encryption {
 			File::encryptFileWithPassword($source_file,$target_file, $this->passphrase);
 
 			if ( ! file_exists( $target_file ) || filesize( $target_file ) <= 0 ){
-				WPBackItUp_LoggerV2::log_error( $this->log_name, __METHOD__, 'File was not encrypted : ' . $target_file );
+				WPBackItUp_Logger::log_error( $this->log_name, __METHOD__, 'File was not encrypted : ' . $target_file );
 				return false;
 			}
 
 			@unlink ($source_file); //remove original file
 
 		} catch (Exception $ex) {
-			WPBackItUp_LoggerV2::log_error( $this->log_name, __METHOD__, 'File was not encrypted : ' . $ex );
+			WPBackItUp_Logger::log_error( $this->log_name, __METHOD__, 'File was not encrypted : ' . $ex );
 
 			return false;
 		}
@@ -146,14 +146,14 @@ class WPBackItUp_Encryption {
 			File::decryptFileWithPassword($source_file, $target_file, $this->passphrase);
 
 			if ( ! file_exists( $target_file ) || filesize( $target_file ) <= 0 ){
-				WPBackItUp_LoggerV2::log_error( $this->log_name, __METHOD__, 'File was not encrypted : ' . $target_file );
+				WPBackItUp_Logger::log_error( $this->log_name, __METHOD__, 'File was not encrypted : ' . $target_file );
 				return false;
 			}
 
 			@unlink ($source_file); //remove original file
 
 		} catch (Exception $ex) {
-			WPBackItUp_LoggerV2::log_error( $this->log_name, __METHOD__, 'File was not decrypted : ' . $ex );
+			WPBackItUp_Logger::log_error( $this->log_name, __METHOD__, 'File was not decrypted : ' . $ex );
 
 			return false;
 		}

@@ -3,7 +3,7 @@
  * Plugin Name: WP Image Zoom
  * Plugin URI: https://wordpress.org/plugins/wp-image-zoooom/
  * Description: Add zoom effect over the an image, whether it is an image in a post/page or the featured image of a product in a WooCommerce shop 
- * Version: 1.6
+ * Version: 1.9
  * Author: SilkyPress 
  * Author URI: https://www.silkypress.com
  * License: GPL2
@@ -24,7 +24,7 @@ if ( ! class_exists( 'ImageZoooom' ) ) :
  * @class ImageZoooom
  */
 final class ImageZoooom {
-    public static $version = '1.6';
+    public static $version = '1.9';
     public $testing = false;
     public $free = true;
     protected static $_instance = null; 
@@ -65,6 +65,8 @@ final class ImageZoooom {
      * @return ImageZoooom
      */
     public function __construct() {
+        global $_wp_theme_features;
+
          if ( is_admin() ) {
             $this->load_plugin_textdomain();
             include_once( 'includes/image-zoom-admin.php' );
@@ -86,6 +88,15 @@ final class ImageZoooom {
 
         if ( isset($general['enable_mobile']) && empty($general['enable_mobile']) && wp_is_mobile() )
             return false;
+
+
+        // Adjust the zoom to WooCommerce 3.0.+
+        if (class_exists('woocommerce') && version_compare( WC_VERSION, '3.0', '>') ) {
+            remove_theme_support( 'wc-product-gallery-zoom' );
+            remove_theme_support( 'wc-product-gallery-lightbox' );
+            add_theme_support( 'wc-product-gallery-slider' );
+        }
+
 
         add_filter( 'woocommerce_single_product_image_html', array( $this, 'woocommerce_single_product_image_html' ) );
         add_filter( 'woocommerce_single_product_image_thumbnail_html', array( $this, 'woocommerce_single_product_image_thumbnail_html' ) );
@@ -116,6 +127,12 @@ final class ImageZoooom {
         if ( isset( $sources[ $image_meta['width'] ] ) ) {
             return $sources;
         }
+
+        if ( is_array($size_array) && count($size_array) == 2 && isset($image_meta['height']) && isset($image_meta['width'])) {
+            $ratio = $size_array[0] * $image_meta['height'] / $size_array[1] / $image_meta['width'];
+            if ( $ratio > 1.03 || $ratio < 0.97 ) return $sources;
+        }
+
         $url = str_replace( wp_basename( $image_src ), wp_basename( $image_meta['file'] ), $image_src );
         $sources[$image_meta['width']] = array(
                 'url' => $url, 
@@ -167,6 +184,12 @@ final class ImageZoooom {
 
         if ( strstr( $content, 'attachment-shop_single' ) ) {
             $content = str_replace('attachment-shop_single', '', $content);
+        }
+
+        $theme = get_template();
+        // Fix for the 2.8.6+ Virtue theme, see https://wordpress.org/support/topic/woocommerce_single_product_image_html-filter/
+        if ( $theme == 'virtue' ) {
+            $content = str_replace('attachment-shop_thumbnail  wp-post-image', 'attachment-shop_single  wp-post-image', $content);
         }
         return $content;
     }
@@ -230,6 +253,10 @@ final class ImageZoooom {
             echo '<style type="text/css"> .wrapper { z-index: 40 !important; } </style>' . PHP_EOL;
         }
 
+        if ( strpos( $theme, 'nouveau') !== false ) { 
+            echo '<style type="text/css"> .wrapper { z-index: 100 !important; } </style>' . PHP_EOL;
+        }
+
         if ( strpos( $theme, 'artcore') !== false ) {
             echo '<style type="text/css"> .sidebar-menu-push { z-index: 40 !important; } </style>' . PHP_EOL;
         } 
@@ -271,8 +298,14 @@ final class ImageZoooom {
             'with_woocommerce' => '1',
             'exchange_thumbnails' => '1',
             'woo_categories' => (isset($general['woo_cat']) && $general['woo_cat'] == 1 ) ? '1' : '0',
+            'enable_mobile' => $general['enable_mobile'],
             'options' => $options,
+            'woo_slider' => '0', 
         );
+
+        if (class_exists('woocommerce') && version_compare( WC_VERSION, '3.0', '>') && current_theme_supports( 'wc-product-gallery-slider' )) {
+            $default['woo_slider'] = 1;
+        }
 
         $with_woocommerce = true;
         if ( ! $this->woocommerce_is_active() )

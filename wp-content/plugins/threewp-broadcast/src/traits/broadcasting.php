@@ -53,6 +53,7 @@ trait broadcasting
 
 		$this->debug( 'The POST is <pre>%s</pre>', $bcd->_POST );
 
+		// Primary switch to the parent blog.
 		switch_to_blog( $bcd->parent_blog_id );
 
 		if ( $bcd->link )
@@ -248,22 +249,22 @@ trait broadcasting
 
 		$this->debug( 'Beginning child broadcast loop to blogs %s', $bcd->blogs );
 
-		foreach( $bcd->blogs as $child_blog )
+		foreach( $bcd->blogs as $child_blog_id => $child_blog )
 		{
-			if ( $child_blog->get_id() == $bcd->parent_blog_id )
+			if ( $child_blog_id == $bcd->parent_blog_id )
 			{
 				$this->debug( 'Will not broadcast to our own parent blog.' );
 				continue;
 			}
 
-			if ( ! $this->blog_exists( $child_blog->get_id() ) )
+			if ( ! $this->blog_exists( $child_blog_id ) )
 			{
-				$this->debug( 'Blog %s does not exist anymore. Skipping!', $child_blog->get_id() );
+				$this->debug( 'Blog %s does not exist anymore. Skipping!', $child_blog_id );
 				continue;
 			}
 
-			$child_blog->switch_to();
-			$bcd->current_child_blog_id = $child_blog->get_id();
+			switch_to_blog( $child_blog_id );
+			$bcd->current_child_blog_id = $child_blog_id;
 			$this->debug( 'Switched to blog %s (%s)', get_bloginfo( 'name' ), $bcd->current_child_blog_id );
 
 			// Create new post data from the original stuff.
@@ -298,7 +299,7 @@ trait broadcasting
 			if ( ! $action->broadcast_here )
 			{
 				$this->debug( 'Skipping this blog.' );
-				$child_blog->switch_from();
+				restore_current_blog();
 				continue;
 			}
 
@@ -637,9 +638,10 @@ trait broadcasting
 			$action->broadcasting_data = $bcd;
 			$action->execute();
 
-			$child_blog->switch_from();
+			restore_current_blog();
 		}
 
+		// The primary switch to the parent blog.
 		restore_current_blog();
 
 		$action = new actions\broadcasting_finished;

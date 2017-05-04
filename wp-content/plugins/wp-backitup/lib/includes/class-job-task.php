@@ -38,7 +38,7 @@ class WPBackItUp_Job_Task {
 
 		} catch(Exception $e) {
 			error_log($e);
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
 		}
 	}
 
@@ -90,12 +90,12 @@ class WPBackItUp_Job_Task {
 	 * @return bool|WPBackItUp_Job_Task
 	 */
 	public static function get_task_by_id($task_id){
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
 
 		$db = new WPBackItUp_DataAccess();
 		$task = $db->get_task_by_id($task_id);
 		if (false===$task){
-			WPBackItUp_LoggerV2::log_error(self::DEFAULT_LOG_NAME,__METHOD__,'Task not found:'. $task_id);
+			WPBackItUp_Logger::log_error(self::DEFAULT_LOG_NAME,__METHOD__,'Task not found:'. $task_id);
 			return false;
 		}
 
@@ -113,7 +113,7 @@ class WPBackItUp_Job_Task {
 	 * @return array|bool
 	 */
 	public static function get_job_tasks($job_id,$status_list){
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
 
 		//get all the queued and active
 		$db = new WPBackItUp_DataAccess();
@@ -137,13 +137,13 @@ class WPBackItUp_Job_Task {
 	 *
 	 */
 	private function save(){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$db = new WPBackItUp_DataAccess();
 		$task_updated =  $db->update_task($this);
 
 		if (! $task_updated){
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Task was not updated:' .var_export($this,true));
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Task was not updated:' .var_export($this,true));
 		}
 
 		$this->set_properties($db->get_task_by_id($this->task_id));
@@ -159,16 +159,16 @@ class WPBackItUp_Job_Task {
 	 * @return bool
 	 */
 	public function try_allocate_task(){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$db = new WPBackItUp_DataAccess();
 		$allocated_task = $db->allocate_task($this->task_id);
 		if (true===$allocated_task){
 			$this->setStatus( WPBackItUp_Job_Task::ACTIVE);
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End - Task allocated');
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End - Task allocated');
 			return true;
 		}else{
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End - Task was not allocated');
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End - Task was not allocated');
 			return false;
 		}
 
@@ -182,7 +182,7 @@ class WPBackItUp_Job_Task {
 	 * Increment the task retry count
 	 */
 	public function increment_retry_count(){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		$this->retry_count++;
 
 		return $this->save();
@@ -198,7 +198,7 @@ class WPBackItUp_Job_Task {
 	 * @return mixed
 	 */
 	public function setStatus($status,$error=null){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 		$this->status=$status;
 
 		$now = current_time('mysql');

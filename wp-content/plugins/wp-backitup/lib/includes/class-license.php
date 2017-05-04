@@ -49,7 +49,7 @@ class WPBackItUp_License {
 			
 
 		} catch ( Exception $e ) {
-			WPBackItUp_LoggerV2::log_error( $this->log_name, __METHOD__, 'Constructor Exception: ' . $e );
+			WPBackItUp_Logger::log_error( $this->log_name, __METHOD__, 'Constructor Exception: ' . $e );
 			throw $e;
 		}
 
@@ -288,7 +288,7 @@ class WPBackItUp_License {
 
 		//if false try using site directly
 		if ( false === $license_data) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__, 'Unable to activate using Gateway  - attemtping direct');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__, 'Unable to activate using Gateway  - attemtping direct');
 			$license_data= $this->edd_license_api_request(WPBACKITUP__SECURESITE_URL,'activate_license', $request_data);
 		}
 
@@ -317,7 +317,7 @@ class WPBackItUp_License {
 
 		//if false try using site directly
 		if ( false === $license_data) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__, 'Unable to activate using Gateway  - attempting direct');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__, 'Unable to activate using Gateway  - attempting direct');
 			$license_data= $this->edd_license_api_request(WPBACKITUP__SECURESITE_URL,'activate_license', $request_data);
 		}
 
@@ -346,7 +346,7 @@ class WPBackItUp_License {
 
 		//if false try using site directly
 		if ( false === $license_data) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__, 'Unable to activate using Gateway  - attempting direct');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__, 'Unable to activate using Gateway  - attempting direct');
 			$license_data= $this->edd_license_api_request(WPBACKITUP__SECURESITE_URL,'activate_license', $request_data);
 		}
 
@@ -399,7 +399,7 @@ class WPBackItUp_License {
 		delete_transient( 'wpbackitup_admin_notices' );
 
 		$activation_logname='debug_activation';
-		WPBackItUp_LoggerV2::log_info($activation_logname,__METHOD__, 'Update License Options:' .$license);
+		WPBackItUp_Logger::log_info($activation_logname,__METHOD__, 'Update License Options:' .$license);
 
 		$license=trim($license);
 
@@ -533,7 +533,7 @@ class WPBackItUp_License {
 						)
 					);
 
-					WPBackItUp_LoggerV2::log_info($activation_logname,__METHOD__, 'Expire License.' );
+					WPBackItUp_Logger::log_info($activation_logname,__METHOD__, 'Expire License.' );
 				}
 
 				if ( ( $license_data->error == 'no_activations_left' ) ) {
@@ -553,10 +553,10 @@ class WPBackItUp_License {
 			}
 		}
 
-		WPBackItUp_LoggerV2::log_info($activation_logname,__METHOD__, 'Updating License Options');
+		WPBackItUp_Logger::log_info($activation_logname,__METHOD__, 'Updating License Options');
 		foreach($data as $key => $val ) {
 			WPBackItUp_Utility::set_option($key, $val);
-			WPBackItUp_LoggerV2::log_info($activation_logname,__METHOD__, 'Updated Option: ' .$key .':' .$val);
+			WPBackItUp_Logger::log_info($activation_logname,__METHOD__, 'Updated Option: ' .$key .':' .$val);
 		}
 		return true;
 	}
@@ -570,9 +570,9 @@ class WPBackItUp_License {
 		} else {
 			$post_url = WPBACKITUP__SITE_URL . $post_url;
 		}
-		WPBackItUp_LoggerV2::log_info($registration_logname,__METHOD__, 'Lite User Registration Post URL: ' . $post_url );
-		WPBackItUp_LoggerV2::log_info($registration_logname,__METHOD__, 'Lite User Registration Post Form Data: ' );
-		WPBackItUp_LoggerV2::log($registration_logname,$form_data );
+		WPBackItUp_Logger::log_info($registration_logname,__METHOD__, 'Lite User Registration Post URL: ' . $post_url );
+		WPBackItUp_Logger::log_info($registration_logname,__METHOD__, 'Lite User Registration Post Form Data: ' );
+		WPBackItUp_Logger::log($registration_logname,$form_data );
 
 		$response = wp_remote_post( $post_url, array(
 				'method'   => 'POST',
@@ -586,13 +586,13 @@ class WPBackItUp_License {
 
 		if ( is_wp_error( $response ) ) {
 			$error_message = $response->get_error_message();
-			WPBackItUp_LoggerV2::log_error($registration_logname,__METHOD__, 'Lite User Registration Error: ' . $error_message );
+			WPBackItUp_Logger::log_error($registration_logname,__METHOD__, 'Lite User Registration Error: ' . $error_message );
 
 			return false;
 
 		} else {
-			WPBackItUp_LoggerV2::log_info($registration_logname,__METHOD__, 'Lite User Registered Successfully:' );
-			WPBackItUp_LoggerV2::log($registration_logname,$response );
+			WPBackItUp_Logger::log_info($registration_logname,__METHOD__, 'Lite User Registered Successfully:' );
+			WPBackItUp_Logger::log($registration_logname,$response );
 
 			return true;
 		}
@@ -619,9 +619,9 @@ class WPBackItUp_License {
 			'url'           => $request_data['url']
 		);
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__, 'Activate License Request Info:');
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'API URL:' .$activation_url);
-		WPBackItUp_LoggerV2::log($this->log_name,$api_params);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__, 'Activate License Request Info:');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'API URL:' .$activation_url);
+		WPBackItUp_Logger::log($this->log_name,$api_params);
 
 		$response = wp_remote_get(
 			add_query_arg( $api_params, $activation_url ),
@@ -629,11 +629,11 @@ class WPBackItUp_License {
 			       'sslverify' => false
 			)
 		);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__, 'API Response:'. var_export( $response,true ));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__, 'API Response:'. var_export( $response,true ));
 
 
 		$response_code = wp_remote_retrieve_response_code($response);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__, 'Response Code:'. $response_code);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__, 'Response Code:'. $response_code);
 
 		//IF no error
 		if ( !is_wp_error( $response )  &&  200 == $response_code  ) {
@@ -645,11 +645,11 @@ class WPBackItUp_License {
 			return $response;
 
 		} else { //Error
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__, 'Requesting Server Name:'. $_SERVER['SERVER_NAME']);
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__, 'Requesting IP:'. $_SERVER['SERVER_ADDR']);
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__, 'Requesting Server Name:'. $_SERVER['SERVER_NAME']);
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__, 'Requesting IP:'. $_SERVER['SERVER_ADDR']);
 
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__, 'Validation Response:');
-			WPBackItUp_LoggerV2::log($this->log_name,var_export($response,true));
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__, 'Validation Response:');
+			WPBackItUp_Logger::log($this->log_name,var_export($response,true));
 
 			return false;
 		}

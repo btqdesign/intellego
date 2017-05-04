@@ -55,15 +55,12 @@ include_once( 'premium-tooltips.php' );
         ?>
           <div class="btn-group" data-toggle="buttons" id="btn-group-style-circle">
             <?php foreach( $lensShape['values'] as $_id => $_value ) : ?>
+            <?php $toggle = ( ! empty($_value[1]) ) ? ' data-toggle="tooltip" data-placement="top" title="'.$_value[1].'" data-original-title="' . $_value[1] . '"' : ''; ?>
             <label class="btn btn-default<?php echo ($lensShape['value'] == $_id) ? ' active' : '' ?> ">
             <input type="radio" name="<?php echo $lensShape['name'] ?>" id="<?php echo $_id ?>" value="<?php echo $_id ?>" <?php echo ($lensShape['value'] == $_id) ? 'checked' : '' ?> />
-            <div class="icon-in-label ndd-spot-icon icon-style-1">
+            <div class="icon-in-label ndd-spot-icon icon-style-1"<?php echo $toggle; ?>>
               <div class="ndd-icon-main-element">
-              <img src="<?php echo ImageZoooom()->plugins_url() . '/assets' . $_value[0] ?>"<?php 
-                if ( ! empty($_value[1]) ) {
-                    echo ' data-toggle="tooltip" data-placement="top" title="'.$_value[1].'" data-original-title="' . $_value[1] . '"';
-                }
-?> />
+                    <i class="<?php echo $_value[0]; ?>"></i>
               </div>
             </div>
             </label>

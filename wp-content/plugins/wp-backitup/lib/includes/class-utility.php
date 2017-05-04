@@ -26,7 +26,7 @@ class WPBackItUp_Utility {
 
 		} catch(Exception $e) {
 			error_log($e);
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
 		}
    }
 
@@ -50,12 +50,12 @@ class WPBackItUp_Utility {
 				}
 
 				wp_mail($to, $subject, nl2br($message), $headers,$attachments);
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'EMail Sent from:' .$from_email);
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'EMail Sent to:' .$to);
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'EMail Sent from:' .$from_email);
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'EMail Sent to:' .$to);
 			}
 
 		} catch(Exception $e) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Send Email Exception:'.$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Send Email Exception:'.$e);
 		}
 
 	}
@@ -84,17 +84,17 @@ class WPBackItUp_Utility {
 				//Send Mail
 				$rtn_val = wp_mail($to, $subject, nl2br($message), $headers,$attachments);
 
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Headers:' .var_export($headers,true));
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'EMail Sent from:' .$from_email);
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'EMail Sent to:' .$to);
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'EMail Sent to:' .$to);
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Return Code:' .var_export( $rtn_val,true ));
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Headers:' .var_export($headers,true));
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'EMail Sent from:' .$from_email);
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'EMail Sent to:' .$to);
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'EMail Sent to:' .$to);
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Return Code:' .var_export( $rtn_val,true ));
 
 				return $rtn_val;
 			}
 
 		} catch(Exception $e) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Send Email Exception:'.$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Send Email Exception:'.$e);
 			return false;
 		}
 

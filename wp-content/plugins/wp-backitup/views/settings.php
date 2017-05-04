@@ -20,6 +20,8 @@
 
 
     $backup_dbtables_batch_size=$this->backup_dbtables_batch_size();
+    $backup_sql_merge_batch_size=$this->backup_sql_merge_batch_size();
+    $backup_sql_batch_size=$this->backup_sql_batch_size();
     $backup_plugins_batch_size=$this->backup_plugins_batch_size();
     $backup_themes_batch_size=$this->backup_themes_batch_size();
     $backup_uploads_batch_size=$this->backup_uploads_batch_size();
@@ -149,10 +151,20 @@
 	    <h3 class="promo"><i class="fa fa-wrench"></i> <?php _e('Batch Size', 'wp-backitup') ?></h3>
         <p><b><?php _e('Enter the batch size for each of your content items.', 'wp-backitup') ?></b></p>
   		<p><?php _e('These settings tell WPBackItUp how many items that should be added to the backup at a time.  If you experience timeouts while running a backup then these settings can be used to help reduce the amount of time it takes WPBackItUp to complete each backup task .', 'wp-backitup') ?></p>
-      <p>
-        <input name="data[backup_dbtables_batch_size]" id="wpbackitup_dbtables_batch_size" type="text" size="3" value="<?php echo $backup_dbtables_batch_size; ?>"/>
-        <label> <?php _e('DB Tables Batch Size', 'wp-backitup') ?></label>
-      </p>
+        <p>
+            <input name="data[backup_dbtables_batch_size]" id="wpbackitup_dbtables_batch_size" type="text" size="3" value="<?php echo $backup_dbtables_batch_size; ?>"/>
+            <label> <?php _e('DB Tables Batch Size', 'wp-backitup') ?></label>
+        </p>
+
+         <p>
+             <input name="data[backup_sql_merge_batch_size]" id="wpbackitup_sql_merge_batch_size" type="text" size="3" value="<?php echo $backup_sql_merge_batch_size; ?>"/>
+             <label> <?php _e('SQL Merge Batch Size', 'wp-backitup') ?></label>
+         </p>
+
+         <p>
+             <input name="data[backup_sql_batch_size]" id="wpbackitup_sql_batch_size" type="text" size="3" value="<?php echo $backup_sql_batch_size; ?>"/>
+             <label> <?php _e('SQL Batch Size', 'wp-backitup') ?></label>
+         </p>
 
   		<p>
         <input name="data[backup_plugins_batch_size]" id="wpbackitup_plugins_batch_size" type="text" size="3" value="<?php echo $backup_plugins_batch_size; ?>"/>

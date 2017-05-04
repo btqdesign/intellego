@@ -3,7 +3,7 @@
  *
  * Plugin Name: File Manager
  * Author Name: Aftabul Islam
- * Version: 4.1.4
+ * Version: 4.1.5
  * Author Email: toaihimel@gmail.com
  * License: GPLv2
  * Description: Manage your file the way you like. You can upload, delete, copy, move, rename, compress, extract files. You don't need to worry about ftp. It is realy simple and easy to use.
@@ -21,7 +21,7 @@ if( !defined( 'DS' ) ){
 require_once('elFinder' . DS . 'elFinder.php');
 
 // Including bootstarter
-require_once('BootStart' . DS . '__init__.php');
+require_once('BootStart' . DS . 'BootStart.php');
 
 class FM extends FM_BootStart {
 	
@@ -100,7 +100,8 @@ class FM extends FM_BootStart {
 	public function connector(){
 		
 		// Checks if the current user have enough authorization to operate.
-		if( !current_user_can('manage_options') ) die();
+		if( ! wp_verify_nonce( $_POST['file_manager_security_token'] ,'file-manager-security-token') || !current_user_can( 'manage_options' ) ) wp_die();
+		check_ajax_referer('file-manager-security-token', 'file_manager_security_token');
 		
 		//~ Holds the list of avilable file operations.
 		$file_operation_list = array( 

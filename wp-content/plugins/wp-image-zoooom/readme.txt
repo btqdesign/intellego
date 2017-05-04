@@ -6,7 +6,7 @@ Email: diana@burduja.eu
 Tags: e-commerce, featured image, hover over image zoom, image, image zoom, image zoom plugin, image magnification, image magnifier, jquery picture zoom, magnifier, magnify image, magnifying glass, mouse over image zoom, panorama, picture zoom, product image, product zoom, product magnification, product magnifier, responsive, woocommerce product zoom, woocommerce zoom, woocommerce  magnifying glass, zoom, zoom image, zoom plugin, woocommerce image zoom, woocommerce product image zoom, woocommerce zoom magnifier
 Requires at least: 3.0.1
 Tested up to: 4.7
-Stable tag: 1.6 
+Stable tag: 1.9 
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -132,6 +132,21 @@ We can ensure compatibility with [Unveil Lazy Load](https://wordpress.org/plugin
 7. Apply the zoom from Visual Composer, the Single Image element
 
 == Changelog ==
+
+= 1.9 =
+* Fix: if the image has data-large_image attribute, then use that for the zoom
+* Fix: if data-zoom-image attribute present, then exchange it with the thumbnails in WooCommerce gallery
+* Fix: remove click action on the WooCommerce images
+
+= 1.8 =
+* Feature: compatibility with WooCommerce 3.0.+
+
+= 1.7 =
+* Feature: compatibility with the Nouveau theme
+* Feature: compatibility with the WP-Cache Super for the `enable on mobiles` option
+* Fix: don't add the full size image to the srcset if the image is cropped
+* Fix: replace the `move` cursor type with `zoom-in`
+* Fix: compatibility with the 2.8.6+ Virtue theme, see https://wordpress.org/support/topic/woocommerce_single_product_image_html-filter/
 
 = 1.6 =
 * Feature: compatibility with the Lazy Load plugin (https://wordpress.org/plugins/lazy-load/)

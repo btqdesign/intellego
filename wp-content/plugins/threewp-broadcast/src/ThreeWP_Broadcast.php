@@ -116,6 +116,7 @@ class ThreeWP_Broadcast
 		$this->attachments_init();
 		$this->post_actions_init();
 		$this->savings_calculator_init();
+		$this->terms_and_taxonomies_init();
 
 		$this->add_action( 'network_admin_menu', 'admin_menu' );
 		$this->add_action( 'plugins_loaded' );
@@ -126,8 +127,6 @@ class ThreeWP_Broadcast
 		// This is a normal broadcast action, not a special action object. This is a holdover from the good old days from when Broadcast used normal actions.
 		// Don't want to break anyone's plugins.
 		$this->add_action( 'threewp_broadcast_broadcast_post' );
-
-		$this->add_action( 'threewp_broadcast_collect_post_type_taxonomies', 5 );
 
 		$this->add_action( 'threewp_broadcast_each_linked_post' );
 		$this->add_action( 'threewp_broadcast_get_user_writable_blogs', 100 );		// Allow other plugins to do this first.
@@ -140,8 +139,6 @@ class ThreeWP_Broadcast
 		$this->add_filter( 'threewp_broadcast_prepare_meta_box', 5 );
 		$this->add_filter( 'threewp_broadcast_prepare_meta_box', 'threewp_broadcast_prepared_meta_box', 100 );
 		$this->add_filter( 'threewp_broadcast_preparse_content' );
-		$this->add_action( 'threewp_broadcast_wp_insert_term', 5 );
-		$this->add_action( 'threewp_broadcast_wp_update_term', 5 );
 
 		if ( $this->get_site_option( 'canonical_url' ) )
 			$this->add_action( 'wp_head', 1 );
@@ -752,7 +749,8 @@ class ThreeWP_Broadcast
 
 		$row = $table->body()->row();
 		$row->td()->text_( 'PHP maximum execution time' );
-		$text = $this->p( __( '%s seconds', ini_get ( 'max_execution_time' ), 'threewp_broadcast' ) );
+		$count = ini_get ( 'max_execution_time' );
+		$text = $this->p_( _n( '%d second', '%d seconds', $count, 'threewp_broadcast' ), $count );
 		$row->td()->text( $text );
 
 		$row = $table->body()->row();
@@ -834,13 +832,13 @@ class ThreeWP_Broadcast
 	public function is_blog_user_writable( $user_id, $blog )
 	{
 		// Check that the user has write access.
-		$blog->switch_to();
+		switch_to_blog( $blog->id );
 
 		global $current_user;
 		wp_get_current_user();
 		$r = current_user_can( 'edit_posts' );
 
-		$blog->switch_from();
+		restore_current_blog();
 
 		return $r;
 	}

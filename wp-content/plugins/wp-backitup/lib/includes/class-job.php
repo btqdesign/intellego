@@ -120,19 +120,17 @@ class WPBackItUp_Job {
 
 		} catch(Exception $e) {
 			error_log($e); //Log to debug
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
 		}
 	}
 
 	function __destruct() {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
 
 		//Release lock
 		if (true===$this->locked){
 			$this->release_lock();
 		}
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End');
 	}
 
 	private function set_properties($db_job){
@@ -173,24 +171,24 @@ class WPBackItUp_Job {
 	 *
 	 */
 	public function get_lock ($lock_name){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin:'.$lock_name);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin:'.$lock_name);
 
 		try {
 			$lock_file_path = WPBACKITUP__PLUGIN_PATH .'/logs';
 			$this->mutex = new WPBackItUp_Mutex($lock_name,$lock_file_path);
 			if ($this->mutex->lock(false)) {
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Process LOCK acquired');
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Process LOCK acquired');
 				$this->locked=true;
 			} else {
 				//This is not an error, just means another process has it allocated
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Process LOCK Failed');
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Process LOCK Failed');
 				$this->locked=false;
 			}
 
 			return $this->locked;
 
 		} catch(Exception $e) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Process Lock error: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Process Lock error: ' .$e);
 			$this->locked=false;
 			return $this->locked;
 		}
@@ -202,19 +200,19 @@ class WPBackItUp_Job {
 	 * @return bool
 	 */
 	public function release_lock (){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		try{
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Mutex:'.var_export($this->mutex,true));
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Mutex:'.var_export($this->mutex,true));
 			if (null!=$this->mutex) {
 				$this->mutex->releaseLock();
 				$this->mutex = null;
 			}
 
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Lock released');
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Lock released');
 			$this->locked=false;
 		}catch(Exception $e) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Process UNLOCK error: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Process UNLOCK error: ' .$e);
 		}
 	}
 
@@ -226,10 +224,10 @@ class WPBackItUp_Job {
 	 * @return bool
 	 */
 	public function is_job_complete() {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin' );
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin' );
 
 		$error_tasks = WPBackItUp_Job_Task::get_job_tasks($this->job_id,array(WPBackItUp_Job::ERROR));
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Active or Queued Tasks found' .count($error_tasks) );
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Active or Queued Tasks found' .count($error_tasks) );
 		if (count($error_tasks)>0) {
 			$this->setStatus(WPBackItUp_Job::ERROR);
 			return false;
@@ -237,7 +235,7 @@ class WPBackItUp_Job {
 
 		//get all the queued, active
 		$queues_active_tasks = WPBackItUp_Job_Task::get_job_tasks($this->job_id,array(WPBackItUp_Job::ACTIVE, WPBackItUp_Job::QUEUED));
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Active or Queued Tasks found' .count($queues_active_tasks) );
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Active or Queued Tasks found' .count($queues_active_tasks) );
 		if (count($queues_active_tasks)>0) {
 			return false;
 		}
@@ -254,7 +252,7 @@ class WPBackItUp_Job {
 	 * @return bool|object False on try again, task object on success
 	 */
 	public function get_next_task(){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		//get all the queued, active. error tasks
 		$tasks = WPBackItUp_Job_Task::get_job_tasks($this->job_id,array(WPBackItUp_Job::ACTIVE, WPBackItUp_Job::QUEUED,WPBackItUp_Job::ERROR));
@@ -292,7 +290,7 @@ class WPBackItUp_Job {
 
 					}else {
 
-						WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Job:' .$task->getJobId() .'-' . $task->getTaskName() . ' is still active' );
+						WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Job:' .$task->getJobId() .'-' . $task->getTaskName() . ' is still active' );
 						//if its been less than 3 minutes then wait
 						return false;
 					}
@@ -309,7 +307,7 @@ class WPBackItUp_Job {
 		//If no more tasks then job must be done
 		$this->setStatus(WPBackItUp_Job::COMPLETE);
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End - no tasks to allocate');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End - no tasks to allocate');
 		return false; //no tasks to allocate now but job should be complete next time
 	}
 
@@ -324,7 +322,7 @@ class WPBackItUp_Job {
 	 * @return bool
 	 */
 	public function setJobMetaValue($meta_name,$meta_value){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin - Update job meta:' .$this->job_id .'-'. $meta_name);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin - Update job meta:' .$this->job_id .'-'. $meta_name);
 
 		$this->job_meta[$meta_name]=$meta_value;
 
@@ -340,11 +338,11 @@ class WPBackItUp_Job {
 	 * @return bool true on success/false on error
 	 */
 	public function setStatus( $status ) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		$db= new WPBackItUp_DataAccess();
 		if (! $db->update_job_status($this->job_id,$status)) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'End - Job status NOT set.');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'End - Job status NOT set.');
 			return false;
 		}
 
@@ -368,7 +366,7 @@ class WPBackItUp_Job {
 		}
 
 
-		WPBackItUp_LoggerV2::log_info( $this->log_name, __METHOD__, 'End - Backup Job status set to:' . $this->job_id . '-' . $status );
+		WPBackItUp_Logger::log_info( $this->log_name, __METHOD__, 'End - Backup Job status set to:' . $this->job_id . '-' . $status );
 		return true;
 
 	}
@@ -380,7 +378,7 @@ class WPBackItUp_Job {
 	 * @return bool
 	 */
 	private function setJobStartTime() {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		if($this->job_start_time == null) {
 			$job_start_time= current_time('mysql');
@@ -388,10 +386,10 @@ class WPBackItUp_Job {
 			$db = new WPBackItUp_DataAccess();
 			if ($db->update_job_start_time($this->job_id,$job_start_time)){
 				$this->job_start_time= $job_start_time;
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End - Backup Job start time set');
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End - Backup Job start time set');
 				return true;
 			} else{
-				WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'End - Backup Job start time NOT set.');
+				WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'End - Backup Job start time NOT set.');
 				return false;
 			}
 		}
@@ -404,18 +402,18 @@ class WPBackItUp_Job {
 	 * @return bool
 	 */
 	private function setJobEndTime() {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		if($this->job_end_time == null) {
 			$job_end_time = current_time('mysql');
 			$db = new WPBackItUp_DataAccess();
 
 			if ( $db->update_job_end_time( $this->job_id, $job_end_time ) ) {
-				WPBackItUp_LoggerV2::log_info( $this->log_name, __METHOD__, 'End - Backup Job end time set' );
+				WPBackItUp_Logger::log_info( $this->log_name, __METHOD__, 'End - Backup Job end time set' );
 				$this->job_end_time = $job_end_time;
 				return true;
 			} else {
-				WPBackItUp_LoggerV2::log_error( $this->log_name, __METHOD__, 'End - Backup Job end time NOT set.' );
+				WPBackItUp_Logger::log_error( $this->log_name, __METHOD__, 'End - Backup Job end time NOT set.' );
 				return false;
 			}
 		}
@@ -506,21 +504,21 @@ class WPBackItUp_Job {
 	 * @return bool|job
 	 */
 	public static function is_job_queued_active($job_type) {
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin - Check Job Queue:' . $job_type);
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin - Check Job Queue:' . $job_type);
 
 
 		$jobs = WPBackItUp_Job::get_jobs_by_status($job_type,array(WPBackItUp_Job::QUEUED,WPBackItUp_Job::ACTIVE));
-		WPBackItUp_LoggerV2::log(self::DEFAULT_LOG_NAME,$jobs);
+		WPBackItUp_Logger::log(self::DEFAULT_LOG_NAME,$jobs);
 
 		if (is_array($jobs) && count($jobs)>0) {
 			//if more than one get first one in stack
 			$job=current($jobs);
-			WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Jobs found:' . count($jobs) );
+			WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Jobs found:' . count($jobs) );
 			return $job;
 		}
 
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'No jobs found:' . $job_type);
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'No jobs found:' . $job_type);
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
 		return false;
 	}
 
@@ -531,16 +529,16 @@ class WPBackItUp_Job {
 	 * @return bool
 	 */
 	public static function is_any_job_queued_active() {
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin - Check Job Queue');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin - Check Job Queue');
 
 		$db = new WPBackItUp_DataAccess();
 
 		$queued_active_job_count = $db->get_queued_active_job_count(array(WPBackItUp_Job::BACKUP,WPBackItUp_Job::RESTORE,WPBackItUp_Job::CLEANUP));
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Jobs found:' . $queued_active_job_count );
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Jobs found:' . $queued_active_job_count );
 
 		if ($queued_active_job_count>0) return true;
 
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
 		return false;
 	}
 
@@ -553,11 +551,11 @@ class WPBackItUp_Job {
 	 * @return bool
 	 */
 	public static function get_finished_jobs_by_type($job_type) {
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
 
 		$db= new WPBackItUp_DataAccess();
 		$jobs=$db->get_jobs_by_status($job_type,array(WPBackItUp_Job::COMPLETE,WPBackItUp_Job::CANCELLED,WPBackItUp_Job::ERROR, WPBackItUp_Job::DELETED));
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Jobs found:' . count($jobs));
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Jobs found:' . count($jobs));
 
 		return count( $jobs ) > 0 ? $jobs : false;
 	}
@@ -570,7 +568,7 @@ class WPBackItUp_Job {
 	 * @return int Count of jobs cancelled
 	 */
 	public static function cancel_all_jobs($job_type) {
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin - Cancel all jobs:'.$job_type);
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin - Cancel all jobs:'.$job_type);
 
 		$counter=0;
 		$jobs=self::get_jobs_by_status($job_type,array(WPBackItUp_Job::QUEUED,WPBackItUp_Job::ACTIVE));
@@ -578,11 +576,11 @@ class WPBackItUp_Job {
 			foreach($jobs as $job){
 				$counter++;
 				$job->setStatus(WPBackItUp_Job::CANCELLED);
-				WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job Cancelled:' . $job->getJobId());
+				WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job Cancelled:' . $job->getJobId());
 			}
 		}
 
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End - Jobs cancelled:' .$counter);
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End - Jobs cancelled:' .$counter);
 		return $counter;
 	}
 
@@ -598,18 +596,18 @@ class WPBackItUp_Job {
 
 		//delete items
 		$items_deleted = $db->delete_job_items($job_id);
-		WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Deleted items:'.$items_deleted);
+		WPBackItUp_Logger::log_info($log_name,__METHOD__,'Deleted items:'.$items_deleted);
 
 
 		//delete tasks
 		$tasks_deleted = $db->delete_job_tasks($job_id);
-		WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Deleted Tasks:'.$tasks_deleted);
+		WPBackItUp_Logger::log_info($log_name,__METHOD__,'Deleted Tasks:'.$tasks_deleted);
 
 		//delete job
 		$jobs_deleted = $db->delete_job_by_id($job_id);
-		WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Deleted Jobs:'.$jobs_deleted);
+		WPBackItUp_Logger::log_info($log_name,__METHOD__,'Deleted Jobs:'.$jobs_deleted);
 
-		WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Deleted Job:' .$job_id);
+		WPBackItUp_Logger::log_info($log_name,__METHOD__,'Deleted Job:' .$job_id);
 
 	}
 
@@ -625,7 +623,7 @@ class WPBackItUp_Job {
 	 */
 	public static function purge_jobs($job_type,$dont_purge=5) {
 		$log_name='debug_purge_jobs';
-		WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Begin - Purge Jobs:'.$job_type );
+		WPBackItUp_Logger::log_info($log_name,__METHOD__,'Begin - Purge Jobs:'.$job_type );
 
 		$jobs_purged=0;
 
@@ -634,7 +632,7 @@ class WPBackItUp_Job {
 		/*------------------------------------------------------*/
 
 		$jobs = self::get_jobs_by_status($job_type,array(WPBackItUp_Job::DELETED,WPBackItUp_Job::ERROR,WPBackItUp_Job::CANCELLED));
-		WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Total finished jobs found:' .count($jobs));
+		WPBackItUp_Logger::log_info($log_name,__METHOD__,'Total finished jobs found:' .count($jobs));
 
 		/*   Delete everything but the successfully completed jobs */
 		if (is_array($jobs) && count($jobs)>0) {
@@ -644,8 +642,8 @@ class WPBackItUp_Job {
 				self::delete_job_records($job->getJobId());
 				$jobs_purged+=1;
 
-				WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Deleted Job:');
-				WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,var_export($job,true));
+				WPBackItUp_Logger::log_info($log_name,__METHOD__,'Deleted Job:');
+				WPBackItUp_Logger::log_info($log_name,__METHOD__,var_export($job,true));
 			}
 		}
 
@@ -655,12 +653,12 @@ class WPBackItUp_Job {
 
 		if (WPBackItUp_Job::BACKUP==$job_type) {
 			$jobs = self::get_jobs_by_status($job_type,array(WPBackItUp_Job::COMPLETE));
-			WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Total finished jobs found:' .count($jobs));
+			WPBackItUp_Logger::log_info($log_name,__METHOD__,'Total finished jobs found:' .count($jobs));
 
 			/*   Check all remaining to make sure there is a backup folder associated with each */
 			if (is_array($jobs) && count($jobs)>0) {
 				foreach ($jobs  as $key=>$job){
-					WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,var_export($job,true));
+					WPBackItUp_Logger::log_info($log_name,__METHOD__,var_export($job,true));
 
 					$backups_exist = false;
 
@@ -679,13 +677,13 @@ class WPBackItUp_Job {
 
 					//Delete the job control if backups dont exist
 					if (false===$backups_exist) {
-						WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'No backups found for job:'. $job->getJobId());
+						WPBackItUp_Logger::log_info($log_name,__METHOD__,'No backups found for job:'. $job->getJobId());
 
 						self::delete_job_records($job->getJobId());
 						$jobs_purged+=1;
 
-						WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Backups Missing - Deleted Job:');
-						WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,var_export($job,true));
+						WPBackItUp_Logger::log_info($log_name,__METHOD__,'Backups Missing - Deleted Job:');
+						WPBackItUp_Logger::log_info($log_name,__METHOD__,var_export($job,true));
 					}
 				}
 			}
@@ -695,7 +693,7 @@ class WPBackItUp_Job {
 		//Now purge the ones that exceed the retention limit
 		/*------------------------------------------------------*/
 		$jobs = self::get_jobs_by_status($job_type,array(WPBackItUp_Job::COMPLETE));
-		WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Remaining Jobs After File Check:' .count($jobs));
+		WPBackItUp_Logger::log_info($log_name,__METHOD__,'Remaining Jobs After File Check:' .count($jobs));
 
 		if (is_array($jobs) && count($jobs)>0) {
 
@@ -708,22 +706,22 @@ class WPBackItUp_Job {
 			}
 
 			$purge_count=count($purge_jobs);
-			WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Jobs to be purged:' .$purge_count);
+			WPBackItUp_Logger::log_info($log_name,__METHOD__,'Jobs to be purged:' .$purge_count);
 			if ($purge_count>0){
-				WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,var_export($jobs,true));
+				WPBackItUp_Logger::log_info($log_name,__METHOD__,var_export($jobs,true));
 				foreach ($purge_jobs  as $key=>$job){
 
 					self::delete_job_records($job->getJobId());
 					$jobs_purged+=1;
 
-					WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Deleted Job:');
-					WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,var_export($job,true));
+					WPBackItUp_Logger::log_info($log_name,__METHOD__,'Deleted Job:');
+					WPBackItUp_Logger::log_info($log_name,__METHOD__,var_export($job,true));
 				}
 			}
 
 		}
 
-		WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'End - job purge complete.  Jobs Purged:' .$jobs_purged);
+		WPBackItUp_Logger::log_info($log_name,__METHOD__,'End - job purge complete.  Jobs Purged:' .$jobs_purged);
 
 		return $jobs_purged;
 	}
@@ -737,18 +735,18 @@ class WPBackItUp_Job {
 	 * @return bool|WPBackItUp_Job
 	 */
 	public static function get_job_by_id($job_id) {
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
 
 		$db = new WPBackItUp_DataAccess();
 		$job = $db->get_job_by_id($job_id);
 
 		if (null!=$job) {
-			WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job found:' . var_export($job,true));
+			WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job found:' . var_export($job,true));
 			return new WPBackItUp_Job($job);
 		}
 
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'No job found with id.' . $job_id);
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'No job found with id.' . $job_id);
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
 		return false;
 	}
 
@@ -763,11 +761,11 @@ class WPBackItUp_Job {
 	 * @return mixed Array of jobs or false when no jobs found
 	 */
 	public static function get_jobs_by_status($job_type,$job_status, $limit=100) {
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
 
 		$db = new WPBackItUp_DataAccess();
 		$job_rows = $db->get_jobs_by_status($job_type,$job_status,$limit);
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Jobs found:' . count($job_rows));
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Jobs found:' . count($job_rows));
 
 		if (false===$job_rows) return false;
 
@@ -776,7 +774,7 @@ class WPBackItUp_Job {
 			$jobs_list[] =  new WPBackItUp_Job($row);
 		}
 
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
 		return count( $jobs_list ) > 0 ? $jobs_list : false;
 	}
 
@@ -790,18 +788,18 @@ class WPBackItUp_Job {
 	 * @return array|bool Returns jobs or false when none found
 	 */
 	public static function get_jobs_by_job_name($job_type,$job_name, $job_status=null) {
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,sprintf('Begin:%s-%s',$job_type,$job_name));
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,sprintf('Begin:%s-%s',$job_type,$job_name));
 
 		$db = new WPBackItUp_DataAccess();
 		$db_jobs = $db->get_jobs_by_name($job_type,$job_name, $job_status);
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,sprintf('Job Ids:%s',var_export($db_jobs,true)));
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,sprintf('Job Ids:%s',var_export($db_jobs,true)));
 
 		$job_list = array();
 		foreach ($db_jobs as $key => $row) {
 			$job_list[] =  new WPBackItUp_Job($row);
 		}
 
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
 		return count( $job_list ) > 0 ? $job_list : false;
 	}
 
@@ -818,23 +816,23 @@ class WPBackItUp_Job {
 	 * @return bool|WPBackItUp_Job
 	 */
 	public static function queue_job($job_name, $job_id,$job_type,$job_run_type,$tasks){
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin -  Job:'. $job_type);
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin -  Job:'. $job_type);
 
 		$db = new WPBackItUp_DataAccess();
 		if (! $db->create_job($job_id,$job_type,$job_run_type,$job_name,self::QUEUED)){
-			WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job was not created:' . $job_id );
+			WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job was not created:' . $job_id );
 			return false;
 		}
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job Created:' .$job_id);
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job Created:' .$job_id);
 
 		//add the tasks
 		if ( false === self::create_tasks( $job_id,$tasks ) ) {
-			WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job tasks not Created - deleting job:' . $job_id );
+			WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job tasks not Created - deleting job:' . $job_id );
 			$db->update_job_status($job_id,WPBackItUp_Job::DELETED);
 			return false;
 		}
 
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
 		return self::get_job_by_id($job_id);
 	}
 
@@ -848,15 +846,15 @@ class WPBackItUp_Job {
 	 * @return bool|WPBackItUp_Job false on failure/Job on success
 	 */
 	public static function import_completed_job($job_name, $job_id,$job_type){
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin -  Job:'. $job_type);
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin -  Job:'. $job_type);
 
 		$db= new WPBackItUp_DataAccess();
 		if (false=== $db->create_job($job_id,WPBackItUp_Job::BACKUP,WPBackItUp_Job::IMPORTED,$job_name,WPBackItUp_Job::COMPLETE)){
-			WPBackItUp_LoggerV2::log_error(self::DEFAULT_LOG_NAME,__METHOD__,'Job NOT Created:' .$job_id);
+			WPBackItUp_Logger::log_error(self::DEFAULT_LOG_NAME,__METHOD__,'Job NOT Created:' .$job_id);
 			return false;
 		}
 
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job Created successfully:' .$job_id);
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Job Created successfully:' .$job_id);
 		return self::get_job_by_id($job_id);
 	}
 
@@ -870,7 +868,7 @@ class WPBackItUp_Job {
 	 * @return bool
 	 */
 	private static function create_tasks($job_id,  $tasks){
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Begin');
 
 		$db = new WPBackItUp_DataAccess();
 
@@ -879,13 +877,13 @@ class WPBackItUp_Job {
 
 			$task_created = $db->create_task($job_id,$task_name);
 			if (false===$task_created){
-				WPBackItUp_LoggerV2::log_error(self::DEFAULT_LOG_NAME,__METHOD__,'Tasks NOT created');
+				WPBackItUp_Logger::log_error(self::DEFAULT_LOG_NAME,__METHOD__,'Tasks NOT created');
 				return false;
 			}
-			WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'task created:' . $task_created .':'. $task_name);
+			WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'task created:' . $task_created .':'. $task_name);
 		}
 
-		WPBackItUp_LoggerV2::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'End');
 		return true;
 
 	}

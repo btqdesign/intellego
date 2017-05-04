@@ -1,5 +1,13 @@
 <?php if (!defined ('ABSPATH')) die('No direct access allowed (logger)');
 
+if( !class_exists( 'Logger' ) ) {
+    require_once( WPBACKITUP__PLUGIN_PATH .'/vendor/KLogger/Logger.php' );
+}
+
+if( !class_exists( 'LogLevel' ) ) {
+    require_once( WPBACKITUP__PLUGIN_PATH .'/vendor/KLogger/LogLevel.php' );
+}
+
 /**
  * WP BackItUp  - Logger System Class
  *
@@ -11,253 +19,325 @@
 
 class WPBackItUp_Logger {
 
-	private $dfh;
-	private $logging;
+    /**
+     * logger
+     * @var mixed
+     */
+	private static $logger;
 
-	private $logFileName;
-	private $logFilePath;
-
-	public function __construct($delete_log, $path=null, $file_name=null, $debugOverride=false) {
-		global $WPBackitup;
-
-		$this->logging = $WPBackitup->logging();
-
-        //If override debug flag then turn logging on.
-        if (true===$debugOverride) $this->logging=true;
-
-		//check for optional parms
-		if (!is_string($path)){
-			$path = WPBACKITUP__PLUGIN_PATH .'/logs';
+	/**
+	 *  Write messages to the log
+	 *
+	 * @param      $log_name Log Name
+	 * @param      $message  Log Message (Array or object)
+	 */
+	public static function log($log_name,$message) {
+		try {
+            if(self::is_logging() === true) {
+                $logger = self::getLogger($log_name);
+                $logger->log(LogLevel::DEBUG, $message);
+            }
+		}catch(Exception $e) {
+			error_log( $e );
 		}
+	}
 
-		if (!is_string($file_name)){
-			$file_name='debug';
-		}
-
-		//check for log extension
-		if (strpos($file_name,'.log')===false){
-			$file_name .= '.log';
-		}
-
-		$this->logFileName = $file_name;
-		$this->logFilePath= $path .'/'. $this->logFileName;
+	/**
+	 *  Write informational messages to the log
+	 *
+	 * @param $log_name Log Name
+	 * @param $function Name of calling function(__METHOD__)
+	 * @param $message Log Message (Array or object)
+	 * @param null $additional_message  (string)
+	 */
+	public static function log_info($log_name, $function, $message, $additional_message = null ) {
 
 		try {
-			//If debug then open the file handle
-			if (true===$this->logging){
-				
-				//Delete log first
-				if ($delete_log && file_exists($this->logFilePath)) {
-					unlink($this->logFilePath);
-				}
+            if(self::is_logging() === true) {
+                $logger = self::getLogger($log_name);
+                $logger->log_info($function, $message, $additional_message);
+            }
 
-				$this->dfh = fopen($this->logFilePath, 'a');
-				fwrite($this->dfh, "** Open LOG File ** ". PHP_EOL);	
-			}
-		} catch(Exception $e) {
-			//Dont do anything
-			error_log($e);
+		}catch(Exception $e) {
+			error_log( $e );
 		}
-   }
+	}
 
-   function __destruct() {
-       $this->close();
-   }
+	/**
+	 *  Write error messages to the log
+	 *
+	 * @param $log_name Log Name
+	 * @param $function Name of calling function(__METHOD__)
+	 * @param $message Log Message (Array or object)
+	 * @param null $additional_message  (string)
+	 */
+	public static function log_error($log_name, $function,$message,$additional_message=null) {
 
-    public function close() {
-        try {
-            if (!is_null($this->dfh) && is_resource($this->dfh)){
-                fwrite($this->dfh, "** Close LOG File ** ". PHP_EOL);
-                fclose($this->dfh);
+		try {
+            if(self::is_logging() === true) {
+                $logger = self::getLogger($log_name);
+                $logger->log_error($function, $message, $additional_message);
+            }
+		}catch(Exception $e) {
+			error_log( $e );
+		}
+	}
+
+	/**
+	 *  Write warning messages to the log
+	 *
+	 * @param $log_name Log Name
+	 * @param $function Name of calling function(__METHOD__)
+	 * @param $message Log Message (Array or object)
+	 * @param null $additional_message  (string)
+	 */
+	public static function log_warning($log_name, $function,$message,$additional_message=null) {
+
+		try {
+            if(self::is_logging() === true) {
+                $logger = self::getLogger($log_name);
+                $logger->log_warning($function, $message, $additional_message);
+            }
+
+		} catch(Exception $e) {
+			error_log( $e );
+		}
+	}
+
+    /**
+     *  Write system information to the log
+     *
+     * @param $log_name
+     *
+     */
+    public static function log_sysinfo($log_name) {
+        global $wpdb;
+
+        try{
+                if(self::is_logging() === true) {
+                    $wpbackitup_license = new WPBackItUp_License();
+
+                    // get the logger
+                    $logger = self::getLogger($log_name);
+
+                    $logger->log(LogLevel::DEBUG, "\n**SYSTEM INFO**");
+
+                    $logger->log(LogLevel::DEBUG, "\n--WPBackItUp Info--");
+
+                    $logger->log(LogLevel::DEBUG, "WPBACKITUP License Active: " . ($wpbackitup_license->is_license_active() ? 'true' : 'false'));
+                    $prefix = 'WPBACKITUP';
+                    foreach (get_defined_constants() as $key => $value) {
+                        if (substr($key, 0, strlen($prefix)) == $prefix) {
+                            $logger->log(LogLevel::DEBUG, $key . ':' . $value);
+                        }
+                    }
+
+                    $logger->log(LogLevel::DEBUG, "\n--Site Info--");
+                    $logger->log(LogLevel::DEBUG, 'Site URL:' . site_url());
+                    $logger->log(LogLevel::DEBUG, 'Home URL:' . home_url());
+                    $logger->log(LogLevel::DEBUG, 'Multisite:' . (is_multisite() ? 'Yes' : 'No'));
+
+                    $logger->log(LogLevel::DEBUG, "\n--Wordpress Info--");
+                    $logger->log(LogLevel::DEBUG, "Wordpress Version:" . get_bloginfo('version'));
+                    $logger->log(LogLevel::DEBUG, 'Language:' . (defined('WPLANG') && WPLANG ? WPLANG : 'en_US'));
+                    $logger->log(LogLevel::DEBUG, 'DB_HOST:' . DB_HOST);
+                    $logger->log(LogLevel::DEBUG, 'Table Prefix:' . 'Length: ' . strlen($wpdb->prefix) . '   Status: ' . (strlen($wpdb->prefix) > 16 ? 'ERROR: Too long' : 'Acceptable'));
+                    $logger->log(LogLevel::DEBUG, 'WP_DEBUG:' . (defined('WP_DEBUG') ? WP_DEBUG ? 'Enabled' : 'Disabled' : 'Not set'));
+                    $logger->log(LogLevel::DEBUG, 'Memory Limit:' . WP_MEMORY_LIMIT);
+
+                    $logger->log(LogLevel::DEBUG, "\n--WordPress Active Plugins--");
+                    // Check if get_plugins() function exists. This is required on the front end of the
+                    // site, since it is in a file that is normally only loaded in the admin.
+                    if (!function_exists('get_plugins')) {
+                        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+                    }
+
+                    $plugins = get_plugins();
+                    $active_plugins = get_option('active_plugins', array());
+                    foreach ($plugins as $plugin_path => $plugin) {
+                        if (!in_array($plugin_path, $active_plugins)) continue;
+
+                        $logger->log(LogLevel::DEBUG, $plugin['Name'] . ': ' . $plugin['Version']);
+                    }
+
+                    // WordPress inactive plugins
+                    $logger->log(LogLevel::DEBUG, "\n" . '--WordPress Inactive Plugins--');
+
+                    foreach ($plugins as $plugin_path => $plugin) {
+                        if (in_array($plugin_path, $active_plugins))
+                            continue;
+
+                        $logger->log(LogLevel::DEBUG, $plugin['Name'] . ': ' . $plugin['Version']);
+                    }
+
+                    $logger->log(LogLevel::DEBUG, "\n--Server Info--");
+                    $logger->log(LogLevel::DEBUG, 'PHP Version:' . PHP_VERSION);
+                    $logger->log(LogLevel::DEBUG, 'Webserver Info:' . $_SERVER['SERVER_SOFTWARE']);
+                    $logger->log(LogLevel::DEBUG, 'MySQL Version:' . $wpdb->db_version());
+
+                    $logger->log(LogLevel::DEBUG, "\n--PHP Info--");
+                    $logger->log(LogLevel::DEBUG, "PHP Info:" . phpversion());
+                    $logger->log(LogLevel::DEBUG, "Operating System:" . php_uname());
+
+                    if (@ini_get('safe_mode') || strtolower(@ini_get('safe_mode')) == 'on') {
+                        $logger->log(LogLevel::DEBUG, "PHP Safe Mode: On");
+                    } else {
+                        $logger->log(LogLevel::DEBUG, "PHP Safe Mode: Off");
+                    }
+
+                    if (@ini_get('sql.safe_mode') || strtolower(@ini_get('sql.safe_mode')) == 'on') {
+                        $logger->log(LogLevel::DEBUG, "SQL Safe Mode: On");
+                    } else {
+                        $logger->log(LogLevel::DEBUG, "SQL Safe Mode: Off");
+                    }
+                    $logger->log(LogLevel::DEBUG, "Script Max Execution Time:" . ini_get('max_execution_time'));
+                    $logger->log(LogLevel::DEBUG, 'Memory Limit:' . ini_get('memory_limit'));
+                    $logger->log(LogLevel::DEBUG, 'Upload Max Size:' . ini_get('upload_max_filesize'));
+                    $logger->log(LogLevel::DEBUG, 'Post Max Size:' . ini_get('post_max_size'));
+                    $logger->log(LogLevel::DEBUG, 'Upload Max Filesize:' . ini_get('upload_max_filesize'));
+                    $logger->log(LogLevel::DEBUG, 'Max Input Vars:' . ini_get('max_input_vars'));
+                    $logger->log(LogLevel::DEBUG, 'Display Errors:' . (ini_get('display_errors') ? 'On (' . ini_get('display_errors') . ')' : 'N/A'));
+                    $logger->log(LogLevel::DEBUG, 'Curl Installed:' . (function_exists('curl_version') ? 'True' : 'False'));
+
+                    $logger->log(LogLevel::DEBUG, "\n**END SYSTEM INFO**");
+                }
+        } catch(Exception $e) {
+            error_log($e);
+        }
+    }
+
+    /**
+     * Write memory information to the log.
+     *
+     * @param $log_name
+     *
+     */
+    private static function log_memory_info($log_name){
+        try{
+            if(self::is_logging() === true) {
+                $memory_usage = memory_get_usage();
+                $memory_peak_usage = memory_get_peak_usage();
+                $memory_limit = ini_get('memory_limit');
+
+                // get the logger
+                $logger = self::getLogger($log_name);
+
+                $logger->log(LogLevel::DEBUG, "\n**MEMORY USAGE INFO**");
+                $logger->log(LogLevel::DEBUG, 'Memory in use: ' . $memory_usage . ' (' . $memory_usage / 1024 / 1024 . ' Mb)');
+                $logger->log(LogLevel::DEBUG, 'Peak usage: ' . $memory_peak_usage . ' (' . $memory_peak_usage / 1024 / 1024 . ' Mb)');
+                $logger->log(LogLevel::DEBUG, 'Memory limit: ' . $memory_limit . ' (' . $memory_limit / 1024 / 1024 . ' Mb)');
+                $logger->log(LogLevel::DEBUG, "\n**END MEMORY USAGE INFO**");
             }
         } catch(Exception $e) {
-            //Dont do anything
-            print $e;
+            error_log($e);
         }
-
-        $this->dfh=null;
     }
 
-	function log($message,$datestamp=true) {
+
+	/**
+	 *  Get Logger instance
+	 *
+	 * @param $log_name
+     * @param $log_level
+	 *
+	 * @return mixed
+	 */
+	private static function getLogger($log_name, $log_level = LogLevel::DEBUG) {
+        $path = WPBACKITUP__PLUGIN_PATH .'/logs';
+
+        $options = array (
+            'extension'      => 'log',
+            'dateFormat'     => 'Y-m-d G:i:s.u',
+            'filename'       => $log_name,
+            'flushFrequency' => false,
+            'prefix'         => 'log_',
+            'logFormat'      => false,
+            'appendContext'  => true,
+        );
+
 		try{
-			if (true===$this->logging){	
-				if (!is_null($this->dfh) && is_resource($this->dfh)){
-					//$date = date_i18n('Y-m-d H:i:s',current_time( 'timestamp' ));
 
-					$date='';
-					if ($datestamp) $date = date_i18n('Y-m-d H:i:s', current_time('timestamp'));
-
-					if( is_array( $message ) || is_object( $message ) ){
-						fwrite($this->dfh, $date ." " .print_r( $message, true ) . PHP_EOL);
-				     } else {
-				     	fwrite($this->dfh, $date ." " .$message . PHP_EOL);			        
-				     }	
-				}
+			if (! isset( self::$logger[$log_name])) {
+				self::$logger[$log_name] = $logger = new Logger($path, $log_level, $options);
 			}
-		} catch(Exception $e) {
-			//Dont do anything
-			print $e;
+
+			return self::$logger[$log_name];
+
+		}catch(Exception $e) {
+			error_log( $e );
 		}
 	}
 
-    //Log Errors
-    public function log_info($function,$message, $additional_message=null) {
-        $function='(' . $function . ') INFO: ' . $additional_message;
-        if( is_array( $message ) || is_object( $message ) ){
-            $this->log($function);
-            $this->log($message);
-        } else {
-            $this->log($function . $message);
-        }
+    /**
+     *  Check if logging is enabled or not
+     *
+     * @return boolean
+     */
+    private static function is_logging(){
+        global $WPBackitup;
+        return $WPBackitup->logging();
     }
 
-    //Log Errors
-    public function log_error($function,$message,$additional_message=null) {
-        $function='(' . $function . ') ERROR: ' . $additional_message;
-        if( is_array( $message ) || is_object( $message ) ){
-            $this->log($function);
-            $this->log($message);
-        } else {
-            $this->log($function .$message);
-        }
-    }
 
-	//Log warning
-	public function log_warning($function,$message,$additional_message=null) {
-		$function='(' . $function . ') WARNING: ' . $additional_message;
-		if( is_array( $message ) || is_object( $message ) ){
-			$this->log($function);
-			$this->log($message);
-		} else {
-			$this->log($function .$message);
+	/**                             PUBLIC METHODS                              	**/
+
+	/**
+	 *  close Log file name
+	 *
+	 * @param $log_name
+	 *
+	 * @return mixed
+	 */
+	public static function close($log_name) {
+		try{
+            if(self::is_logging() === true) {
+                $logger = self::getLogger($log_name);
+                $logger->close();
+                self::$logger[$log_name] = null;
+                unset(self::$logger[$log_name]);
+            }
+
+		}catch(Exception $e) {
+			error_log( $e );
 		}
 	}
 
-	function log_sysinfo() {
-	global $wpdb;
+
+	/**
+	 *  Get Log file name
+	 *
+	 * @param $log_name
+	 *
+	 * @return mixed
+	 */
+	public static function getLogFileName($log_name) {
 		try{
-			if (true===$this->logging){
+            if(self::is_logging() === true) {
+                $logger = self::getLogger($log_name);
+                return $logger->getLogFileName();
+            }
 
-				$wpbackitup_license = new WPBackItUp_License();
-				$this->log("\n**SYSTEM INFO**");
-
-				$this->log("\n--WPBackItUp Info--");
-
-				$this->log("WPBACKITUP License Active: " . ($wpbackitup_license->is_license_active() ? 'true' : 'false'));
-				$prefix='WPBACKITUP';
-				foreach (get_defined_constants() as $key=>$value)
-				{
-					if (substr($key,0,strlen($prefix))==$prefix) {
-						$this->log($key . ':' . $value);
-					}
-				}
-
-				$this->log("\n--Site Info--");
-				$this->log('Site URL:' . site_url());
-				$this->log('Home URL:' . home_url());
-				$this->log('Multisite:' . ( is_multisite() ? 'Yes' : 'No' )) ;
-
-				$this->log("\n--Wordpress Info--");
-				$this->log("Wordpress Version:" . get_bloginfo( 'version'));
-				$this->log('Language:' . ( defined( 'WPLANG' ) && WPLANG ? WPLANG : 'en_US' ));
-				$this->log('DB_HOST:' . DB_HOST);
-				$this->log('Table Prefix:' . 'Length: ' . strlen( $wpdb->prefix ) . '   Status: ' . ( strlen( $wpdb->prefix ) > 16 ? 'ERROR: Too long' : 'Acceptable' ));
-				$this->log('WP_DEBUG:' . ( defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' : 'Disabled' : 'Not set' ));
-				$this->log('Memory Limit:' . WP_MEMORY_LIMIT );
-
-				$this->log("\n--WordPress Active Plugins--");
-				// Check if get_plugins() function exists. This is required on the front end of the
-				// site, since it is in a file that is normally only loaded in the admin.
-				if ( ! function_exists( 'get_plugins' ) ) {
-					require_once ABSPATH . 'wp-admin/includes/plugin.php';
-				}
-
-				$plugins = get_plugins();
-				$active_plugins = get_option( 'active_plugins', array() );
-				foreach( $plugins as $plugin_path => $plugin ) {
-					if( !in_array( $plugin_path, $active_plugins ) ) continue;
-
-					$this->log( $plugin['Name'] . ': ' . $plugin['Version']);
-				}
-
-				// WordPress inactive plugins
-				$this->log("\n" . '--WordPress Inactive Plugins--');
-
-				foreach( $plugins as $plugin_path => $plugin ) {
-					if( in_array( $plugin_path, $active_plugins ) )
-						continue;
-
-					$this->log($plugin['Name'] . ': ' . $plugin['Version']);
-				}
-
-				$this->log("\n--Server Info--");
-				$this->log('PHP Version:' . PHP_VERSION);
-				$this->log('Webserver Info:' . $_SERVER['SERVER_SOFTWARE']);
-				$this->log('MySQL Version:' . $wpdb->db_version());
-
-				$this->log("\n--PHP Info--");
-				$this->log("PHP Info:" . phpversion());
-				$this->log("Operating System:" .  php_uname());
-
-				if ( @ini_get('safe_mode') || strtolower(@ini_get('safe_mode')) == 'on' ){
-					$this->log("PHP Safe Mode: On");
-				} else{
-					$this->log("PHP Safe Mode: Off");
-				}
-
-				if ( @ini_get('sql.safe_mode') || strtolower(@ini_get('sql.safe_mode')) == 'on' ){
-                    $this->log("SQL Safe Mode: On");
-				} else{
-					$this->log("SQL Safe Mode: Off");
-				}
-				$this->log("Script Max Execution Time:" .  ini_get('max_execution_time'));
-				$this->log('Memory Limit:' . ini_get( 'memory_limit' ));
-				$this->log('Upload Max Size:' . ini_get( 'upload_max_filesize' ));
-				$this->log('Post Max Size:' . ini_get( 'post_max_size' ));
-				$this->log('Upload Max Filesize:' . ini_get( 'upload_max_filesize' ));
-				$this->log('Max Input Vars:' . ini_get( 'max_input_vars' ));
-				$this->log('Display Errors:' . ( ini_get( 'display_errors' ) ? 'On (' . ini_get( 'display_errors' ) . ')' : 'N/A' ));
-				$this->log('Curl Installed:' . (function_exists('curl_version') ?'True' : 'False'));
-
-				$this->log("\n**END SYSTEM INFO**");
-			}
-		} catch(Exception $e) {
-			//Dont do anything
-			print $e;
-		}
-	}
-
-	function log_memory_info(){
-		try{
-
-			$memory_usage = memory_get_usage();
-			$memory_peak_usage = memory_get_peak_usage();
-			$memory_limit=ini_get('memory_limit');
-
-			$this->log("\n**MEMORY USAGE INFO**");
-			$this->log('Memory in use: ' . $memory_usage . ' ('. $memory_usage/1024/1024 .' Mb)');
-			$this->log('Peak usage: ' . $memory_peak_usage . ' ('. $memory_peak_usage/1024/1024 .' Mb)');
-			$this->log('Memory limit: ' . $memory_limit  . ' ('. $memory_limit/1024/1024 .' Mb)');
-			$this->log("\n**END MEMORY USAGE INFO**");
-		} catch(Exception $e) {
-			//Dont do anything
-			//print $e;
+		}catch(Exception $e) {
+			error_log( $e );
 		}
 	}
 
 	/**
-	 * Get Log File Name
-	 * @return string
+	 *  Get Logger instance
+	 *
+	 * @param $log_name
+	 *
+	 * @return mixed
 	 */
-	public function getLogFileName() {
-		return $this->logFileName;
-	}
+	public static function getLogFilePath($log_name) {
+		try{
+            if(self::is_logging() === true) {
+                $logger = self::getLogger($log_name);
+                return $logger->getLogFilePath();
+            }
 
-	/**
-	 * Get Log File Path
-	 * @return string
-	 */
-	public function getLogFilePath() {
-		return $this->logFilePath;
+		}catch(Exception $e) {
+			error_log( $e );
+		}
 	}
 }

@@ -82,18 +82,18 @@ $WPBackitup->set_logging(true);
 
 
 if (! is_object ($current_job)){
-	WPBackItUp_LoggerV2::log_error($events_logname,$process_id,'Current job not object:');
-	WPBackItUp_LoggerV2::log_error($events_logname,$process_id,var_export($current_job));
+	WPBackItUp_Logger::log_error($events_logname,$process_id,'Current job not object:');
+	WPBackItUp_Logger::log_error($events_logname,$process_id,var_export($current_job));
 	return false;
 }
 
 if (! is_object ($current_task)){
-	WPBackItUp_LoggerV2::log_error($events_logname,$process_id,'Current task not object');
-	WPBackItUp_LoggerV2::log_error($events_logname,$process_id,var_export($current_task));
+	WPBackItUp_Logger::log_error($events_logname,$process_id,'Current task not object');
+	WPBackItUp_Logger::log_error($events_logname,$process_id,var_export($current_task));
 	return false;
 }
 
-WPBackItUp_LoggerV2::log_info($events_logname,$process_id ,'Run task:' .$current_task->getTaskName());
+WPBackItUp_Logger::log_info($events_logname,$process_id ,'Run task:' .$current_task->getTaskName());
 
 
 //Get the job name
@@ -104,7 +104,7 @@ $log_function='job_restore::'.$current_task->getTaskName();
 
 $backup_name = $current_job->getJobMetaValue('backup_name');
 if( empty($backup_name)) {
-	WPBackItUp_LoggerV2::log_error($restore_logname,$log_function,'Backup name not found in job meta.');
+	WPBackItUp_Logger::log_error($restore_logname,$log_function,'Backup name not found in job meta.');
 	write_fatal_error_status('error201');
 	end_restore();
 	return false;
@@ -113,7 +113,7 @@ if( empty($backup_name)) {
 //Get user ID
 $user_id = $current_job->getJobMetaValue('user_id');
 if( empty($user_id)) {
-	WPBackItUp_LoggerV2::log_error($restore_logname,$log_function,'User Id not found in job meta.');
+	WPBackItUp_Logger::log_error($restore_logname,$log_function,'User Id not found in job meta.');
 	write_fatal_error_status('error201');
 	end_restore();
 	return false;
@@ -121,8 +121,8 @@ if( empty($user_id)) {
 
 //IF premium isnt installed then error
 if( ! class_exists( 'WPBackItUp_Premium_Restore' )) {
-	WPBackItUp_LoggerV2::log_sysinfo($restore_logname);
-	WPBackItUp_LoggerV2::log_error($restore_logname,$log_function,'WPBackItUp Premium is not installed');
+	WPBackItUp_Logger::log_sysinfo($restore_logname);
+	WPBackItUp_Logger::log_error($restore_logname,$log_function,'WPBackItUp Premium is not installed');
 
 	$current_task->setStatus(WPBackItUp_Job_Task::ERROR,9998);
 	fatal_error( 'WPBackItUp Premium is not installed', '9998', 'Task ended in error:'.$current_task->getTaskName() );
@@ -131,8 +131,8 @@ if( ! class_exists( 'WPBackItUp_Premium_Restore' )) {
 
 $wpbackitup_license = new WPBackItUp_License();
 if ( ! $wpbackitup_license->is_license_active()){
-	WPBackItUp_LoggerV2::log_sysinfo($restore_logname);
-	WPBackItUp_LoggerV2::log_error($restore_logname,$log_function,'WPBackItUp Premium License is not active');
+	WPBackItUp_Logger::log_sysinfo($restore_logname);
+	WPBackItUp_Logger::log_error($restore_logname,$log_function,'WPBackItUp Premium License is not active');
 
 	$current_task->setStatus(WPBackItUp_Job_Task::ERROR,9999);
 	fatal_error( 'WPBackItUp Premium License is not active', '9999', 'Task ended in error:'.$current_task->getTaskName() );
@@ -149,11 +149,11 @@ $wp_restore = new WPBackItUp_Premium_Restore($restore_logname,$backup_name,$curr
 //An error has occurred on the previous run
 if (WPBackItUp_Job::ERROR==$current_task->getStatus()){
 
-	WPBackItUp_LoggerV2::log_error($restore_logname,$log_function,'Fatal error on previous task:'. $current_task->getTaskName());
+	WPBackItUp_Logger::log_error($restore_logname,$log_function,'Fatal error on previous task:'. $current_task->getTaskName());
 
 	//Fetch last wordpress error(might not be related to timeout)
 	//error type constants: http://php.net/manual/en/errorfunc.constants.php
-	WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Last Error: ' .var_export(error_get_last(),true));
+	WPBackItUp_Logger::log_info($restore_logname,$log_function,'Last Error: ' .var_export(error_get_last(),true));
 
 	//Check for error type
 	switch ( $current_task->getTaskName() ) {
@@ -203,15 +203,15 @@ if (WPBackItUp_Job::ERROR==$current_task->getStatus()){
 
 //Cleanup Task
 if ('task_preparing'==$current_task->getTaskName()) {
-	WPBackItUp_LoggerV2::log($restore_logname,'***BEGIN RESTORE***');
-	WPBackItUp_LoggerV2::log_sysinfo($restore_logname);
+	WPBackItUp_Logger::log($restore_logname,'***BEGIN RESTORE***');
+	WPBackItUp_Logger::log_sysinfo($restore_logname);
 
 	$task = 'preparing';
 	start_status($task);
 
 	$WPBackitup->increment_restore_count();
 
-	WPBackItUp_LoggerV2::log($restore_logname,'**PREPARING FOR RESTORE**');
+	WPBackItUp_Logger::log($restore_logname,'**PREPARING FOR RESTORE**');
 
 	//ONLY check license here and prevent restore from starting. If
 	//IF license check fails in later steps could be because DB was restored and no license on backup
@@ -230,31 +230,31 @@ if ('task_preparing'==$current_task->getTaskName()) {
 		return false;
 	}
 
-	WPBackItUp_LoggerV2::log($restore_logname,'*DELETE RESTORE FOLDER*');
+	WPBackItUp_Logger::log($restore_logname,'*DELETE RESTORE FOLDER*');
 	if ( ! $wp_restore->delete_restore_folder()){
 		$current_task->setStatus(WPBackItUp_Job_Task::ERROR,222);
 		fatal_error($task,'222','Restore folder could not be deleted.');
 		return false;
 	}
-	WPBackItUp_LoggerV2::log($restore_logname,'*END DELETE RESTORE FOLDER*');
+	WPBackItUp_Logger::log($restore_logname,'*END DELETE RESTORE FOLDER*');
 
-	WPBackItUp_LoggerV2::log($restore_logname,'*CREATE ROOT RESTORE FOLDER*');
+	WPBackItUp_Logger::log($restore_logname,'*CREATE ROOT RESTORE FOLDER*');
 	if ( ! $wp_restore->create_restore_root_folder()){
 		$current_task->setStatus(WPBackItUp_Job_Task::ERROR,222);
 		fatal_error($task,'222','Root Restore folder could not be created.');
 		return false;
 	}
-	WPBackItUp_LoggerV2::log($restore_logname,'*END CREATE RESTORE FOLDER*');
+	WPBackItUp_Logger::log($restore_logname,'*END CREATE RESTORE FOLDER*');
 
-	WPBackItUp_LoggerV2::log($restore_logname,'*DELETE STAGED FOLDER*');
+	WPBackItUp_Logger::log($restore_logname,'*DELETE STAGED FOLDER*');
 	if ( ! $wp_restore->delete_staged_folders()){
 		$current_task->setStatus(WPBackItUp_Job_Task::ERROR,222);
 		fatal_error($task, '222','Staged folders could not be deleted.');
 		return false;
 	}
-	WPBackItUp_LoggerV2::log($restore_logname,'*END DELETE STAGED FOLDER*');
+	WPBackItUp_Logger::log($restore_logname,'*END DELETE STAGED FOLDER*');
 
-	WPBackItUp_LoggerV2::log($restore_logname,'*UPDATE SITE VALUES META*' );
+	WPBackItUp_Logger::log($restore_logname,'*UPDATE SITE VALUES META*' );
 	$siteurl    = $wp_restore->get_siteurl();
 	if (false===$siteurl){
 		$current_task->setStatus(WPBackItUp_Job_Task::ERROR,207);
@@ -299,10 +299,10 @@ if ('task_preparing'==$current_task->getTaskName()) {
 		$current_job->setJobMetaValue('wpbackitup_options',$wpbackitup_options);
 	}
 
-	WPBackItUp_LoggerV2::log($restore_logname,'*END UPDATE SITE VALUES META*' );
+	WPBackItUp_Logger::log($restore_logname,'*END UPDATE SITE VALUES META*' );
 
 	$current_task->setStatus(WPBackItUp_Job_Task::COMPLETE);
-	WPBackItUp_LoggerV2::log($restore_logname,'**END PREPARING FOR RESTORE**');
+	WPBackItUp_Logger::log($restore_logname,'**END PREPARING FOR RESTORE**');
 
 	end_status($task);
 	return;
@@ -312,7 +312,7 @@ if ('task_preparing'==$current_task->getTaskName()) {
 //Check for backup set in folder
 if ('task_inventory_backupset'==$current_task->getTaskName()) {
 
-	WPBackItUp_LoggerV2::log( $restore_logname, '*INVENTORY BACKUPSET*' );
+	WPBackItUp_Logger::log( $restore_logname, '*INVENTORY BACKUPSET*' );
 
 	$task = 'unpacking';
 	start_status($task);
@@ -329,7 +329,7 @@ if ('task_inventory_backupset'==$current_task->getTaskName()) {
 	$current_task->setStatus(WPBackItUp_Job_Task::COMPLETE);
 
 
-	WPBackItUp_LoggerV2::log( $restore_logname, '*END INVENTORY BACKUPSET*' );
+	WPBackItUp_Logger::log( $restore_logname, '*END INVENTORY BACKUPSET*' );
 
 	return;
 
@@ -341,42 +341,42 @@ if ('task_inventory_backupset'==$current_task->getTaskName()) {
 //do this even if no backupset
 //Unpack backup set and update job meta
 if ('task_unpack_backupset'==$current_task->getTaskName()) {
-	WPBackItUp_LoggerV2::log( $restore_logname, '*UNPACK BACKUPSET*' );
+	WPBackItUp_Logger::log( $restore_logname, '*UNPACK BACKUPSET*' );
 
 	$task = 'unpacking';
 	start_status($task);
 
 	//Are there any backups to unpack from set file
 	$backupset_unpack_remaining = $current_job->getJobMetaValue('backupset_unpack_remaining');
-	WPBackItUp_LoggerV2::log_info( $restore_logname, $log_function, 'Backupset Remaining Files:' . var_export( $backupset_unpack_remaining, true ) );
+	WPBackItUp_Logger::log_info( $restore_logname, $log_function, 'Backupset Remaining Files:' . var_export( $backupset_unpack_remaining, true ) );
 
 	if (is_array($backupset_unpack_remaining) && count($backupset_unpack_remaining)>0) {
 
 		//found one so unpack it
 		$backup_file = current($backupset_unpack_remaining);
 		$backup_file_key = key($backupset_unpack_remaining);
-		WPBackItUp_LoggerV2::log_info( $restore_logname, $log_function, 'Unpack backup file:' . var_export( $backup_file, true ) );
+		WPBackItUp_Logger::log_info( $restore_logname, $log_function, 'Unpack backup file:' . var_export( $backup_file, true ) );
 
 		//Get backup set file
 		$backupset_file = $current_job->getJobMetaValue('backupset_file');
-		WPBackItUp_LoggerV2::log_info( $restore_logname, $log_function, 'Backup Set file:' . var_export( $backupset_file, true ) );
+		WPBackItUp_Logger::log_info( $restore_logname, $log_function, 'Backup Set file:' . var_export( $backupset_file, true ) );
 
 		if ($wp_restore->unpack_backup_from_backupset( $current_job, $current_task,$backupset_file,$backup_file )){
 
 			//remove this element and save to job meta
 			unset($backupset_unpack_remaining[$backup_file_key]);
 			$current_job->setJobMetaValue('backupset_unpack_remaining',$backupset_unpack_remaining);//save to job meta for next task
-			WPBackItUp_LoggerV2::log_info( $restore_logname, $log_function, 'Backupset Remaining Files:' . var_export( $backupset_unpack_remaining, true ) );
+			WPBackItUp_Logger::log_info( $restore_logname, $log_function, 'Backupset Remaining Files:' . var_export( $backupset_unpack_remaining, true ) );
 
 			//If there are more files to unpack then set task to queued and return
 			if (is_array($backupset_unpack_remaining) && count($backupset_unpack_remaining)>0) {
 				$current_task->setStatus( WPBackItUp_Job_Task::QUEUED );
-				WPBackItUp_LoggerV2::log_info( $restore_logname, $log_function, 'More backup files to extract - task queued.');
+				WPBackItUp_Logger::log_info( $restore_logname, $log_function, 'More backup files to extract - task queued.');
 				return;
 			}
 		} else{
 			//Error occurred
-			WPBackItUp_LoggerV2::log_error( $restore_logname, __METHOD__, 'Failed to unpack backup file:' . $backup_file);
+			WPBackItUp_Logger::log_error( $restore_logname, __METHOD__, 'Failed to unpack backup file:' . $backup_file);
 			$current_task->setStatus(WPBackItUp_Job_Task::ERROR,260);
 			fatal_error($task,'260','Unable to unpack backup from backup set.');
 			return false;
@@ -389,39 +389,39 @@ if ('task_unpack_backupset'==$current_task->getTaskName()) {
 	//get the backup files contained in the backup folder
 	$backup_files = $wp_restore->get_backups_in_folder($current_job,$current_task,false);
 	if (is_array($backup_files)){
-		WPBackItUp_LoggerV2::log_info( $restore_logname, $log_function, 'Backup Files Found in Backup Folder:' . var_export( $backup_files, true ) );
+		WPBackItUp_Logger::log_info( $restore_logname, $log_function, 'Backup Files Found in Backup Folder:' . var_export( $backup_files, true ) );
 
 		$current_job->setJobMetaValue('backup_set',$backup_files);
 
 		foreach ($backup_files as $key =>$backup_zip){
 
 			if (false===$current_job->getJobMetaValue( 'restore_plugins') &&  false !== strpos( $backup_zip, '-plugins-' )){
-				WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skip Zip File:' .$backup_zip);
+				WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skip Zip File:' .$backup_zip);
 				unset($backup_files[$key]);//remove from array
 				continue;
 			}
 
 			if (false===$current_job->getJobMetaValue( 'restore_themes') &&  false !== strpos( $backup_zip, '-themes-' )){
-				WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skip Zip File:' .$backup_zip);
+				WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skip Zip File:' .$backup_zip);
 				unset($backup_files[$key]);//remove from array
 				continue;
 			}
 
 			if (false===$current_job->getJobMetaValue( 'restore_uploads') &&  false !== strpos( $backup_zip, '-uploads-' )){
-				WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skip Zip File:' .$backup_zip);
+				WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skip Zip File:' .$backup_zip);
 				unset($backup_files[$key]);//remove from array
 				continue;
 			}
 
 			if (false===$current_job->getJobMetaValue( 'restore_others') &&  false !== strpos( $backup_zip, '-others-' )){
-				WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skip Zip File:' .$backup_zip);
+				WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skip Zip File:' .$backup_zip);
 				unset($backup_files[$key]);//remove from array
 				continue;
 			}
 
 		}
 
-		WPBackItUp_LoggerV2::log_info( $restore_logname, $log_function, 'Backup Files queued for unzip:' . var_export( $backup_files, true ) );
+		WPBackItUp_Logger::log_info( $restore_logname, $log_function, 'Backup Files queued for unzip:' . var_export( $backup_files, true ) );
 		$current_job->setJobMetaValue('backup_set_remaining',$backup_files);
 
 	}else{
@@ -431,11 +431,11 @@ if ('task_unpack_backupset'==$current_task->getTaskName()) {
 	}
 
 	$current_task->setStatus( WPBackItUp_Job_Task::COMPLETE );
-	WPBackItUp_LoggerV2::log_info( $restore_logname, $log_function, 'No More backup files to extract - task completed.');
+	WPBackItUp_Logger::log_info( $restore_logname, $log_function, 'No More backup files to extract - task completed.');
 
 	end_status($task);
 
-	WPBackItUp_LoggerV2::log( $restore_logname, '*END UNPACK BACKUPSET*' );
+	WPBackItUp_Logger::log( $restore_logname, '*END UNPACK BACKUPSET*' );
 	return;
 }
 
@@ -444,14 +444,14 @@ if ('task_unpack_backupset'==$current_task->getTaskName()) {
 //- check for backupset archive FIRST
 if ('task_unzip_backup_files'==$current_task->getTaskName()) {
 
-	WPBackItUp_LoggerV2::log($restore_logname,'**UNZIP BACKUP**' );
+	WPBackItUp_Logger::log($restore_logname,'**UNZIP BACKUP**' );
 	$task = 'unzipping';
 	start_status($task);
 
 	//get the list of plugins zips in folder
 	$backup_set_list=$current_job->getJobMetaValue('backup_set_remaining');
-	WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Begin -  Backup set list:');
-	WPBackItUp_LoggerV2::log($restore_logname,$backup_set_list);
+	WPBackItUp_Logger::log_info($restore_logname,$log_function,'Begin -  Backup set list:');
+	WPBackItUp_Logger::log($restore_logname,$backup_set_list);
 
 	if ( ! $wp_restore->unzip_archive_file( $backup_set_list) ) {
 		$current_task->setStatus(WPBackItUp_Job_Task::ERROR,203);
@@ -464,14 +464,14 @@ if ('task_unzip_backup_files'==$current_task->getTaskName()) {
 
 		if (is_array($backup_set_list) && count($backup_set_list)>0){
 			//CONTINUE
-			WPBackItUp_LoggerV2::log_info($restore_logname,__METHOD__,'Continue unzipping backup set.');
+			WPBackItUp_Logger::log_info($restore_logname,__METHOD__,'Continue unzipping backup set.');
 			$current_task->setStatus(WPBackItUp_Job_Task::QUEUED);
 		} else{
 			//COMPLETE
-			WPBackItUp_LoggerV2::log_info($restore_logname,__METHOD__,'Complete - All archives restored.');
+			WPBackItUp_Logger::log_info($restore_logname,__METHOD__,'Complete - All archives restored.');
 			end_status( $task);
 			$current_task->setStatus(WPBackItUp_Job_Task::COMPLETE);
-			WPBackItUp_LoggerV2::log($restore_logname,'**END UNZIP BACKUP**' );
+			WPBackItUp_Logger::log($restore_logname,'**END UNZIP BACKUP**' );
 		}
 
 	}
@@ -483,7 +483,7 @@ if ('task_unzip_backup_files'==$current_task->getTaskName()) {
 
 //Validate the backup folder against the manifest
 if ('task_validate_backup'==$current_task->getTaskName()) {
-	WPBackItUp_LoggerV2::log($restore_logname,'**VALIDATE BACKUP**' );
+	WPBackItUp_Logger::log($restore_logname,'**VALIDATE BACKUP**' );
 
 	$task =  'validation';
 	start_status($task);
@@ -495,11 +495,11 @@ if ('task_validate_backup'==$current_task->getTaskName()) {
 		return false;
 	}
 
-	WPBackItUp_LoggerV2::log($restore_logname,'*VALIDATE MANIFEST*' );
+	WPBackItUp_Logger::log($restore_logname,'*VALIDATE MANIFEST*' );
 	$backup_set_list=$current_job->getJobMetaValue('backup_set');
 	if ( $wp_restore->validate_manifest_file($backup_set_list,$error_code)===false){
 
-		WPBackItUp_LoggerV2::log_error($restore_logname,__METHOD__,'Error Code:' .$error_code );
+		WPBackItUp_Logger::log_error($restore_logname,__METHOD__,'Error Code:' .$error_code );
 
 		switch ($error_code) {
 			case 1:
@@ -530,9 +530,9 @@ if ('task_validate_backup'==$current_task->getTaskName()) {
 		return false;
 
 	}
-	WPBackItUp_LoggerV2::log($restore_logname,'*END VALIDATE MANIFEST*' );
+	WPBackItUp_Logger::log($restore_logname,'*END VALIDATE MANIFEST*' );
 
-	WPBackItUp_LoggerV2::log($restore_logname,'*VALIDATE SITEDATA FILE*' );
+	WPBackItUp_Logger::log($restore_logname,'*VALIDATE SITEDATA FILE*' );
 	//validate the site data file
 	$site_info = $wp_restore->validate_siteinfo_file();
 
@@ -554,7 +554,7 @@ if ('task_validate_backup'==$current_task->getTaskName()) {
 	//need to do this for old backups
 	if ( is_null( $snapshot_prefix )) {
 		//Check table prefix values FATAL
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Site table Prefix:' . $table_prefix);
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Site table Prefix:' . $table_prefix);
 		if ( $table_prefix != $site_info['table_prefix'] ) {
 			$current_task->setStatus(WPBackItUp_Job_Task::ERROR,221);
 			fatal_error($task,'221','Table prefix different from restore.');
@@ -566,10 +566,10 @@ if ('task_validate_backup'==$current_task->getTaskName()) {
 	if($WPBackitup->rversion_compare() === 0){
 		$site_wordpress_version =  get_bloginfo('version');
 		$backup_wordpress_version = $site_info['wp_version'];
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Site Wordpress Version:' . $site_wordpress_version);
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Backup Wordpress Version:' . $backup_wordpress_version);
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Site Wordpress Version:' . $site_wordpress_version);
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Backup Wordpress Version:' . $backup_wordpress_version);
 		if ( ! WPBackItUp_Utility::version_compare($site_wordpress_version, $backup_wordpress_version )) {
-			WPBackItUp_LoggerV2::log($restore_logname,'*VALIDATE SITEDATA FILE*' );
+			WPBackItUp_Logger::log($restore_logname,'*VALIDATE SITEDATA FILE*' );
 			$current_task->setStatus(WPBackItUp_Job_Task::ERROR,226);
 			fatal_error($task,'226','Backup was created using different version of wordpress');
 			return false;
@@ -578,36 +578,36 @@ if ('task_validate_backup'==$current_task->getTaskName()) {
 
 		$restore_wpbackitup_version = $site_info['wpbackitup_version'];
 		$current_wpbackitup_version = WPBACKITUP__VERSION;
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'WPBackItUp current Version:' . $current_wpbackitup_version);
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'WPBackItUp backup  Version:' . $restore_wpbackitup_version);
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'WPBackItUp current Version:' . $current_wpbackitup_version);
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'WPBackItUp backup  Version:' . $restore_wpbackitup_version);
 		if (! WPBackItUp_Utility::version_compare($restore_wpbackitup_version, $current_wpbackitup_version )){
 			$current_task->setStatus(WPBackItUp_Job_Task::ERROR,227);
 			fatal_error($task,'227','Backup was created using different version of WPBackItUp');
 			return false;
 		}
 	}
-	WPBackItUp_LoggerV2::log($restore_logname,'*END VALIDATE SITEDATA FILE*' );
+	WPBackItUp_Logger::log($restore_logname,'*END VALIDATE SITEDATA FILE*' );
 
 
 	//all SQL files will be added to the jon_item table during validation
-	WPBackItUp_LoggerV2::log($restore_logname,'*VALIDATE SQL FILE EXISTS*' );
+	WPBackItUp_Logger::log($restore_logname,'*VALIDATE SQL FILE EXISTS*' );
 	if ( ! $wp_restore->validate_SQL_add_items( )){
 		$current_task->setStatus(WPBackItUp_Job_Task::ERROR,216);
 		fatal_error($task,'216','NO Database backups in backup.');
 		return false;
 	}
-	WPBackItUp_LoggerV2::log($restore_logname,'*END VALIDATE SQL FILE EXISTS*' );
+	WPBackItUp_Logger::log($restore_logname,'*END VALIDATE SQL FILE EXISTS*' );
 	end_status($task);
 
-	WPBackItUp_LoggerV2::log($restore_logname,'*DEACTIVATE ACTIVE PLUGINS*');
+	WPBackItUp_Logger::log($restore_logname,'*DEACTIVATE ACTIVE PLUGINS*');
 	$task='deactivate_plugins';
 	start_status($task);
 	$wp_restore->deactivate_plugins();
 	end_status($task);
-	WPBackItUp_LoggerV2::log($restore_logname,'*END DEACTIVATE ACTIVE PLUGINS*');
+	WPBackItUp_Logger::log($restore_logname,'*END DEACTIVATE ACTIVE PLUGINS*');
 
 	$current_task->setStatus(WPBackItUp_Job_Task::COMPLETE);
-	WPBackItUp_LoggerV2::log($restore_logname,'**END VALIDATE BACKUP**' );
+	WPBackItUp_Logger::log($restore_logname,'**END VALIDATE BACKUP**' );
 
 	return;
 }
@@ -616,7 +616,7 @@ if ('task_validate_backup'==$current_task->getTaskName()) {
 //import the snaphsot tables v1.13+
 if ('task_import_database'==$current_task->getTaskName()) {
 
-	WPBackItUp_LoggerV2::log($restore_logname,'**IMPORT DATABASE SNAPSHOT**');
+	WPBackItUp_Logger::log($restore_logname,'**IMPORT DATABASE SNAPSHOT**');
 	$task ='import_database';
 	start_status($task);
 
@@ -634,7 +634,7 @@ if ('task_import_database'==$current_task->getTaskName()) {
 		if ( ! is_null( $snapshot_prefix )) {
 			//V1.13+
 			$tables_remaining_count =$wp_restore->import_database($current_job,$snapshot_prefix);
-			WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Database Items remaining:' .var_export($tables_remaining_count,true));
+			WPBackItUp_Logger::log_info($restore_logname,$log_function,'Database Items remaining:' .var_export($tables_remaining_count,true));
 			if (false===$tables_remaining_count) {
 				$current_task->setStatus(WPBackItUp_Job_Task::ERROR,212);
 				fatal_error($task,'212','Snapshot NOT imported.');
@@ -642,24 +642,24 @@ if ('task_import_database'==$current_task->getTaskName()) {
 			}else{
 				if ($tables_remaining_count>0){
 					//CONTINUE
-					WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Continue importing snapshot tables.');
+					WPBackItUp_Logger::log_info($restore_logname,$log_function,'Continue importing snapshot tables.');
 					$current_task->setStatus(WPBackItUp_Job_Task::QUEUED);
 					return;
 				}
 			}
 		} else {
-			WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Older Backup - Skipping task.');
+			WPBackItUp_Logger::log_info($restore_logname,$log_function,'Older Backup - Skipping task.');
 		}
 	}else {
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skipping task.');
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skipping task.');
 	}
 
 	//DB Restore Complete
-	WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Complete - All snaphsot tables imported successfully.');
+	WPBackItUp_Logger::log_info($restore_logname,$log_function,'Complete - All snaphsot tables imported successfully.');
 	$current_task->setStatus(WPBackItUp_Job_Task::COMPLETE);
 	end_status($task);
 
-	WPBackItUp_LoggerV2::log($restore_logname,'**END IMPORT DATABASE SNAPSHOT**');
+	WPBackItUp_Logger::log($restore_logname,'**END IMPORT DATABASE SNAPSHOT**');
 	return;
 
 }
@@ -668,7 +668,7 @@ if ('task_import_database'==$current_task->getTaskName()) {
 //Update the snapshot tables V1.13+
 if ('task_update_snapshot'==$current_task->getTaskName()) {
 
-	WPBackItUp_LoggerV2::log($restore_logname,'**UPDATE SNAPSHOT TABLES**');
+	WPBackItUp_Logger::log($restore_logname,'**UPDATE SNAPSHOT TABLES**');
 	$task ='update_database';
 	start_status($task);
 
@@ -690,15 +690,15 @@ if ('task_update_snapshot'==$current_task->getTaskName()) {
 				return false;
 			}
 		}else {
-			WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Older backup - skipping task.');
+			WPBackItUp_Logger::log_info($restore_logname,$log_function,'Older backup - skipping task.');
 		}
 	}else{
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skipping task.');
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skipping task.');
 	}
 	
 	$current_task->setStatus(WPBackItUp_Job_Task::COMPLETE);
 	end_status($task);
-	WPBackItUp_LoggerV2::log($restore_logname,'**END UPDATE SNAPSHOT TABLES**');
+	WPBackItUp_Logger::log($restore_logname,'**END UPDATE SNAPSHOT TABLES**');
 	return true;
 
 }
@@ -706,7 +706,7 @@ if ('task_update_snapshot'==$current_task->getTaskName()) {
 
 //Stage WP content folders
 if ('task_stage_wpcontent'==$current_task->getTaskName()) {
-	WPBackItUp_LoggerV2::log($restore_logname,'**STAGE WP-CONTENT**');
+	WPBackItUp_Logger::log($restore_logname,'**STAGE WP-CONTENT**');
 	$task = 'stage_wpcontent';
 
 	start_status($task);
@@ -714,7 +714,7 @@ if ('task_stage_wpcontent'==$current_task->getTaskName()) {
 	$folder_stage_suffix = $wp_restore->get_restore_staging_suffix();
 
 	//Stage all but plugins
-	WPBackItUp_LoggerV2::log( $restore_logname, '*STAGE THEMES*' );
+	WPBackItUp_Logger::log( $restore_logname, '*STAGE THEMES*' );
 	if (true===$current_job->getJobMetaValue('restore_themes')) {
 
 		$from_folder_name = $wp_restore->get_restore_root_folder_path() . '/' . WPBackItUp_Premium_Restore::THEMESPATH;
@@ -728,12 +728,12 @@ if ('task_stage_wpcontent'==$current_task->getTaskName()) {
 		}
 
 	} else {
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skipping task.');
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skipping task.');
 	}
-	WPBackItUp_LoggerV2::log( $restore_logname, '*END STAGE THEMES*' );
+	WPBackItUp_Logger::log( $restore_logname, '*END STAGE THEMES*' );
 
 
-	WPBackItUp_LoggerV2::log( $restore_logname, '*STAGE UPLOADS*' );
+	WPBackItUp_Logger::log( $restore_logname, '*STAGE UPLOADS*' );
 	if (true===$current_job->getJobMetaValue('restore_uploads')) {
 		if ( ! $wp_restore->validate_no_uploads() ) {
 			$from_folder_name  = $wp_restore->get_restore_root_folder_path() . '/' . WPBackItUp_Premium_Restore::UPLOADPATH;
@@ -751,12 +751,12 @@ if ('task_stage_wpcontent'==$current_task->getTaskName()) {
 		}
 
 	} else {
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skipping task.');
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skipping task.');
 	}
-	WPBackItUp_LoggerV2::log( $restore_logname, '*END STAGE UPLOADS*' );
+	WPBackItUp_Logger::log( $restore_logname, '*END STAGE UPLOADS*' );
 
 
-	WPBackItUp_LoggerV2::log( $restore_logname, '*STAGE OTHER FOLDERS*' );
+	WPBackItUp_Logger::log( $restore_logname, '*STAGE OTHER FOLDERS*' );
 	if (true===$current_job->getJobMetaValue('restore_others')) {
 
 		$other_list = glob( $wp_restore->get_restore_root_folder_path() . '/' . WPBackItUp_Premium_Restore::OTHERPATH . '/*', GLOB_ONLYDIR | GLOB_NOSORT );
@@ -773,15 +773,15 @@ if ('task_stage_wpcontent'==$current_task->getTaskName()) {
 		}
 
 	} else {
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skipping task.');
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skipping task.');
 	}
-	WPBackItUp_LoggerV2::log( $restore_logname, '*END STAGE OTHER FOLDERS*' );
+	WPBackItUp_Logger::log( $restore_logname, '*END STAGE OTHER FOLDERS*' );
 
 	end_status( $task );
 
 	$current_task->setStatus(WPBackItUp_Job_Task::COMPLETE);;
 
-	WPBackItUp_LoggerV2::log($restore_logname,'**END STAGE WP-CONTENT**');
+	WPBackItUp_Logger::log($restore_logname,'**END STAGE WP-CONTENT**');
 
 	return;
 }
@@ -790,22 +790,22 @@ if ('task_stage_wpcontent'==$current_task->getTaskName()) {
 //Rename the staged folders to current
 if ('task_restore_wpcontent'==$current_task->getTaskName()) {
 
-	WPBackItUp_LoggerV2::log($restore_logname,'**RESTORE WPCONTENT**');
+	WPBackItUp_Logger::log($restore_logname,'**RESTORE WPCONTENT**');
 	$task ='restore_wpcontent';
 	start_status($task);
 
 
 	//This step will restore anything that was staged
-	WPBackItUp_LoggerV2::log( $restore_logname, '*RESTORE MAIN*' );
+	WPBackItUp_Logger::log( $restore_logname, '*RESTORE MAIN*' );
 	$wpcontent_restore = $wp_restore->restore_wpcontent();
 	if ( ! $wpcontent_restore === true ) {
 		//array with failed list returned
 		//If any of them fail call it done.
 		warning( '300', 'Cant restore all WP content.' );
 	}
-	WPBackItUp_LoggerV2::log( $restore_logname, '*END RESTORE MAIN*' );
+	WPBackItUp_Logger::log( $restore_logname, '*END RESTORE MAIN*' );
 
-	WPBackItUp_LoggerV2::log( $restore_logname, '*RESTORE PLUGINS*' );
+	WPBackItUp_Logger::log( $restore_logname, '*RESTORE PLUGINS*' );
 	if (true===$current_job->getJobMetaValue('restore_plugins')) {
 		$plugin_restore = $wp_restore->restore_plugins();
 		if ( ! $plugin_restore === true ) {
@@ -813,13 +813,13 @@ if ('task_restore_wpcontent'==$current_task->getTaskName()) {
 			warning( '305', 'Couldnt restore all plugins.' );
 		}
 	} else{
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skipping task.');
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skipping task.');
 	}
-	WPBackItUp_LoggerV2::log($restore_logname,'*END RESTORE PLUGINS*');
+	WPBackItUp_Logger::log($restore_logname,'*END RESTORE PLUGINS*');
 
 	$current_task->setStatus(WPBackItUp_Job_Task::COMPLETE);;
 	end_status($task);
-	WPBackItUp_LoggerV2::log($restore_logname,'**END RESTORE WPCONTENT**');
+	WPBackItUp_Logger::log($restore_logname,'**END RESTORE WPCONTENT**');
 
 	return;
 }
@@ -827,7 +827,7 @@ if ('task_restore_wpcontent'==$current_task->getTaskName()) {
 //restore the DB
 if ('task_restore_database'==$current_task->getTaskName()) {
 
-	WPBackItUp_LoggerV2::log($restore_logname,'**RESTORE DATABASE**');
+	WPBackItUp_Logger::log($restore_logname,'**RESTORE DATABASE**');
 	$task ='restore_database';
 	start_status($task);
 
@@ -844,7 +844,7 @@ if ('task_restore_database'==$current_task->getTaskName()) {
 			$rename_sql_file = $current_job->getJobMetaValue( 'rename_sql' );
 			if ( ! is_null( $rename_sql_file ) ) {
 				if ( false === $wp_restore->rename_snapshot_tables( $rename_sql_file ) ) {
-					WPBackItUp_LoggerV2::log_error( $restore_logname, __METHOD__, 'Rename snaphsot table error.' );
+					WPBackItUp_Logger::log_error( $restore_logname, __METHOD__, 'Rename snaphsot table error.' );
 
 					$current_task->setStatus( WPBackItUp_Job_Task::ERROR, 212 );
 					fatal_error( $task, '240', 'Database NOT restored.' );
@@ -859,7 +859,7 @@ if ('task_restore_database'==$current_task->getTaskName()) {
 
 			//Not going to use the restore Point SQL because IF the import failed then DB may be intact
 			//$tables_remaining_count =$wp_restore->restore_database($current_job);
-			WPBackItUp_LoggerV2::log_info( $restore_logname, $log_function, 'Database Items remaining:' . var_export( $tables_remaining_count, true ) );
+			WPBackItUp_Logger::log_info( $restore_logname, $log_function, 'Database Items remaining:' . var_export( $tables_remaining_count, true ) );
 			if ( false === $tables_remaining_count ) {
 				$current_task->setStatus( WPBackItUp_Job_Task::ERROR, 212 );
 				fatal_error( $task, '240', 'Database NOT restored.' );
@@ -868,7 +868,7 @@ if ('task_restore_database'==$current_task->getTaskName()) {
 			} else {
 				if ( $tables_remaining_count > 0 ) {
 					//CONTINUE
-					WPBackItUp_LoggerV2::log_info( $restore_logname, $log_function, 'Continue restoring tables.' );
+					WPBackItUp_Logger::log_info( $restore_logname, $log_function, 'Continue restoring tables.' );
 					$current_task->setStatus( WPBackItUp_Job_Task::QUEUED );
 
 					return;
@@ -876,14 +876,14 @@ if ('task_restore_database'==$current_task->getTaskName()) {
 			}
 		}
 	} else {
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skipping task.');
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skipping task.');
 	}
 
 	//DB Restore Complete
-	//WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Complete - All tables restored successfully.');
+	//WPBackItUp_Logger::log_info($restore_logname,$log_function,'Complete - All tables restored successfully.');
 	$current_task->setStatus(WPBackItUp_Job_Task::COMPLETE);
 	end_status($task);
-	WPBackItUp_LoggerV2::log($restore_logname,'**END RESTORE DATABASE**');
+	WPBackItUp_Logger::log($restore_logname,'**END RESTORE DATABASE**');
 	
 	
 	start_status('update_permalinks');
@@ -891,11 +891,11 @@ if ('task_restore_database'==$current_task->getTaskName()) {
 	//Check job flag
 	if (true===$current_job->getJobMetaValue('restore_update_permalinks')) {
 		if ( ! $wp_restore->update_permalinks() ) {
-			WPBackItUp_LoggerV2::log_error( $restore_logname, $log_function, 'Permalinks were not updated' );
+			WPBackItUp_Logger::log_error( $restore_logname, $log_function, 'Permalinks were not updated' );
 			//dont do anything
 		}
 	} else {
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skipping update permalinks task.');
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skipping update permalinks task.');
 	}
 
 	end_status('update_permalinks');
@@ -910,20 +910,20 @@ if ('task_restore_database'==$current_task->getTaskName()) {
 			//if wp-backitup-premium is not included
 			if (false === array_search('wp-backitup-premium/wp-backitup-premium.php', $active_plugins_array)){
 				$active_plugins_array[]='wp-backitup-premium/wp-backitup-premium.php'; //add to array
-				WPBackItUp_LoggerV2::log_info( $restore_logname, __METHOD__, 'WPBackItUp Premium Plugin added to active plugins.');
+				WPBackItUp_Logger::log_info( $restore_logname, __METHOD__, 'WPBackItUp Premium Plugin added to active plugins.');
 			}
 
 			//Update active plugin option
 			if ( false===$wp_restore->update_create_option( 'active_plugins', $active_plugins_array, 'yes' ) ) {
-				WPBackItUp_LoggerV2::log_error( $restore_logname, __METHOD__, 'Unable to activate plugins:' . var_export( $active_plugins_option, true ) );
+				WPBackItUp_Logger::log_error( $restore_logname, __METHOD__, 'Unable to activate plugins:' . var_export( $active_plugins_option, true ) );
 			}
 
 		} else {
-			WPBackItUp_LoggerV2::log_error( $restore_logname, __METHOD__, 'Deserialization Error - Unable to activate plugins:' . var_export( $active_plugins_option, true ) );
+			WPBackItUp_Logger::log_error( $restore_logname, __METHOD__, 'Deserialization Error - Unable to activate plugins:' . var_export( $active_plugins_option, true ) );
 		}
 
 	} else {
-		WPBackItUp_LoggerV2::log_info($restore_logname,$log_function,'Skipping activate plugins.');
+		WPBackItUp_Logger::log_info($restore_logname,$log_function,'Skipping activate plugins.');
 	}
 
 
@@ -936,8 +936,8 @@ if ('task_restore_database'==$current_task->getTaskName()) {
 	$WPBackitup->increment_successful_restore_count();
 	$current_job->setStatus(WPBackItUp_Job::COMPLETE);
 	set_status_success();
-	WPBackItUp_LoggerV2::log($restore_logname,'Restore completed successfully');
-	WPBackItUp_LoggerV2::log($restore_logname,'***END RESTORE***');
+	WPBackItUp_Logger::log($restore_logname,'Restore completed successfully');
+	WPBackItUp_Logger::log($restore_logname,'***END RESTORE***');
 
 	end_restore(null,true);
 	return true;
@@ -953,7 +953,7 @@ return;
 function fatal_error($process,$error_code,$error_message, $end=true){
 	global $current_job, $failure, $restore_logname;
 
-	WPBackItUp_LoggerV2::log_error($restore_logname,__METHOD__,$error_message);
+	WPBackItUp_Logger::log_error($restore_logname,__METHOD__,$error_message);
 	$current_job->setStatus(WPBackItUp_Job::ERROR);
 
 	write_response_file_error($error_code,$error_message);
@@ -969,7 +969,7 @@ function fatal_error($process,$error_code,$error_message, $end=true){
 function warning($error_code,$warning_message) {
 	global $restore_logname, $status_array,$warning;
 
-	WPBackItUp_LoggerV2::log_warning($restore_logname,__METHOD__, $warning_message);
+	WPBackItUp_Logger::log_warning($restore_logname,__METHOD__, $warning_message);
 
 	//Add warning to array
 	$status_array['warning' .$error_code]=$warning;
@@ -1021,7 +1021,7 @@ function write_response_file($JSON_Response) {
 	global $restore_logname;
 
 	$json_response = json_encode($JSON_Response);
-	WPBackItUp_LoggerV2::log($restore_logname,'Write response file:' . $json_response);
+	WPBackItUp_Logger::log($restore_logname,'Write response file:' . $json_response);
 
 	$fh=get_response_file();
 	fwrite($fh, $json_response);
@@ -1113,23 +1113,23 @@ function set_status_success(){
 function end_restore($err=null, $success=null){
 	global $current_job, $restore_logname;
 
-	if (true===$success) WPBackItUp_LoggerV2::log_info($restore_logname,__METHOD__,'Restore completed: SUCCESS');
-	if (false===$success) WPBackItUp_LoggerV2::log_error($restore_logname,__METHOD__,'Restore completed: ERROR');
+	if (true===$success) WPBackItUp_Logger::log_info($restore_logname,__METHOD__,'Restore completed: SUCCESS');
+	if (false===$success) WPBackItUp_Logger::log_error($restore_logname,__METHOD__,'Restore completed: ERROR');
 
 	//copy/replace WP debug file
 	$logs_path = WPBACKITUP__PLUGIN_PATH .'logs';
 	$wpdebug_file_path = WPBACKITUP__CONTENT_PATH . '/debug.log';
-	WPBackItUp_LoggerV2::log_info($restore_logname,__METHOD__,'Copy WP Debug: ' .$wpdebug_file_path);
+	WPBackItUp_Logger::log_info($restore_logname,__METHOD__,'Copy WP Debug: ' .$wpdebug_file_path);
 	if (file_exists($wpdebug_file_path)) {
 		$debug_log = sprintf('%s/wpdebug_%s.log',$logs_path,$current_job->getJobId());
 		copy( $wpdebug_file_path, $debug_log );
 	}
 
-	WPBackItUp_LoggerV2::log($restore_logname,'*** END RESTORE ***');
+	WPBackItUp_Logger::log($restore_logname,'*** END RESTORE ***');
 
 
 	//Close the logger
-	WPBackItUp_LoggerV2::close($restore_logname);
+	WPBackItUp_Logger::close($restore_logname);
 	$current_job->release_lock();
 
 	//response back the status file since this method will end processing

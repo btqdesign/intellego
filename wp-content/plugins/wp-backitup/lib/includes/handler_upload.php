@@ -19,13 +19,13 @@
     //*****************//
     //*** MAIN CODE ***//
     //*****************//
-	WPBackItUp_LoggerV2::log($upload_logname,'***BEGIN UPLOAD***');
-	WPBackItUp_LoggerV2::log($upload_logname,$_POST);
+	WPBackItUp_Logger::log($upload_logname,'***BEGIN UPLOAD***');
+	WPBackItUp_Logger::log($upload_logname,$_POST);
 
 
     //verify nonce
     if ( !wp_verify_nonce($_REQUEST['_wpnonce'],WPBACKITUP__NAMESPACE .'-upload')) {
-	    WPBackItUp_LoggerV2::log_error($upload_logname,__METHOD__,'Invalid Nonce');
+	    WPBackItUp_Logger::log_error($upload_logname,__METHOD__,'Invalid Nonce');
         echo json_encode( array( 'error' => sprintf( __( 'Invalid Nonce','wp-backitup' ) ) ) );
         exit;
 
@@ -35,7 +35,7 @@
     $upload_path = WPBACKITUP__UPLOAD_PATH;
     if (  !is_dir( $upload_path ) ){
         if ( ! mkdir( $upload_path, 0755 )){
-	        WPBackItUp_LoggerV2::log_error($upload_logname,__METHOD__,'Upload directory is not writable, or does not exist.');
+	        WPBackItUp_Logger::log_error($upload_logname,__METHOD__,'Upload directory is not writable, or does not exist.');
             echo json_encode( array( 'error' => sprintf( __( "Upload directory is not writable, or does not exist.", 'wp-backitup' ) ) ) );
             exit;
         }
@@ -64,7 +64,7 @@
     remove_filter( 'sanitize_file_name', array( $this, 'sanitize_file_name' ) );
 
     if ( isset( $status['error'] ) ) {
-	    WPBackItUp_LoggerV2::log($upload_logname,$status['error']);
+	    WPBackItUp_Logger::log($upload_logname,$status['error']);
         echo json_encode( array( 'error' => $status['error'] ) );
         exit;
     }
@@ -76,7 +76,7 @@
         $to_file_path   = $upload_path . '/' . $zip_file_name . '_' . $chunk_id . '.zip.tmp';
         if ( ! rename( $from_file_path, $to_file_path ) ) {
             @unlink( $from_file_path );
-	        WPBackItUp_LoggerV2::log_error($upload_logname,__METHOD__,'Cant rename file.');
+	        WPBackItUp_Logger::log_error($upload_logname,__METHOD__,'Cant rename file.');
             echo json_encode( array( 'error' => sprintf( __( 'Error: %s', 'wp-backitup' ), __( 'File could not be uploaded', 'wp-backitup' ) ) ) );
             exit;
         }
@@ -142,7 +142,7 @@
 
                 //Is this a BackItUp archive
                 if ( empty( $folder_name ) || empty( $suffix )) {
-	                WPBackItUp_LoggerV2::log_error($upload_logname,__METHOD__,'Upload does not appear to be a WPBackItUp backup archive');
+	                WPBackItUp_Logger::log_error($upload_logname,__METHOD__,'Upload does not appear to be a WPBackItUp backup archive');
                     echo json_encode( array( 'error' => sprintf( __( "Upload does not appear to be a WPBackItUp backup archive file.",'wp-backitup' ) ) ) );
                     unlink( $zip_file_path );//get rid of it
                     exit;
@@ -152,7 +152,7 @@
                 $backup_archive_folder = WPBACKITUP__BACKUP_PATH . '/' . $folder_name;
                 if ( ! is_dir( $backup_archive_folder ) ) {
                     if ( ! mkdir( $backup_archive_folder, 0755 ) ) {
-	                    WPBackItUp_LoggerV2::log_error($upload_logname,__METHOD__,'Upload directory is not writable');
+	                    WPBackItUp_Logger::log_error($upload_logname,__METHOD__,'Upload directory is not writable');
                         echo json_encode( array( 'error' => sprintf( __( "Upload directory is not writable, or does not exist.", 'wp-backitup' ) ) ) );
                         exit;
                     }
@@ -162,12 +162,12 @@
                 //will overwrite if exists
                 $target_file = $backup_archive_folder . "/" . basename( $zip_file_path );
                 if ( ! rename( $zip_file_path, $target_file ) ) {
-	                WPBackItUp_LoggerV2::log_error($upload_logname,__METHOD__,'Cant move zip file to backup folder');
+	                WPBackItUp_Logger::log_error($upload_logname,__METHOD__,'Cant move zip file to backup folder');
                     echo json_encode( array( 'error' => sprintf( __( "Could not import file into WPBackItUp backup set.",'wp-backitup' ) ) ) );
                     exit;
                 } else {
 
-                    WPBackItUp_LoggerV2::log($upload_logname,'Import Backup To Post Table Started');
+                    WPBackItUp_Logger::log($upload_logname,'Import Backup To Post Table Started');
                     $folder_prefix = substr($folder_name,0,4);
                     $folder_name_parts = explode('_',$folder_name);
 
@@ -180,29 +180,29 @@
                         $jobs = WPBackItUp_Job::get_jobs_by_job_name(WPBackItUp_Job::BACKUP,$folder_name,WPBackItUp_Job::COMPLETE);
 
                         if ( false === $jobs ) {
-                            WPBackItUp_LoggerV2::log($upload_logname,'Import job');
+                            WPBackItUp_Logger::log($upload_logname,'Import job');
                             $job_id=current_time('timestamp');//Create new job id just in case there are deleted job cnotrol records
                             $job = WPBackItUp_Job::import_completed_job( $folder_name, $job_id, WPBackItUp_Job::BACKUP, $job_id );
 
                         } else {
-                            WPBackItUp_LoggerV2::log($upload_logname,'Selecting Existing Post.');
+                            WPBackItUp_Logger::log($upload_logname,'Selecting Existing Post.');
                             $job = is_array($jobs) ? current($jobs) : false;
                         }
 
-                        WPBackItUp_LoggerV2::log($upload_logname,$job);
+                        WPBackItUp_Logger::log($upload_logname,$job);
 
 
                         if ( false !== $job ) {
-                            WPBackItUp_LoggerV2::log($upload_logname,'### Update Zip Files ###');
+                            WPBackItUp_Logger::log($upload_logname,'### Update Zip Files ###');
 
                             $file_system = new WPBackItUp_FileSystem($upload_logname);
                             $zip_files = $file_system->get_fileonly_list_with_filesize($backup_archive_folder, 'zip');
 
-                            WPBackItUp_LoggerV2::log($upload_logname,$zip_files);
+                            WPBackItUp_Logger::log($upload_logname,$zip_files);
 
                             $job->setJobMetaValue('backup_zip_files',$zip_files); //list of zip files
 
-                            WPBackItUp_LoggerV2::log_info($upload_logname,__METHOD__,'Job Imported:' .$folder_name);
+                            WPBackItUp_Logger::log_info($upload_logname,__METHOD__,'Job Imported:' .$folder_name);
                         }
                     }
                 }
@@ -210,7 +210,7 @@
         }
     }
 
-	WPBackItUp_LoggerV2::log_info($upload_logname,__METHOD__,'End');
+	WPBackItUp_Logger::log_info($upload_logname,__METHOD__,'End');
 
     // send the uploaded file url in response
     $response['success'] = $status['url'];

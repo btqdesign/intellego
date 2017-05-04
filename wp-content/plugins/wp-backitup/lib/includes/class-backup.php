@@ -79,7 +79,7 @@ class WPBackItUp_Backup {
 
 		} catch(Exception $e) {
 			error_log($e);
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
             throw $e;
 		}
    }
@@ -103,7 +103,7 @@ class WPBackItUp_Backup {
 
 
         } catch(Exception $e) {
-	        // WPBackItUp_LoggerV2::log_error($lockfile_logname,__METHOD__,'Process Lock error: ' .$e);
+	        // WPBackItUp_Logger::log_error($lockfile_logname,__METHOD__,'Process Lock error: ' .$e);
             return false;
       }
 
@@ -115,14 +115,14 @@ class WPBackItUp_Backup {
      * @return bool
      */
     public static function end (){
-        //WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin - Unlock File:' . $this->lockFileName);
+        //WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin - Unlock File:' . $this->lockFileName);
 
         try{
 	        //locking handled in mutex now
             return true;
 
         }catch(Exception $e) {
-            //WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Cant unlock file: ' .$e);
+            //WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Cant unlock file: ' .$e);
             return false;
         }
     }
@@ -132,7 +132,7 @@ class WPBackItUp_Backup {
 	 * @param $prefix
 	 */
 	public function cleanup_backups_by_prefix($prefix) {
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin' );
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin' );
         $backup_root_path=$this->backup_folder_root;
 
         //get a list of all the temps
@@ -142,7 +142,7 @@ class WPBackItUp_Backup {
             $file_system->recursive_delete($folder);
         }
 
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End' );
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End' );
     }
 
 	/**
@@ -152,7 +152,7 @@ class WPBackItUp_Backup {
 	 */
 	public function purge_orphaned_backups() {
 		$log_name = 'debug_purge_folders';
-	    WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Begin' );
+	    WPBackItUp_Logger::log_info($log_name,__METHOD__,'Begin' );
 
         //  --PURGE BACKUP FOLDER
 		$folder_list = glob($this->backup_folder_root . '*', GLOB_ONLYDIR);
@@ -171,15 +171,15 @@ class WPBackItUp_Backup {
 				if (file_exists($folder)) {
 					$file_system = new WPBackItUp_FileSystem($log_name);
 					if (true===$file_system->recursive_delete($folder)){
-						WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'Folder Deleted:'.$folder);
+						WPBackItUp_Logger::log_info($log_name,__METHOD__,'Folder Deleted:'.$folder);
 					} else{
-						WPBackItUp_LoggerV2::log_error($log_name,__METHOD__,'Folder NOT Deleted:'.$folder);
+						WPBackItUp_Logger::log_error($log_name,__METHOD__,'Folder NOT Deleted:'.$folder);
 					}
 				}
 			}
 		}
 
-		WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,'End');
+		WPBackItUp_Logger::log_info($log_name,__METHOD__,'End');
 		return true;
     }
 
@@ -193,7 +193,7 @@ class WPBackItUp_Backup {
 	 */
 	public function cleanup_current_backup_async($file_extension_list){
 		$path= $this->getBackupProjectPath();
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin - Cleanup Backup Folder:' . $path);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin - Cleanup Backup Folder:' . $path);
 
 		try {
 
@@ -215,15 +215,15 @@ class WPBackItUp_Backup {
 				}
 	
 				$cleanup_processor->save()->dispatch();
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Cleanup job dispatched.');
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Cleanup job dispatched.');
 	
 			}
 	
-		    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End - Work Files Deleted');
+		    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End - Work Files Deleted');
 	        return true;
 
 		} catch(Exception $e) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Error Occurred: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Error Occurred: ' .$e);
 			return false;
 		}
     }
@@ -232,7 +232,7 @@ class WPBackItUp_Backup {
 	 * Purge old backup files
 	 */
 	public function purge_old_files(){
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
         $fileSystem = new WPBackItUp_FileSystem( $this->log_name);
 
         //Check the retention
@@ -255,7 +255,7 @@ class WPBackItUp_Backup {
         //Purge Zipped logs in logs older than 5 days
 	    $fileSystem->purge_files($logs_path,'*.zip',$this->backup_retained_days);
 
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End');
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End');
 
     }
 
@@ -265,10 +265,10 @@ class WPBackItUp_Backup {
 	 * @return bool
 	 */
 	public function backup_root_folder_exists(){
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin: ' .$this->backup_folder_root);
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin: ' .$this->backup_folder_root);
         $fileSystem = new WPBackItUp_FileSystem($this->log_name);
         if(!$fileSystem->create_dir($this->backup_folder_root)) {
-	        WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Cant create backup folder :'. $this->backup_folder_root);
+	        WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Cant create backup folder :'. $this->backup_folder_root);
             return false;
         }
 
@@ -279,7 +279,7 @@ class WPBackItUp_Backup {
 	    $fileSystem->secure_folder( $logs_dir);
 
 
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End');
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End');
         return true;
     }
 
@@ -289,14 +289,14 @@ class WPBackItUp_Backup {
 	 * @return bool
 	 */
 	public function create_current_backup_folder(){
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin: ' .$this->backup_project_path);
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin: ' .$this->backup_project_path);
         $fileSystem = new WPBackItUp_FileSystem($this->log_name);
         if(!$fileSystem->create_dir($this->backup_project_path)) {
-	        WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Cant create backup folder :'. $this->backup_project_path);
+	        WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Cant create backup folder :'. $this->backup_project_path);
             return false;
         }
 
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End');
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End');
         return true;
     }
 
@@ -307,13 +307,13 @@ class WPBackItUp_Backup {
 	 */
 	public function backup_folder_exists(){
         $path=$this->backup_project_path;
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Is folder writeable: ' .$path);
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Is folder writeable: ' .$path);
         if(is_writeable($path)) {
-	        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Folder IS writeable');
+	        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Folder IS writeable');
             return true;
         }
 
-	    WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Folder NOT writeable');
+	    WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Folder NOT writeable');
         return false;
     }
 
@@ -331,7 +331,7 @@ class WPBackItUp_Backup {
 	 * @return bool|mixed
 	 */
 	public function export_database_mysqldump($current_job,$content_type, $batch_size, $with_mysqlpath=false){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin MYSQLDUMP Database Export.');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin MYSQLDUMP Database Export.');
 
 		$job_id = $current_job->getJobId();
 		$sqlUtil = new WPBackItUp_SQL($this->log_name);
@@ -341,7 +341,7 @@ class WPBackItUp_Backup {
 
 		//Get one item at a time because batch is split on inventory
 		$item_batch = $db->get_batch_open_items($batch_id,1,$job_id,$content_type);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,var_export($item_batch,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,var_export($item_batch,true));
 
 		//It is possible that there are no file to backup so return count or false
 		if($item_batch == false || $item_batch==0) return $item_batch;
@@ -357,7 +357,7 @@ class WPBackItUp_Backup {
 		//Generate the sql name - break up by offset so restore will also work in batches
 		$sql_data_file_name=$this->backup_project_path. sprintf('db-%s-%d.sql',$table,$offset);
 		if (false===$sqlUtil->mysqldump_export_data($sql_data_file_name,$table,$offset,$batch_size,$create_table,$with_mysqlpath)){
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'SQL EXPORT FAILED');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'SQL EXPORT FAILED');
 			return false;
 		}
 		$db->update_item_batch_complete($job_id,$batch_id,1);
@@ -365,7 +365,7 @@ class WPBackItUp_Backup {
 		//get count of remaining items
 		$remaining_count = $db->get_open_item_count($job_id,$content_type);
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End MYSQLDUMP Database Export');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End MYSQLDUMP Database Export');
 		return $remaining_count; //return count;
 	}
 
@@ -382,7 +382,7 @@ class WPBackItUp_Backup {
 	 */
 	public function export_database_wpbackitup($current_job,$content_type,$batch_size){
 		global $wpdb;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin WPBackItUp Database Export.');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin WPBackItUp Database Export.');
 
 	    $job_id = $current_job->getJobId();
         $sqlUtil = new WPBackItUp_SQL($this->log_name);
@@ -392,7 +392,7 @@ class WPBackItUp_Backup {
 
 	    //Get one item at a time because batch is split on inventory
 	    $item_batch = $db->get_batch_open_items($batch_id,1,$job_id,$content_type);
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,var_export($item_batch,true));
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,var_export($item_batch,true));
 
 	    //It is possible that there are no file to backup so return count or false
 	    if($item_batch == false || $item_batch==0) return $item_batch;
@@ -409,7 +409,7 @@ class WPBackItUp_Backup {
 	    //Generate the sql name - break up by offset so restore will also work in batches
 	    $sql_data_file_name=$this->backup_project_path. sprintf('db-%s-%d.sql',$table,$offset);
 	    if (false===$sqlUtil->wpbackitup_export_data($job_id,$sql_data_file_name,$table,$offset,$batch_size,$create_table)){
-            WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'SQL EXPORT FAILED');
+            WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'SQL EXPORT FAILED');
             return false;
         }
 
@@ -419,9 +419,57 @@ class WPBackItUp_Backup {
 	    //get count of remaining items
 	    $remaining_count = $db->get_open_item_count($job_id,$content_type);
 
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End WPBackItUp Database Export');
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End WPBackItUp Database Export');
    	    return $remaining_count; //return count;
     }
+
+    /**
+     * Get sql file list and merge into a single file
+     *
+     * @param $task
+     * @param $batch_size
+     * @param $search_path
+     * @param $toFile_path
+     * @param $file_type
+     *
+     * @return bool|mixed
+     */
+    public function merge_sql_files_to_path($task, $batch_size, $search_path, $toFile_path, $file_type){
+
+        $sql_files = $task->getTaskMetaValue('sql_files_to_merge', array());
+        $file_system = new WPBackItUp_FileSystem();
+        $counter = 0;
+
+        if(empty($sql_files)){
+            $sql_files   = $file_system->get_fileonly_list($search_path, $file_type);
+            // delete DB file if exist for first time.
+            @unlink($toFile_path);
+        }
+
+        foreach ( $sql_files as $i => $file ) {
+            if($counter===$batch_size){
+                $task->setTaskMetaValue('sql_files_to_merge',$sql_files);
+                return count($sql_files);
+            }
+            if ( false === $file_system->append_file_chunked($file,$toFile_path)){
+                @unlink($toFile_path); //delete DB file
+                WPBackItUp_Logger::log_warning($this->log_name,__METHOD__, 'Could not merge SQL file:' . $file);
+
+                return false;
+            };
+
+            WPBackItUp_Logger::log_info($this->log_name,__METHOD__, 'File Appended:' . $file);
+
+            $counter++;
+            // removing already appended file from the array.
+            unset($sql_files[$i]);
+        }
+
+        $task->setTaskMetaValue('sql_files_to_merge',$sql_files);
+        return count($sql_files);
+
+    }
+
 
 	/**
 	 * Create siteinfo in project dir
@@ -433,7 +481,7 @@ class WPBackItUp_Backup {
         $path=$this->backup_project_path;
 		$siteinfo_file = $path ."backupsiteinfo.config";
 
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Create Site Info File:'.$siteinfo_file);
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Create Site Info File:'.$siteinfo_file);
         try {
 
 	        $outbut_buffer=array(
@@ -446,14 +494,14 @@ class WPBackItUp_Backup {
 
 	        file_put_contents($siteinfo_file,json_encode($outbut_buffer));
             if (! file_exists($siteinfo_file)){
-	            WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Site Info file was not created successfully.');
+	            WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Site Info file was not created successfully.');
                return false;
             }
 
 	        return true;
 
         }catch(Exception $e) {
-	        WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,' Exception: ' .$e);
+	        WPBackItUp_Logger::log_error($this->log_name,__METHOD__,' Exception: ' .$e);
 	        return false;
         }
     }
@@ -469,13 +517,13 @@ class WPBackItUp_Backup {
 	 * @return bool
 	 */
 	public function save_database_inventory($job_id,$group_id,$batch_size,$exclude=null) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin:' .$group_id);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin:' .$group_id);
 
 		//create a separate log file for inventory
 		$inventory_logname = sprintf('debug_inventory_%s_%s',$group_id,$job_id);
-		WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, '**BEGIN**');
-		WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, 'Exclude: ' .var_export($exclude,true));
-		WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, '***');
+		WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, '**BEGIN**');
+		WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, 'Exclude: ' .var_export($exclude,true));
+		WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, '***');
 		try {
 
 			//get the list of tables and row sizes
@@ -498,20 +546,20 @@ class WPBackItUp_Backup {
 
 				//filter tables on exclude
 				if (!empty($exclude) && in_array($table_name, $exclude)) {
-					WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, sprintf('EXCLUDE table:%s %s %s kb ',$table_name,$table_rows,$table_size_kb));
+					WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, sprintf('EXCLUDE table:%s %s %s kb ',$table_name,$table_rows,$table_size_kb));
 					continue;
 				}
 
 				//BATCH records that should be written
 				$batch_items = ceil($table_rows/$batch_size);
 				if ($batch_items<=0) $batch_items = 1;//always write at least 1 batch record
-				WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, sprintf('ROW_COUNT/BATCH_SIZE=BATCH RECORDS:%s %d/%d=%d ',$table_name,$table_rows,$batch_size,$batch_items));
+				WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, sprintf('ROW_COUNT/BATCH_SIZE=BATCH RECORDS:%s %d/%d=%d ',$table_name,$table_rows,$batch_size,$batch_items));
 
 				//generate the sql for all the batches
 				$offset=0;
 				for ($i=1; $i <= $batch_items; $i++){
 					$sql.= "(".$job_id .", '" .$group_id."', '" .$table_name ."', " .$table_size_kb .","  .$offset .",'" .current_time('mysql') ."'),";
-					WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, sprintf('Add table:%s Offset:%s',$table_name,$offset));
+					WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, sprintf('Add table:%s Offset:%s',$table_name,$offset));
 					$offset+=$batch_size;
 					$total_counter++;
 				}
@@ -519,31 +567,31 @@ class WPBackItUp_Backup {
 
 			//write all the batch records at one time
 			if ($total_counter>0) {
-				WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, '*Try Write Batch*');
+				WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, '*Try Write Batch*');
 				if (! $db->insert_job_items_with_offset($sql)) {
 					return false;
 				}
-				WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, '*Write Batch SUCCESS*');
+				WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, '*Write Batch SUCCESS*');
 			}
 
 			$datetime2 = new DateTime('now');
 
-			WPBackItUp_LoggerV2::log_info($inventory_logname, __METHOD__, '**END**');
+			WPBackItUp_Logger::log_info($inventory_logname, __METHOD__, '**END**');
 
 			if(method_exists($datetime2, 'diff')) {
 				$interval = $datetime1->diff($datetime2);
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval->format('%s seconds'));
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval->format('%s seconds'));
 			} else {
 				$util = new WPBackItUp_Utility($this->log_name);
 				$interval = $util->date_diff_array($datetime1, $datetime2);
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval['second'] . ' seconds');
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval['second'] . ' seconds');
 			}
 
 
 			return true;
 
 		} catch(Exception $e) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Exception: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Exception: ' .$e);
 			return false;
 		}
 	}
@@ -560,21 +608,21 @@ class WPBackItUp_Backup {
 	 * @return bool
 	 */
 	public function save_folder_inventory($batch_insert_size,$job_id,$group_id,$root_path,$exclude=null) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin:' .$group_id);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin:' .$group_id);
 
 		//create a separate log file for inventory
 		$inventory_logname = sprintf('debug_inventory_%s_%s',$group_id,$job_id);
-		WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, '**BEGIN**');
-		WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, 'Root Path: ' .$root_path);
-		WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, 'Exclude: ' .var_export($exclude,true));
-		WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, '***');
+		WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, '**BEGIN**');
+		WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, 'Root Path: ' .$root_path);
+		WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, 'Exclude: ' .var_export($exclude,true));
+		WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, '***');
 		try {
 			$batch_counter = 0;
 			$total_counter=0;
 
 			//IF the path is not valid then cant create inventory
 			if (! is_dir($root_path)){
-				WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Folder does not exist: ' .$root_path);
+				WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Folder does not exist: ' .$root_path);
 				return false;
 			}
 
@@ -602,56 +650,56 @@ class WPBackItUp_Backup {
 					mb_regex_encoding("UTF-8");
 					$temp_file_name = mb_ereg_replace(WPBACKITUP__VALID_FILENAME_REGEX, '', basename($file));
 					if(strcmp($temp_file_name, basename($file)) != 0){
-						WPBackItUp_LoggerV2::log_error($inventory_logname,__METHOD__,'Skipping file: ' . $file );
-						WPBackItUp_LoggerV2::log_error($inventory_logname,__METHOD__,'Filename after removing illegal character: ' . $temp_file_name );
+						WPBackItUp_Logger::log_error($inventory_logname,__METHOD__,'Skipping file: ' . $file );
+						WPBackItUp_Logger::log_error($inventory_logname,__METHOD__,'Filename after removing illegal character: ' . $temp_file_name );
 						continue;
 					}
 				}
 
 				if ( $file->isFile()) {
 					if ($batch_counter>=$batch_insert_size){
-						WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, '*Try Write Batch*');
+						WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, '*Try Write Batch*');
 						if (! $db->insert_job_items($sql)) {
 							return false;
 						}
-						WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, '*Write Batch SUCCESS*');
+						WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, '*Write Batch SUCCESS*');
 						$sql="";
 						$batch_counter=0;
 					}
 					$total_counter++;
 					$batch_counter++;
 					$file_size=ceil($file->getSize()/1024);//round up
-					WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, 'Add File: ' .$batch_counter . ' ' .$file_path);
+					WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, 'Add File: ' .$batch_counter . ' ' .$file_path);
 					$sql.= "(".$job_id .", '" .$group_id."', '" .utf8_encode($file_path) ."', ".$file_size .",'" . current_time('mysql') ."'),";
 				}
 			}
 
 			if ($batch_counter>0) {
-				WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, '*Try Write Batch*');
+				WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, '*Try Write Batch*');
 				if (! $db->insert_job_items($sql)) {
 					return false;
 				}
-				WPBackItUp_LoggerV2::log_info($inventory_logname,__METHOD__, '*Write Batch SUCCESS*');
+				WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, '*Write Batch SUCCESS*');
 			}
 
 			$datetime2 = new DateTime('now');
 
-			WPBackItUp_LoggerV2::log_info($inventory_logname, __METHOD__, '**END**');
+			WPBackItUp_Logger::log_info($inventory_logname, __METHOD__, '**END**');
 
             if(method_exists($datetime2, 'diff')) {
                 $interval = $datetime1->diff($datetime2);
-	            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval->format('%s seconds'));
+	            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval->format('%s seconds'));
             } else {
                 $util = new WPBackItUp_Utility($this->log_name);
                 $interval = $util->date_diff_array($datetime1, $datetime2);
-	            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval['second'] . ' seconds');
+	            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval['second'] . ' seconds');
             }
 
 
 			return true;
 
 		} catch(Exception $e) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Exception: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Exception: ' .$e);
 			return false;
 		}
 	}
@@ -668,11 +716,11 @@ class WPBackItUp_Backup {
 	 * @return bool
 	 */
 	public function save_file_list_inventory($batch_insert_size,$job_id,$group_id,$root_path,$file_list) {
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin:' .var_export($file_list,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin:' .var_export($file_list,true));
 
 		//check is array list
 		if (! is_array($file_list)) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Array expected in file list:');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Array expected in file list:');
 			return false;
 		}
 
@@ -687,7 +735,7 @@ class WPBackItUp_Backup {
 
 				//skip if folder
 				if ( is_dir( $file_path ) ) {
-					WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Skip folder:' . $file_path );
+					WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Skip folder:' . $file_path );
 					continue;
 				}
 
@@ -706,7 +754,7 @@ class WPBackItUp_Backup {
 				//get rid of root path and utf8 encode
 				$file_path = utf8_encode(str_replace($root_path,'',$file_path));
 
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Add File: ' .$batch_counter . ' ' .$file_path);
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Add File: ' .$batch_counter . ' ' .$file_path);
 				$sql.= "(".$job_id .", '" .$group_id."', '" .$file_path ."', ".$file_size .",'" . current_time('mysql') . "' ),";
 			}
 
@@ -720,17 +768,17 @@ class WPBackItUp_Backup {
 
             if(method_exists($datetime2, 'diff')) {
                 $interval = $datetime1->diff($datetime2);
-	            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval->format('%s seconds'));
+	            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval->format('%s seconds'));
             } else {
                 $util = new WPBackItUp_Utility($this->log_name);
                 $interval = $util->date_diff_array($datetime1, $datetime2);
-	            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval['second'] . ' seconds');
+	            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Count/Time: ' .$total_counter . '-' . $interval['second'] . ' seconds');
             }
 
             return true;
 
 		} catch(Exception $e) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Exception: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Exception: ' .$e);
 			return false;
 		}
 	}
@@ -748,7 +796,7 @@ class WPBackItUp_Backup {
 	 */
 	public function backup_files($job_id,$source_root,$content_type){
         global $WPBackitup;
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin ');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin ');
 
 		//get files to backup
 		$db = new WPBackItUp_DataAccess();
@@ -772,12 +820,12 @@ class WPBackItUp_Backup {
 				$batch_size=$WPBackitup->backup_others_batch_size();
 				break;
 			default:
-				WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Content type not recognized:'.$content_type);
+				WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Content type not recognized:'.$content_type);
 				return false;
 
 		}
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Batch Size: '. $batch_size);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Batch Size: '. $batch_size);
 
 		//get a timestamp for the batch id
 		$batch_id=current_time( 'timestamp' );
@@ -786,7 +834,7 @@ class WPBackItUp_Backup {
 		// sometimes file list is an empty, still couldn't figure out why. 
 		if(is_array($file_list)){
 			if(empty($file_list)){
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Upload Folder is Empty');
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Upload Folder is Empty');
 				return 0;
 			}
 		}
@@ -795,11 +843,11 @@ class WPBackItUp_Backup {
 
 		//$zip_file_path = $this->backup_project_path . $this->backup_name .'-'.$content_type .'.zip';
 		$zip_file_path = sprintf('%s%s-%s-%s.zip',$this->backup_project_path,$this->backup_name,$content_type,$batch_id);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Zip file path: '. $zip_file_path);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Zip file path: '. $zip_file_path);
 
 		//IF false error happened
 		$file_count=$this->backup_files_to_zip($source_root,$target_root,$file_list,$zip_file_path);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Files added to zip:'.$file_count);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Files added to zip:'.$file_count);
 		if (false===$file_count){
 			return false;
 		}
@@ -809,16 +857,16 @@ class WPBackItUp_Backup {
 
         //Check to see if the file exists, it is possible that it does not if only empty folders were contained
         if(! file_exists($zip_file_path) ) {
-	        WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Zip File NOT found:'.$zip_file_path);
+	        WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Zip File NOT found:'.$zip_file_path);
 
 	        $file_system = new WPBackItUp_FileSystem($this->log_name);
 	        $files_in_temp_directory = $file_system->get_fileonly_list($this->backup_project_path, 'zip');
-	        WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Files In Temp Folder:');
-	        WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,$files_in_temp_directory);
+	        WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Files In Temp Folder:');
+	        WPBackItUp_Logger::log_error($this->log_name,__METHOD__,$files_in_temp_directory);
 	        return false;
         }
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Zip file FOUND:'.$zip_file_path);
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Zip file FOUND:'.$zip_file_path);
 
 		//update the batch with the number of files in the added count
 		$db->update_item_batch_complete($job_id,$batch_id,$file_count);
@@ -831,7 +879,7 @@ class WPBackItUp_Backup {
 			//if any files werent backed up then return false
 			$error_count = $db->get_error_item_count($job_id,$content_type);
 			if ($error_count>0){
-				WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Item Error count:'.$error_count);
+				WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Item Error count:'.$error_count);
 				return false;
 			}
 		}
@@ -851,7 +899,7 @@ class WPBackItUp_Backup {
 	 * @return bool
 	 */
 	public function validate_backup_files_by_batch_id($job_id,$content_type,$batch_id){
-        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin: '.$content_type . ' Batch ID: ' . $batch_id);
+        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin: '.$content_type . ' Batch ID: ' . $batch_id);
 
         //get files to backup
         $db = new WPBackItUp_DataAccess();
@@ -877,7 +925,7 @@ class WPBackItUp_Backup {
 
         //It is possible that there were no files backed up
         if( $file_list == false || $file_list==0 ) {
-            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__, 'No files found to validate.');
+            WPBackItUp_Logger::log_info($this->log_name,__METHOD__, 'No files found to validate.');
             return true;
         }
 
@@ -887,35 +935,35 @@ class WPBackItUp_Backup {
 
         //get zip path
         $zip_file_path = sprintf('%s-%s-%s.zip',$this->backup_project_path . $this->backup_name, $content_type,$batch_id);
-        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Zip file: '. $zip_file_path);
+        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Zip file: '. $zip_file_path);
 
         if ( ! file_exists($zip_file_path) ) {
-            WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Zip File not found:' . $zip_file_path );
+            WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Zip File not found:' . $zip_file_path );
             // Scanning Temp Directory.
             $files_on_temp_directory = scandir($this->backup_project_path);
-            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin::Files on TMP Directory');
-            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,$files_on_temp_directory);
-            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End::Files on TMP Directory');
+            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin::Files on TMP Directory');
+            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,$files_on_temp_directory);
+            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End::Files on TMP Directory');
             return false;
         }
 
         $current_zip_file = $zip_file_path;
         $zip = new WPBackItUp_Zip($this->log_name,$current_zip_file);
-        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Current Zip File:' . $current_zip_file );
+        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Current Zip File:' . $current_zip_file );
 
         foreach($file_list as $file) {
             $item     = $target_root .'/' .utf8_decode( $file->item );
 
             //validate file exists in zip
             if (false===$zip->validate_file($item)) {
-                WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'File NOT found in zip :' . $item );
+                WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'File NOT found in zip :' . $item );
                 $zip->close();
                 return false;
             }
             $file_counter++;
         }
 
-        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Validation Successful:'.$content_type . '-' .$file_counter);
+        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Validation Successful:'.$content_type . '-' .$file_counter);
         if (null!=$zip) $zip->close();
         return true;
     }
@@ -935,30 +983,30 @@ class WPBackItUp_Backup {
 	private function backup_files_to_zip($source_root,$target_root,$file_list, $zip_file_path){
 		global $WPBackitup;
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin ');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin ');
 
         if (empty($file_list) || !isset($file_list)) {
-	        WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'File list is not valid:');
-	        WPBackItUp_LoggerV2::log($this->log_name,var_export($file_list,true));
+	        WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'File list is not valid:');
+	        WPBackItUp_Logger::log($this->log_name,var_export($file_list,true));
             return false;
         }
 
 		$zip_max_file_size =  $WPBackitup->max_zip_size();
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin - Item Count: '. count($file_list));
-        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'ZIP MAX FILE SIZE:' .WPBackItUp_FileSystem::format_file_size($zip_max_file_size));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin - Item Count: '. count($file_list));
+        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'ZIP MAX FILE SIZE:' .WPBackItUp_FileSystem::format_file_size($zip_max_file_size));
 		$zip = new WPBackItUp_Zip($this->log_name,$zip_file_path);
 
         $file_size_counter = 0;
 		foreach($file_list as $file) {
 			$item = $source_root. '/' .utf8_decode($file->item);
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File:' .$item);
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File:' .$item);
 
 			clearstatcache();
             $file_size_counter += filesize($item);
-            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File Size Counter:' .WPBackItUp_FileSystem::format_file_size($file_size_counter));
+            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Size Counter:' .WPBackItUp_FileSystem::format_file_size($file_size_counter));
             if($file_size_counter >= $zip_max_file_size){
-	            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Exceeded Max Zip Size.');
+	            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Exceeded Max Zip Size.');
 	            break;//jump out of the for loop
             }
 
@@ -967,11 +1015,11 @@ class WPBackItUp_Backup {
 			$target_item_path= str_replace('//','/',$target_item_path);
 			$target_item_path= str_replace('\\','/',$target_item_path);
 
-			//WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Add File:' .$target_item_path );
+			//WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Add File:' .$target_item_path );
 			if ( $zip->add_file($item,$target_item_path)) {
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,sprintf('(%s)File Added:%s', $zip->get_zip_file_count(),$target_item_path));
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,sprintf('(%s)File Added:%s', $zip->get_zip_file_count(),$target_item_path));
 			} else {
-				WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'File NOT added:' . $target_item_path );
+				WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'File NOT added:' . $target_item_path );
 				return false;
 			}
 		}
@@ -979,11 +1027,11 @@ class WPBackItUp_Backup {
 		$files_count = $zip->get_files_in_zip();
 
 		//if we get here then close the zip
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,sprintf('Zip File Status BEFORE Close:%s', $zip->get_zip_status()));
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,sprintf('Number of files in zip:%s',$files_count ));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,sprintf('Zip File Status BEFORE Close:%s', $zip->get_zip_status()));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,sprintf('Number of files in zip:%s',$files_count ));
 		$zip_closed = $zip->close();//close the zip - true for success/false error
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End');
 
 		//return filecount on success and false on close error
 		return true===$zip_closed? $files_count: false;
@@ -994,50 +1042,49 @@ class WPBackItUp_Backup {
 	 * @param $source_root
 	 * @param $target_root
 	 * @param $suffix
-	 * @param $file_list
+	 * @param $file_list array reference value
 	 * @param $batch_size
+     * @param $batch_id
 	 *
 	 * @return bool|int  false on error OR count
 	 */
-	public function backup_file_list($source_root,$target_root,$suffix,$file_list,$batch_size){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+	public function backup_file_list($source_root,$target_root,$suffix,&$file_list,$batch_size, $batch_id){
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		if (! is_array($file_list)) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Array expected in file list:');
-			WPBackItUp_LoggerV2::log($this->log_name,var_export($file_list,true));
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Array expected in file list:');
+			WPBackItUp_Logger::log($this->log_name,var_export($file_list,true));
 			return false;
 		}
-
-		$batch_id=current_time( 'timestamp' );
 
 		//$zip_file_path = $this->backup_project_path . $this->backup_name .'-'.$suffix .'.tmp';
 		$zip_file_path = sprintf('%s%s-%s-%s.zip',$this->backup_project_path,$this->backup_name,$suffix,$batch_id);
 		$zip = new WPBackItUp_Zip($this->log_name,$zip_file_path);
 		foreach($file_list as $item) {
 			$item = utf8_decode($item);
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File:' . $item );
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File:' . $item );
 
 			//skip it if folder
 			if ( is_dir( $item ) ) {
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Skip folder:' . $item );
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Skip folder:' . $item );
 				array_shift( $file_list ); //remove from list
 				continue;
 			}
 
 			//replace the source path with the target
 			$target_item_path = str_replace(rtrim($source_root, '/'),rtrim($target_root,'/'),$item);
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Add File:' .$target_item_path );
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Add File:' .$target_item_path );
 			if ( $zip->add_file($item,$target_item_path)) {
 				array_shift($file_list);
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File Added:' . $target_item_path );
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Added:' . $target_item_path );
 				//If we have added X# of files or hit the size limit then lets close the zip and finish on the next pass
 				if( $zip->get_zip_file_count()>=$batch_size){
 					$zip->close();//close the zip
-					WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End - Item Count:' . count($file_list));
+					WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End - Item Count:' . count($file_list));
 					return count($file_list);
 				}
 			} else {
-				WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'File NOT added:' . $target_item_path );
+				WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'File NOT added:' . $target_item_path );
 				return false;
 			}
 		}
@@ -1046,28 +1093,28 @@ class WPBackItUp_Backup {
 		$zip->close();//close the zip
 
 		if( ! file_exists($zip_file_path) ){
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Zip file was not created.');
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Zip file was not created.');
 			return false;
 		}
 
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End - Item Count:' . count($file_list));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End - Item Count:' . count($file_list));
 		return count($file_list);
 	}
 
 
 
 	public function backup_file_to_zip($source_root,$target_root,$file_path, $zip_file_path){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		if ( empty($file_path)) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'File path expected:');
-			WPBackItUp_LoggerV2::log($this->log_name,var_export($file_path,true));
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'File path expected:');
+			WPBackItUp_Logger::log($this->log_name,var_export($file_path,true));
 			return false;
 		}
 
 		if ( !file_exists($file_path)) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'File not found:');
-			WPBackItUp_LoggerV2::log($this->log_name,var_export($file_path,true));
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'File not found:');
+			WPBackItUp_Logger::log($this->log_name,var_export($file_path,true));
 			return false;
 		}
 
@@ -1075,15 +1122,15 @@ class WPBackItUp_Backup {
 		$zip = new WPBackItUp_Zip($this->log_name,$zip_file_path);
 
 		$file_path = utf8_decode($file_path);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File:' . $file_path );
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File:' . $file_path );
 
 		//replace the source path with the target
 		$target_item_path = str_replace(rtrim($source_root, '/'),rtrim($target_root,'/'),$file_path);
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Add File:' .$target_item_path );
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Add File:' .$target_item_path );
 		if ( $zip->add_file($file_path,$target_item_path)) {
-			WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'File Added:' . $target_item_path );
+			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Added:' . $target_item_path );
 		} else {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'File NOT added:' . $target_item_path );
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'File NOT added:' . $target_item_path );
 			return false;
 		}
 
@@ -1103,7 +1150,7 @@ class WPBackItUp_Backup {
 	public function remove_supporting_zips($zip_files){
 
 		if (!is_array($zip_files) || count($zip_files)<=0) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Zip file list was not array ' .var_export( $zip_files,true));
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Zip file list was not array ' .var_export( $zip_files,true));
 			return false;
 		}
 
@@ -1134,14 +1181,14 @@ class WPBackItUp_Backup {
 				}
 
 				$cleanup_processor->save()->dispatch();
-				WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Cleanup support zips job dispatched.');
+				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Cleanup support zips job dispatched.');
 			}
 
 
 			return true;
 
 		} catch(Exception $e) {
-			WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Error Occurred: ' .$e);
+			WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Error Occurred: ' .$e);
 			return false;
 		}
 	}
@@ -1152,11 +1199,11 @@ class WPBackItUp_Backup {
 	 * @return bool
 	 */
 	public function create_backup_manifest(){
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		//get a list of all the zips
 		$backup_files_path = array_filter(glob($this->backup_project_path. '*.zip'), 'is_file');
-		WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Zip files found:'. var_export($backup_files_path,true));
+		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Zip files found:'. var_export($backup_files_path,true));
 		if (is_array($backup_files_path) && count($backup_files_path)>0){
 
 			//build the manifest with file size
@@ -1174,7 +1221,7 @@ class WPBackItUp_Backup {
 
 			$bytes = file_put_contents($manifest_file,json_encode($backup_file_list));
 			if ( $bytes===false || $bytes<=0){
-				WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Manifest file was not created successfully.');
+				WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Manifest file was not created successfully.');
 				return false;
 			}
 
@@ -1188,17 +1235,17 @@ class WPBackItUp_Backup {
                 $target_item_path = str_replace(rtrim($this->backup_project_path, '/'),rtrim('site-data','/'),$manifest_file);
                 if ($zip->add_file($manifest_file,$target_item_path)) {
                     $zip->close();//close the zip
-	                WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End -  Manifest created.');
+	                WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End -  Manifest created.');
 	                @unlink($manifest_file);
                     return true;
                 }
              }else{
-	            WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Main zip not found.');
+	            WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Main zip not found.');
             }
 		}
 
 		@unlink($manifest_file);
-		WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'End -  Manifest not created.');
+		WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'End -  Manifest not created.');
 		return false;
 	}
 
@@ -1228,7 +1275,7 @@ class WPBackItUp_Backup {
 	 * @return bool
 	 */
 	public function rename_backup_folder() {
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
         $backup_project_path = $this->backup_project_path;
         //remove the 4 character prefix
@@ -1236,13 +1283,13 @@ class WPBackItUp_Backup {
 
         $file_system = new WPBackItUp_FileSystem($this->log_name);
         if (! $file_system->rename_file($backup_project_path,$new_backup_path)){
-	        WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Folder could not be renamed');
+	        WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Folder could not be renamed');
             return false;
         }
 
         $this->set_final_backup_path();
 
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End');
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End');
         return true;
     }
 
@@ -1251,7 +1298,7 @@ class WPBackItUp_Backup {
 	 *
 	 */
 	public function set_final_backup_path(){
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Begin');
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
         $backup_project_path = $this->backup_project_path;
         $new_backup_path = str_replace('TMP_','',$backup_project_path);
@@ -1259,7 +1306,7 @@ class WPBackItUp_Backup {
         //set the path to the new path
         $this->backup_project_path=$new_backup_path;
 
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'End');
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'End');
     }
 
 	/**

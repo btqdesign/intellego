@@ -29,13 +29,13 @@ function wpbackitup_update_plugin() {
 	$target_plugin_major_ver = WPBACKITUP__MAJOR_VERSION;
 	$target_plugin_minor_ver = WPBACKITUP__MINOR_VERSION;
 
-	WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Current Plugin Major Version:' . $current_plugin_major_ver );
-	WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Current Plugin Minor Version:' . $current_plugin_minor_ver );
-	WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Target Plugin Minor Version:' . $target_plugin_minor_ver );
+	WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Current Plugin Major Version:' . $current_plugin_major_ver );
+	WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Current Plugin Minor Version:' . $current_plugin_minor_ver );
+	WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Target Plugin Minor Version:' . $target_plugin_minor_ver );
 
 	//If current version = 0 then this is an install
 	if ($current_plugin_major_ver==0){
-		WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'New Install.');
+		WPBackItUp_Logger::log_info($log_name,__METHOD__, 'New Install.');
 
 		update_option( 'wp-backitup_major_version', $target_plugin_major_ver );
 		update_option( 'wp-backitup_minor_version', $target_plugin_minor_ver );
@@ -49,19 +49,19 @@ function wpbackitup_update_plugin() {
 		while ( $current_plugin_minor_ver < $target_plugin_minor_ver ) {
 
 			$current_plugin_minor_ver ++;
-			WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, sprintf('Upgrading plugin to MINOR version %s',$current_plugin_minor_ver) );
+			WPBackItUp_Logger::log_info($log_name,__METHOD__, sprintf('Upgrading plugin to MINOR version %s',$current_plugin_minor_ver) );
 
 			$func = "wpbackitup_update_plugin_minor_routine_{$current_plugin_major_ver}_{$current_plugin_minor_ver}";
 			if ( function_exists( $func ) ) {
-				WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,  'Running update routine:' . $func );
+				WPBackItUp_Logger::log_info($log_name,__METHOD__,  'Running update routine:' . $func );
 				call_user_func( $func,$log_name );
-				WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,  'Update Routine complete:' . $func );
+				WPBackItUp_Logger::log_info($log_name,__METHOD__,  'Update Routine complete:' . $func );
 			} else{
-				WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,  'No updates for this version.');
+				WPBackItUp_Logger::log_info($log_name,__METHOD__,  'No updates for this version.');
 			}
 
 			update_option( 'wp-backitup_minor_version', $current_plugin_minor_ver );
-			WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Updated plugin MINOR version in settings:'. $current_plugin_minor_ver );
+			WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Updated plugin MINOR version in settings:'. $current_plugin_minor_ver );
 		}
 		return;
 	}
@@ -78,41 +78,41 @@ function wpbackitup_update_plugin() {
 			// increment the current db_ver by one
 			$current_plugin_major_ver ++;
 
-			WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, sprintf('Upgrading plugin to MAJOR version %s',$current_plugin_major_ver) );
+			WPBackItUp_Logger::log_info($log_name,__METHOD__, sprintf('Upgrading plugin to MAJOR version %s',$current_plugin_major_ver) );
 
 			// each version will require a separate update function
 			// for example, for ver 3, the function name should be solis_update_routine_3
 			$func = "wpbackitup_update_plugin_major_routine_{$current_plugin_major_ver}";
 			if ( function_exists( $func ) ) {
-				WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Running update routine:' . $func );
+				WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Running update routine:' . $func );
 				call_user_func( $func,$log_name );
-				WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Update Routine complete:' . $func );
+				WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Update Routine complete:' . $func );
 			} else{
-				WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,  'No updates for this version.');
+				WPBackItUp_Logger::log_info($log_name,__METHOD__,  'No updates for this version.');
 			}
 
 			// update the option in the database, so that this process can always
 			// pick up where it left off
 			update_option( 'wp-backitup_major_version', $current_plugin_major_ver );
-			WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Updated plugin MAJOR version in settings:'. $current_plugin_major_ver );
+			WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Updated plugin MAJOR version in settings:'. $current_plugin_major_ver );
 
-			WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Check for MINOR version upgrades');
+			WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Check for MINOR version upgrades');
 
 			//Check for up to 50 minor releases in this version
 			for ( $i = 1; $i <= 50; $i ++ ) {
 				$func = "wpbackitup_update_plugin_minor_routine_{$current_plugin_major_ver}_{$i}";
 				if ( function_exists( $func ) ) {
-					WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Running update routine:' . $func );
+					WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Running update routine:' . $func );
 					call_user_func( $func );
-					WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Update Routine complete:' . $func );
+					WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Update Routine complete:' . $func );
 				} else{
-					WPBackItUp_LoggerV2::log_info($log_name,__METHOD__,  'No updates for this version:' .$i);
+					WPBackItUp_Logger::log_info($log_name,__METHOD__,  'No updates for this version:' .$i);
 				}
 
 			}
 
 			update_option( 'wp-backitup_minor_version', $target_plugin_minor_ver );
-			WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Updated plugin MINOR version in settings:'. $target_plugin_minor_ver );
+			WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Updated plugin MINOR version in settings:'. $target_plugin_minor_ver );
 
 		}
 	}
@@ -125,7 +125,7 @@ function wpbackitup_update_plugin() {
  */
 function wpbackitup_update_plugin_major_routine_1($log_name){
 	// dont think this will ever run
-	WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Begin upgrade plugin to V1' );
+	WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Begin upgrade plugin to V1' );
 
 	//Need to reset the batch size for this release
 	$batch_size = get_option('wp-backitup_backup_batch_size');
@@ -146,7 +146,7 @@ function wpbackitup_update_plugin_major_routine_1($log_name){
 		delete_option('wp-backitup_lite_registration_email');
 	}
 
-	WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'End upgrade plugin to V1' );
+	WPBackItUp_Logger::log_info($log_name,__METHOD__, 'End upgrade plugin to V1' );
 }
 
 /*----------------------------------------------*/
@@ -158,16 +158,16 @@ function wpbackitup_update_plugin_major_routine_1($log_name){
  *  Minor Version update 1.12
  */
 function wpbackitup_update_plugin_minor_routine_1_12($log_name){
-	WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'Begin upgrade plugin to V1.12' );
+	WPBackItUp_Logger::log_info($log_name,__METHOD__, 'Begin upgrade plugin to V1.12' );
 
 	//Update the db tables batch size - changes usage in this version
 	$settings_tables_batch_size = get_option('wp-backitup_backup_dbtables_batch_size');
 	if ($settings_tables_batch_size<10000){
 		delete_option('wp-backitup_backup_dbtables_batch_size');
-		WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'dbtables_batch_size removed');
+		WPBackItUp_Logger::log_info($log_name,__METHOD__, 'dbtables_batch_size removed');
 	}
 
-	WPBackItUp_LoggerV2::log_info($log_name,__METHOD__, 'End upgrade plugin to V1.12' );
+	WPBackItUp_Logger::log_info($log_name,__METHOD__, 'End upgrade plugin to V1.12' );
 }
 
 

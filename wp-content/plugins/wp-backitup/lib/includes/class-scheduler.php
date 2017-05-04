@@ -23,7 +23,7 @@ class WPBackItUp_Scheduler {
 
 	    } catch(Exception $e) {
 		    error_log($e);
-		    WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
+		    WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Constructor Exception: ' .$e);
 	    }
     }
 
@@ -42,7 +42,7 @@ class WPBackItUp_Scheduler {
      * @return bool
      */
     public function isJobScheduled($task){
-	    WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Check schedule for task: ' . $task);
+	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Check schedule for task: ' . $task);
 
         //Check for tasks
 	    $jobs = array();
@@ -57,7 +57,7 @@ class WPBackItUp_Scheduler {
                 break;
         }
 
-	    WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Task not found:' . $task);
+	    WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Task not found:' . $task);
         return false;
     }
 
@@ -70,37 +70,37 @@ class WPBackItUp_Scheduler {
      */
     private function check_cleanup_schedule(){
         global $WPBackitup;
-	    WPBackItUp_LoggerV2::log($this->log_name,'**Check Cleanup Schedule**');
+	    WPBackItUp_Logger::log($this->log_name,'**Check Cleanup Schedule**');
         try {
 
             //What is the current day of the week
             $current_datetime = current_time( 'timestamp' );
             $current_date = date("Ymd",$current_datetime);
 
-	        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Current Date time:' . date( 'Y-m-d H:i:s',$current_datetime));
+	        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Current Date time:' . date( 'Y-m-d H:i:s',$current_datetime));
 
             //Get Last RUN date
             $lastrun_datetime = $WPBackitup->cleanup_lastrun_date();
 
             $lastrun_date = date("Ymd",$lastrun_datetime);
-	        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Last Run Date Time:' . date( 'Y-m-d H:i:s',$lastrun_datetime));
+	        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Last Run Date Time:' . date( 'Y-m-d H:i:s',$lastrun_datetime));
 
             //Has it been at least an hour since the last cleanup?
 
 	        $next_run_datetime=$lastrun_datetime+3600; //1 hour
-	        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Next Run Date Time:' . date( 'Y-m-d H:i:s',$next_run_datetime));
+	        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Next Run Date Time:' . date( 'Y-m-d H:i:s',$next_run_datetime));
 
-	        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'TimeToRun:' . $current_datetime . ':'.$next_run_datetime );
+	        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'TimeToRun:' . $current_datetime . ':'.$next_run_datetime );
             if ($current_datetime>=$next_run_datetime){
-	            WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Cleanup should be run now.');
+	            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Cleanup should be run now.');
                 return true;
             }
 
-	        WPBackItUp_LoggerV2::log_info($this->log_name,__METHOD__,'Not yet time to run Cleanup.');
+	        WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Not yet time to run Cleanup.');
             return false;
 
         }catch(Exception $e) {
-	        WPBackItUp_LoggerV2::log_error($this->log_name,__METHOD__,'Exception: ' .$e);
+	        WPBackItUp_Logger::log_error($this->log_name,__METHOD__,'Exception: ' .$e);
             return false;
         }
 

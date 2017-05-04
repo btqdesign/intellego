@@ -1,9 +1,9 @@
 === Use Any Font ===
 Contributors: dnesscarkey
-Tags: use any font, any font, embed any font, font embed, font uploader, css3 font embed, @font-face embed, font conversion, webfont, ttf, opentype, custom fonts
+Tags: custom fonts, font embed, font uploader, any font, embed any font, font uploader, css3 font embed, @font-face embed, font conversion, webfont, ttf, opentype
 Requires at least: 3.0
 Tested up to: 4.7.3
-Stable tag: 4.7.1
+Stable tag: 4.7.2
 
 Embed any font in your website
 
@@ -12,20 +12,23 @@ Use any font you wish and give your site a elegant look. No css knowledge requir
 
 Click <a href="http://dineshkarki.com.np/use-any-font/demo" target="_blank">here</a> for Use Any Font working demo.
 
-Use Any Font gives you freedom to use any font in your website. It is not like other font embed services which gives you countable number of fonts to select from neither the one that stores your font in remote server. You can use any font if you have its font format (ttf,otf,woff) without being dependent to other's server uptime.
+Use Any Font gives you freedom to use custom fonts in your website. It is not like other font embed services which gives you countable number of fonts to select from neither the one that stores your font in remote server. You can use any font if you have its font format (ttf,otf,woff) without being dependent to other's server uptime.
 
-Features
+<strong>Features</strong>
 
 * Quick and easy to setup. No css or any rocket science knowledge needed. 
 * Support all major browsers including IE 6+, Firefox, Chrome, Safari, IOS, Andriod, Opera and more.
-* Font conversion within the plugin interface font uploader.
-* Use uploaded font directly from Editor
+* Font conversion within the plugin interface font uploader and quick font assign interface. You can select pre defined html tags or assign it to custom css.
+* Use uploaded font directly from Wordpress Editor, <a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=39880" target="_blank">Divi Builder</a>, <a href="https://wordpress.org/plugins/siteorigin-panels/" target="_blank">Site Origin Page Buider</a> and any visual builder using the class. 
 * Supports font format including ttf, otf, woff. The required fonts are converted automatically.
 * Accepts font file upto 15 MB.
 * Embed fonts using @font-face css. SEO friendly and quick loading.
 * Multiple fonts can be used.
 * Faster load time as your custom fonts are stored on your own server.
-* Quick font assign interface. You can select pre defined html tags or assign it to custom css.
+
+<strong>Support</strong>
+
+* <a href="http://dnesscarkey.com/virtual-support/use-any-font.php" target="_blank">Virtual Support</a> to solve common issues. It covers almost 80% of repeated issues.
 * <a href="http://dineshkarki.com.np/forums/forum/use-any-fonts" target="_blank">Support Forum</a> to quickly resolve your issues.
 * <a href="http://dineshkarki.com.np/rectify-my-problem" target="_blank">Rectify My Problem</a> for personal assitance.
 
@@ -54,17 +57,9 @@ We don't respond to support tickets created here. Please visit our <a href="http
 
 == Frequently Asked Questions ==
 
-= Which font format does plugin accepts ? =
+= Which font format does plugin accepts and the font size ? =
 
-Currently, ttf, otf, woff font format are accepted.
-
-= What is the max font file size ? =
-
-Font file upto 15MB is acceptable. However, we suggest you to use smaller ones as far as possible. The font file size directly affects your site load time. 
-
-= Mentioned 15 MB here but in font upload section it says less. Why ? =
-
-Ya, our plugin accept upto 15 MB font file but your wordpress installation have limitation for file size. Please check this link to increase it http://www.wpbeginner.com/wp-tutorials/how-to-increase-the-maximum-file-upload-size-in-wordpress/
+Currently, ttf, otf, woff font format are accepted. Font file upto 15MB is acceptable. However, we suggest you to use smaller ones as far as possible. The font file size directly affects your site load time. 
 
 = Does it works with multiple fonts ? =
 
@@ -74,17 +69,13 @@ Ya, it works with multiple fonts. For multiple font conversion request, you need
 
 No, you don't need to do it yourself. Just upload your font(supports most of the font format), and the plugin does the rest.
 
-= Font uploaded from Use Any Font is not showing in wordpress editor ? =
+= Does it work with Visual Builder like Divi Builder ? =
 
-Please check screenshot #4 in Screenshots tab.
+Ya, it works with any visual builder. For that you can assign class to those elements. Class name are same as font name. Also, we have full support for Divi Builder and SiteOrigin Page Builder. You can assign fonts using their font family dropdown. 
 
-= I want to disable font list from wordpress editor  ? =
-
-Please check screenshot #5 in Screenshots tab.
-
-= I moved my server path and the font is not working now. Why ? =
-
-The plugin is still searching font from your old path. You can delete your old uploaded font and re-upload and re-assign it.
+You can check video for more details.
+<a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=39880" target="_blank">Divi Builder</a> : https://www.youtube.com/watch?v=Y24TtwNHFMY
+<a href="https://wordpress.org/plugins/siteorigin-panels/" target="_blank">Site Origin Page Buider</a> : https://www.youtube.com/watch?v=dA-iXWZSCYs
 
 = Where are my fonts stored ? =
 
@@ -96,7 +87,9 @@ No, our server is needed during font conversion only. After that all fonts are s
 
 = Not working for me. What can i do ? =
 
-You can check our <a href="http://dineshkarki.com.np/forums/forum/use-any-fonts" target="_blank">support forum</a>, or check <a href="http://dineshkarki.com.np/use-any-font/use-any-font-known-issues" target="_blank">known issues</a> or ask to <a href="http://dineshkarki.com.np/rectify-my-problem" target="_blank">Rectify Your Problem</a> 
+<a href="http://dnesscarkey.com/virtual-support/use-any-font.php" target="_blank">Virtual Support</a> to solve common issues. It covers almost 80% of repeated issues.
+<a href="http://dineshkarki.com.np/forums/forum/use-any-fonts" target="_blank">Support Forum</a> to quickly resolve your issues.
+<a href="http://dineshkarki.com.np/rectify-my-problem" target="_blank">Rectify My Problem</a> for personal assitance.
 
 
 == Screenshots ==
@@ -109,6 +102,9 @@ You can check our <a href="http://dineshkarki.com.np/forums/forum/use-any-fonts"
 1. Screenshot #6. Assign fonts to custom elements.
 
 == Changelog ==
+
+= 4.7.2 =
+* SiteOrigin Page Builder Support
 
 = 4.7.1 =
 * Divi Theme Issue Fixes.

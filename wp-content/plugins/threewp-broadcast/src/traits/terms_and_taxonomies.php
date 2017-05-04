@@ -306,6 +306,17 @@ trait terms_and_taxonomies
 	}
 
 	/**
+		@brief		Init this trait.
+		@since		2017-04-10 20:36:19
+	**/
+	public function terms_and_taxonomies_init()
+	{
+		$this->add_action( 'threewp_broadcast_collect_post_type_taxonomies', 5 );
+		$this->add_action( 'threewp_broadcast_wp_insert_term', 5 );
+		$this->add_action( 'threewp_broadcast_wp_update_term', 5 );
+	}
+
+	/**
 		@brief		Collects the post type's taxonomies into the broadcasting data object.
 		@details
 

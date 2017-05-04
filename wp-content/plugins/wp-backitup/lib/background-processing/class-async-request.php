@@ -103,7 +103,7 @@ if ( ! class_exists( 'WPBackItUp_Async_Request' ) ) {
 
 			$response = wp_remote_post( esc_url_raw( $url ), $args );
 			if ( is_wp_error( $response ) ) { //timeout error is ok
-				WPBackItUp_LoggerV2::log_info( self::$logname, __METHOD__, sprintf( 'Error on WP Remote Post Request: %s ', var_export( $response, true )));
+				WPBackItUp_Logger::log_info( self::$logname, __METHOD__, sprintf( 'Error on WP Remote Post Request: %s ', var_export( $response, true )));
 			}
 
 			return $response;

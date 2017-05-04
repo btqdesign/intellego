@@ -8,11 +8,11 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Upload, delete, copy, move, rename, edit, compress, extract files. You don't need to worry about ftp any more. It is realy simple and easy to use.
+File Manager supports any kind of file operation with full FTP support. Upload, delete, copy, move, rename, edit, compress, extract files.
 
 == Description ==
 
-Most robust and powerful file manager for wordpress. You can upload, delete, copy, move, rename, archive, extract files. You don't need to worry about ftp any more. It is realy simple and easy to use.
+File Manager is the most robust and powerful file manager for WordPress. You can upload, delete, copy, move, rename, archive, extract files. You don't need to worry about ftp any more. It is really simple and easy to use.
 Just install the plugin following standard wordpress plugin install process and visit your dashbord. You will find a side menu called file manager. Just click on it to open file manager.
 
 > <strong>[Extend File Manager](http://www.giribaz.com/)</strong> with tons of features and priority support.
@@ -37,6 +37,7 @@ Just install the plugin following standard wordpress plugin install process and 
 + Calculate directory sizes
 + Video and audio preview/play
 + Support file search and sort
++ Multiple language support
 
 = Extended Features =
 
@@ -111,50 +112,29 @@ Yes, I will support the plugin.
 12. File manager pro shortcode(PRO only)
 13. File manager pro frontend(PRO only)
 
+
 == Changelog ==
 
-= 1.0 =
+= 4.1.5 (4 April, 2017) =
 
-* Initial release of the plugin.
+* Security Update
 
-= 2.0 =
+= 4.1.4 (2 March, 2017) = 
 
-* Internal structure updated.
+* Lanugage option added
+* Designe issue fixed
 
-= 2.0.1 =
+= 4.1.3 (19 February, 2017) =
 
-* Activation error fixed with PHP 5.2
+* Lower version of PHP error fixed
 
-= 2.2.0 =
+= 4.1.2 (5 January, 2017) =
 
-* Extra slash problem on file edit has been checked.
-* Security update.
+* Extra slash issue solved
 
-= 2.2.1 =
+= 4.1.1 (14 December, 2016) =
 
-* Page speed optimized
-* Security Updated
-
-= 2.2.2 =
-
-* Extra character output fixed.
-
-= 2.2.3 =
-
-* Chromium design issue fixed.
-
-= 2.2.4 =
-
-* Data is not valid problem fixed.
-
-= 3.0.0 =
-
-* Bug fixed and Interface updated.
-
-= 4.0.4 =
-
-* OS independent file path structure
-* Logging system added
+* Minor UI changes
 
 = 4.1.0 =
 
@@ -162,19 +142,45 @@ Yes, I will support the plugin.
 * Server configuration panel added
 * fm_options hook added
 
-= 4.1.1 (14 December, 2016) =
+= 4.0.4 =
 
-* Minor UI changes
+* OS independent file path structure
+* Logging system added
 
-= 4.1.2 (5 January, 2017) =
+= 3.0.0 =
 
-* Extra slash issue solved
+* Bug fixed and Interface updated.
 
-= 4.1.3 (19 February, 2017) =
+= 2.2.4 =
 
-* Lower version of PHP error fixed
+* Data is not valid problem fixed.
 
-= 4.1.4 (2 March, 2017) = 
+= 2.2.3 =
 
-* Lanugage option added
-* Designe issue fixed
+* Chromium design issue fixed.
+
+= 2.2.2 =
+
+* Extra character output fixed.
+
+= 2.2.1 =
+
+* Page speed optimized
+* Security Updated
+
+= 2.2.0 =
+
+* Extra slash problem on file edit has been checked.
+* Security update.
+
+= 2.0.1 =
+
+* Activation error fixed with PHP 5.2
+
+= 2.0 =
+
+* Internal structure updated.
+
+= 1.0 =
+
+* Initial release of the plugin.

@@ -1,10 +1,11 @@
-=== ThreeWP Broadcast ===
+=== Broadcast ===
 Contributors: edward_plainview
+Donate link: https://broadcast.plainviewplugins.com
 License: GPLv3
 Requires at least: 4.6
 Stable tag: trunk
 Tags: multipost, sharing, duplicate, franchise, syndication, marketing, news, hub
-Tested up to: 4.7.3
+Tested up to: 4.7.4
 
 Network content syndication made easy! Automatically share content by multiposting between multisite blogs.
 
@@ -14,13 +15,19 @@ Network content syndication made easy! Automatically share content by multiposti
 
 Automatically share content by multiposting between multisite blogs. Syndicate posts to other blogs, update posts between blogs, sync posts, share content templates, etc. Broadcasted posts can be linked to their parents, which updates child posts when the parent post is updated. This includes all data: title, slug, content, custom fields, attachments, etc.
 
-Broadcast is great for:
+Broadcast, formerly ThreeWP Broadcast, is great for:
 
 * Chain stores
 * Franchises
 * News sites
 * Schools
 * Anything else with distributed content!
+
+Here are some use cases for Broadcast:
+
+* <a href="https://broadcast.plainviewplugins.com/2017/04/02/broadcast-in-the-school-classroom/">Broadcast in the school classroom</a>
+* <a href="https://broadcast.plainviewplugins.com/2017/04/02/franchising-with-wordpress-and-broadcast/">Franchising with WordPress and Broadcast</a>
+* <a href="https://broadcast.plainviewplugins.com/2017/03/28/wholesale-with-woocommerce-and-broadcast/">Wholesale with WooCommerce and Broadcast</a>
 
 Requires PHP version 5.4 or higher.
 
@@ -128,6 +135,7 @@ Utilities pack
 * <a href="https://broadcast.plainviewplugins.com/addon/cdn-workaround/">CDN Workaround</a> works around faulty CDNs that do not report the correct URL for attachments.
 * <a href="https://broadcast.plainviewplugins.com/addon/lock-post/">Lock Post</a> allows users to lock editing of posts / pages to only themselves and super admins.
 * <a href="https://broadcast.plainviewplugins.com/addon/menus/">Menus</a> copies menus between blogs (overwrite / update), with support for equivalent child posts on the child blogs and equivalent taxonomies.
+* <a href="https://broadcast.plainviewplugins.com/addon/page-content-shortcode/">Page Content Shortcode</a> provides a <code>[bc_page_content slug="pageslug"]</code> shortcode to display the contents of a page.
 * <a href="https://broadcast.plainviewplugins.com/addon/php-code/">PHP Code</a> - Run custom PHP code on selected blogs. Easily switch themes for all blogs, for example.
 * <a href="https://broadcast.plainviewplugins.com/addon/sync-taxonomies/">Sync Taxonomies</a> synchronize the taxonomies of target blogs with those from a source blog.
 
@@ -253,16 +261,13 @@ Make sure that:
 
 Broadcast is capable of handling simple WooCommerce products.
 
-1. In the Broadcast custom post type settings: Add "product"
-2. When broadcasting, select custom fields and taxonomies.
+1. In the Broadcast custom post type settings: Add "product".
+2. Save the product normally first.
+3. Then broadcast, selecting the custom fields and taxonomies checkboxes.
 
 This will broadcast all normal product settings: SKU, price, etc.
 
-If your products have variations, want to sync stock, want to sync orders, need the attribute taxonomies to be synced, you'll be wanting the <a href="https://broadcast.plainviewplugins.com/addon/woocommerce/">WooCommerce add-on</a>.
-
-If you have a product gallery, use the <a href="https://broadcast.plainviewplugins.com/addon/custom-field-attachments/">Custom Field Attachments add-on</a> to broadcast the "_product_image_gallery" custom field.
-
-Need your PDF vouchers synced upon each purchase? See the WooCommerce extras in the premium add-on pack.
+If your products have variations, a product image gallery, want to sync stock, want to sync orders, need the attribute taxonomies to be synced, you'll be wanting the <a href="https://broadcast.plainviewplugins.com/addon/woocommerce/">WooCommerce add-on</a>.
 
 = WPML Sitepress =
 
@@ -279,6 +284,23 @@ Xcache v2 does not support PHP namespaces, which is a PHP 5.3 feature. Trying to
 Xcache v3, which does support namespaces, has not yet been tested. Anyone with Xcache v3 experience is welcome to contact me with info.
 
 == Changelog ==
+
+= 38.2 20170428 =
+
+* New: Add edit link back to parent post in the broadcast meta box for child posts.
+* New: Add edit and view links for the parent post in the child post actions popup in the post overview.
+* New: Add edit and view links for the child post actions popup in the post overview.
+* New add-on: <a href="https://broadcast.plainviewplugins.com/addon/page-content-shortcode/">Page Content Shortcode</a> provides a <code>[bc_page_content slug="pageslug"]</code> shortcode to display the contents of a page.
+* Code: Rolling back usage of $blog->switch_to and ->switch_from. This is to un-unnecessarily futureproof things.
+* Code: Add find_unlinked_posts_blogs action to give developers choice of which blogs to search for unlinked children. Also works with the <a href="https://broadcast.plainviewplugins.com/addon/find-some-unlinked-children/">Find Some Unlinked Children add-on</a>. There's also a <a href="https://broadcast.plainviewplugins.com/snippet/find-unlinked-children-only-on-some-blogs/">code snippet</a> showing how to use the action.
+
+= 38 20170406 =
+
+Finally dropped the "ThreeWP" prefix from the plugin name! The code remains the same, though, just the plugin name is changed.
+
+* Fix: Extra check to see whether the attachment was correctly copied. Catches a fatal error when the attachment does not return with a real filename.
+* Fix: Some attachments do not have proper filenames (mp3), so avoid clearing the filename completely. Fixes fatal errors when broadcasting those types of files.
+* Code: Make _get_post_children function public so that the <a href="https://broadcast.plainviewplugins.com/addon/rebroadcast/">Rebroadcast add-on</a> can queue posts.
 
 = 37 20170316 =
 

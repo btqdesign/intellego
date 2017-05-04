@@ -66,13 +66,13 @@ function scan_import_backups($backup_dir){
     $file_list = $file_system->get_fileonly_list($backup_dir, 'zip|log');
 
     //If there are zip files then move them into their own folders
-    WPBackItUp_LoggerV2::log_info($debug_backup_view_log,__METHOD__,'Files in backup folder: ' .var_export($file_list,true));
+    WPBackItUp_Logger::log_info($debug_backup_view_log,__METHOD__,'Files in backup folder: ' .var_export($file_list,true));
 
     //If files to import
     $job_import_list = array();
     if (null != $file_list && is_array($file_list)) {
         foreach ( $file_list as $file ) {
-            //WPBackItUp_LoggerV2::log_info( $debug_backup_view_log, __METHOD__, 'File:' . $file );
+            //WPBackItUp_Logger::log_info( $debug_backup_view_log, __METHOD__, 'File:' . $file );
 
             $file_name = substr( basename( $file ), 0, - 4 );
 
@@ -108,7 +108,7 @@ function scan_import_backups($backup_dir){
 
             //Is this a BackItUp archive
             if ( empty( $folder_name )  || $extension!='.zip' ) {
-                WPBackItUp_LoggerV2::log_error( $debug_backup_view_log, __METHOD__, 'File does not appear to be a WPBackItUp backup archive:'. $file );
+                WPBackItUp_Logger::log_error( $debug_backup_view_log, __METHOD__, 'File does not appear to be a WPBackItUp backup archive:'. $file );
                 unlink( $file );//get rid of it
                 continue;
             }
@@ -117,13 +117,13 @@ function scan_import_backups($backup_dir){
             $backup_archive_folder = WPBACKITUP__BACKUP_PATH . '/' . $folder_name;
             if ( ! is_dir( $backup_archive_folder ) ) {
                 if ( ! mkdir( $backup_archive_folder, 0755 ) ) {
-                    WPBackItUp_LoggerV2::log_error( $debug_backup_view_log, __METHOD__, 'Folder is not writable:' . $backup_archive_folder );
+                    WPBackItUp_Logger::log_error( $debug_backup_view_log, __METHOD__, 'Folder is not writable:' . $backup_archive_folder );
                     continue;
                 } else {
-                    WPBackItUp_LoggerV2::log_info( $debug_backup_view_log, __METHOD__, 'Folder created:' . $backup_archive_folder );
+                    WPBackItUp_Logger::log_info( $debug_backup_view_log, __METHOD__, 'Folder created:' . $backup_archive_folder );
                 }
             } else {
-                WPBackItUp_LoggerV2::log_info( $debug_backup_view_log, __METHOD__, 'Folder exists:' . $backup_archive_folder );
+                WPBackItUp_Logger::log_info( $debug_backup_view_log, __METHOD__, 'Folder exists:' . $backup_archive_folder );
             }
 
 
@@ -131,10 +131,10 @@ function scan_import_backups($backup_dir){
             //will overwrite if exists
             $target_file = $backup_archive_folder . "/" . basename( $file );
             if ( ! rename( $file, $target_file ) ) {
-                WPBackItUp_LoggerV2::log_error( $debug_backup_view_log, __METHOD__, 'Cant move zip file to backup folder' );
+                WPBackItUp_Logger::log_error( $debug_backup_view_log, __METHOD__, 'Cant move zip file to backup folder' );
                 continue;
             } else{
-                WPBackItUp_LoggerV2::log_info( $debug_backup_view_log, __METHOD__, 'File Imported:' .$file);
+                WPBackItUp_Logger::log_info( $debug_backup_view_log, __METHOD__, 'File Imported:' .$file);
             }
 
             //add folder to job array if doesnt already exist
@@ -144,7 +144,7 @@ function scan_import_backups($backup_dir){
 
         }
 
-        WPBackItUp_LoggerV2::log_info( $debug_backup_view_log,__METHOD__, 'Job Import List:' .var_export($job_import_list,true));
+        WPBackItUp_Logger::log_info( $debug_backup_view_log,__METHOD__, 'Job Import List:' .var_export($job_import_list,true));
         //If any archives were imported then add the job meta
         if (is_array($job_import_list) && count($job_import_list)>0) {
 
@@ -152,7 +152,7 @@ function scan_import_backups($backup_dir){
             foreach ( $job_import_list as $job_name=>$job_path ) {
                 $ctr++;
                 //Import into job control table
-                WPBackItUp_LoggerV2::log_info( $debug_backup_view_log,__METHOD__, 'Import Backup To Post Table Started' );
+                WPBackItUp_Logger::log_info( $debug_backup_view_log,__METHOD__, 'Import Backup To Post Table Started' );
                 $folder_prefix     = substr( $job_name, 0, 4 );
                 $folder_name_parts = explode( '_', $job_name );
 
@@ -163,30 +163,30 @@ function scan_import_backups($backup_dir){
                     $jobs = WPBackItUp_Job::get_jobs_by_job_name( WPBackItUp_Job::BACKUP, $job_name, WPBackItUp_Job::COMPLETE );
 
                     if ( false === $jobs ) {
-                        WPBackItUp_LoggerV2::log_info( $debug_backup_view_log,__METHOD__, 'Import job' );
+                        WPBackItUp_Logger::log_info( $debug_backup_view_log,__METHOD__, 'Import job' );
                         $job_id = current_time( 'timestamp' ) + $ctr; //Create new job id just in case there are deleted job cnotrol records
                         $job    = WPBackItUp_Job::import_completed_job( $job_name, $job_id, WPBackItUp_Job::BACKUP, $job_id );
 
                     } else {
-                        WPBackItUp_LoggerV2::log_info( $debug_backup_view_log,__METHOD__,'Selecting Existing job.' );
+                        WPBackItUp_Logger::log_info( $debug_backup_view_log,__METHOD__,'Selecting Existing job.' );
                         $job = is_array( $jobs ) ? current( $jobs ) : false;
                     }
 
-                    WPBackItUp_LoggerV2::log_info( $debug_backup_view_log,__METHOD__, $job );
+                    WPBackItUp_Logger::log_info( $debug_backup_view_log,__METHOD__, $job );
 
                     //if job exists - update job meta
                     if ( false !== $job ) {
-                        WPBackItUp_LoggerV2::log_info( $debug_backup_view_log,__METHOD__, 'Update Job Meta' );
+                        WPBackItUp_Logger::log_info( $debug_backup_view_log,__METHOD__, 'Update Job Meta' );
 
                         $file_system = new WPBackItUp_FileSystem();
                         $zip_files   = $file_system->get_fileonly_list_with_filesize( $job_path, 'zip' );
 
-                        WPBackItUp_LoggerV2::log_info( $debug_backup_view_log,__METHOD__, $zip_files );
+                        WPBackItUp_Logger::log_info( $debug_backup_view_log,__METHOD__, $zip_files );
 
                         $job->setJobMetaValue( 'backup_zip_files', $zip_files ); //list of zip files
 
                         //If we get this far job was imported successfully
-                        WPBackItUp_LoggerV2::log_info( $debug_backup_view_log, __METHOD__, 'Job Imported:' . $folder_name );
+                        WPBackItUp_Logger::log_info( $debug_backup_view_log, __METHOD__, 'Job Imported:' . $folder_name );
                     }
                 }
             }

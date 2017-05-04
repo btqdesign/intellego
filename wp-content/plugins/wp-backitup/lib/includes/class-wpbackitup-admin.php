@@ -39,6 +39,8 @@ class WPBackitup_Admin {
         'delete_all' => 0,
         'rversion_compare' => 0,
         'backup_dbtables_batch_size'=> WPBACKITUP__DATABASE_BATCH_SIZE,
+        'backup_sql_merge_batch_size' => WPBACKITUP__SQL_MERGE_BATCH_SIZE,
+        'backup_sql_batch_size' => WPBACKITUP__SQL_BATCH_SIZE,
 	    'backup_plugins_batch_size'=>WPBACKITUP__PLUGINS_BATCH_SIZE,
         'backup_themes_batch_size'=>WPBACKITUP__THEMES_BATCH_SIZE,
         'backup_uploads_batch_size'=>WPBACKITUP__UPLOADS_BATCH_SIZE,
@@ -352,23 +354,23 @@ class WPBackitup_Admin {
             $nonce = $_REQUEST['_wpnonce'];
 
 	        $wpbdebug_logname='wpb_debug';
-            //WPBackItUp_LoggerV2::log_info($wpbdebug_logname,__METHOD__,'NONCE:' .$nonce);
+            //WPBackItUp_Logger::log_info($wpbdebug_logname,__METHOD__,'NONCE:' .$nonce);
 
             // Handle POST requests
             if( $is_post ) {
 
                 if( wp_verify_nonce( $nonce, "{$this->namespace}-update-options" ) ) {
-	                WPBackItUp_LoggerV2::log_info($wpbdebug_logname,__METHOD__,'Update Options Form Post');
+	                WPBackItUp_Logger::log_info($wpbdebug_logname,__METHOD__,'Update Options Form Post');
                     $this->_admin_options_update();
                 }
 
                 if( wp_verify_nonce( $nonce, "{$this->namespace}-register" ) ) {
-	                WPBackItUp_LoggerV2::log_info($wpbdebug_logname,__METHOD__,'Register Lite Form Post');
+	                WPBackItUp_Logger::log_info($wpbdebug_logname,__METHOD__,'Register Lite Form Post');
                     $this->_admin_register();
                 }
 
                 if( wp_verify_nonce( $nonce, "{$this->namespace}-update-schedule" ) ) {
-	                WPBackItUp_LoggerV2::log_info($wpbdebug_logname,__METHOD__,'Update Schedule Form Post');
+	                WPBackItUp_Logger::log_info($wpbdebug_logname,__METHOD__,'Update Schedule Form Post');
 
 	                $val = $_POST['days_selected'];
 	                $days_selected = $this->_sanitize($val);
@@ -385,7 +387,7 @@ class WPBackitup_Admin {
                 }
 
 	            if( wp_verify_nonce( $nonce, "{$this->namespace}-support-form" ) ) {
-		            WPBackItUp_LoggerV2::log_info($wpbdebug_logname,__METHOD__,'Support Form Post');
+		            WPBackItUp_Logger::log_info($wpbdebug_logname,__METHOD__,'Support Form Post');
 		            $this->_admin_send_support_request();
 	            }
 
@@ -416,6 +418,11 @@ class WPBackitup_Admin {
 
 	    require_once( WPBACKITUP__PLUGIN_PATH . '/lib/includes/class-license.php' );
 
+
+        // This class is used for showing a review nag
+        require_once( WPBACKITUP__PLUGIN_PATH . '/lib/includes/class-admin-notice.php' );
+        //new WPBackitup_Admin_Notice( array('id' => 'wpbu-review-me','days_after' => 10,'type' => 'updated') );
+
 		$languages_path = dirname(dirname(dirname( plugin_basename( __FILE__ )))) . '/languages/';
 
 	    load_plugin_textdomain(
@@ -438,7 +445,7 @@ class WPBackitup_Admin {
 	 */
 	public function wpbackitup_queue_scheduled_jobs(){
 		$scheduled_jobs_logname = 'debug_scheduled_jobs';
-		WPBackItUp_LoggerV2::log_info($scheduled_jobs_logname,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($scheduled_jobs_logname,__METHOD__,'Begin');
 
 		// Check permissions
 		if (! self::is_authorized()) exit('Access denied.');
@@ -463,7 +470,7 @@ class WPBackitup_Admin {
 		//RESTORE
         $restore_job = WPBackItUp_Job::is_job_queued_active(WPBackItUp_Job::RESTORE);
 		if (false!==$restore_job){
-			WPBackItUp_LoggerV2::log_info($scheduled_jobs_logname,__METHOD__,'Restore Job Queued:'. $restore_job->getJobId());
+			WPBackItUp_Logger::log_info($scheduled_jobs_logname,__METHOD__,'Restore Job Queued:'. $restore_job->getJobId());
 			exit;
 		}
 
@@ -484,14 +491,14 @@ class WPBackitup_Admin {
             $backup_tasks= apply_filters( 'wp-backitup_post_backup_tasks', WPBackItUp_Job::$BACKUP_TASKS );
             $backup_job = WPBackItUp_Job::queue_job($job_name,$job_id, WPBackItUp_Job::BACKUP,WPBackItUp_Job::SCHEDULED, $backup_tasks);
 	        if (false===$backup_job){
-		        WPBackItUp_LoggerV2::log_error($scheduled_jobs_logname,__METHOD__,'Scheduled backup could not be queued.');
+		        WPBackItUp_Logger::log_error($scheduled_jobs_logname,__METHOD__,'Scheduled backup could not be queued.');
 	        }else {
                 //run background processor
                 $background_processor  = new WPBackItUp_Task_Processor();
                 $background_processor->push_to_queue( $job_name);
                 $background_processor->save()->dispatch();
 
-                WPBackItUp_LoggerV2::log_info($scheduled_jobs_logname,__METHOD__,'Backup scheduled to run.');
+                WPBackItUp_Logger::log_info($scheduled_jobs_logname,__METHOD__,'Backup scheduled to run.');
 	        }
 
         }
@@ -520,19 +527,19 @@ class WPBackitup_Admin {
             //queue Job
             $job = WPBackItUp_Job::queue_job($job_name,$job_id, $job_type, WPBackItUp_Job::SCHEDULED,$job_tasks);
 	        if (false===$job){
-		        WPBackItUp_LoggerV2::log_error($scheduled_jobs_logname,__METHOD__,'Scheduled job could not be queued:'.$job_type );
+		        WPBackItUp_Logger::log_error($scheduled_jobs_logname,__METHOD__,'Scheduled job could not be queued:'.$job_type );
 	        } else {
                 //run background processor
                 $background_processor  = new WPBackItUp_Task_Processor();
                 $background_processor->push_to_queue( $job_name);
                 $background_processor->save()->dispatch();
 
-                WPBackItUp_LoggerV2::log_info($scheduled_jobs_logname,__METHOD__,sprintf('Job queued to run:%s',$job->getJobName()));
+                WPBackItUp_Logger::log_info($scheduled_jobs_logname,__METHOD__,sprintf('Job queued to run:%s',$job->getJobName()));
             }
 
         }
 
-        WPBackItUp_LoggerV2::log_info($scheduled_jobs_logname,__METHOD__,'End check scheduled jobs.');
+        WPBackItUp_Logger::log_info($scheduled_jobs_logname,__METHOD__,'End check scheduled jobs.');
 		exit(0); //success nothing to schedule
 	}
 
@@ -545,7 +552,7 @@ class WPBackitup_Admin {
 		if (! self::is_authorized()) exit('Access denied.');
 
 		$events_logname='debug_events';
-		WPBackItUp_LoggerV2::log_info($events_logname,__METHOD__,'Begin');
+		WPBackItUp_Logger::log_info($events_logname,__METHOD__,'Begin');
 
 		//Include Job class
 		if( !class_exists( 'WPBackItUp_Backup' ) ) {
@@ -592,8 +599,8 @@ class WPBackitup_Admin {
 
 		}
 
-		WPBackItUp_LoggerV2::log_info($events_logname,__METHOD__,'RtnData:' .$rtnData->message);
-		WPBackItUp_LoggerV2::log_info($events_logname,__METHOD__,'End');
+		WPBackItUp_Logger::log_info($events_logname,__METHOD__,'RtnData:' .$rtnData->message);
+		WPBackItUp_Logger::log_info($events_logname,__METHOD__,'End');
 		echo json_encode($rtnData);
 		exit;
 	}
@@ -609,7 +616,7 @@ class WPBackitup_Admin {
         if (! self::is_authorized()) exit('Access denied.');
 
 	    $events_logname='debug_events';
-	    WPBackItUp_LoggerV2::log_info($events_logname,__METHOD__,'Begin');
+	    WPBackItUp_Logger::log_info($events_logname,__METHOD__,'Begin');
 
         //Include Job class
 	    //Include Job class
@@ -690,8 +697,8 @@ class WPBackitup_Admin {
 	        }
         }
 
-	    WPBackItUp_LoggerV2::log_info($events_logname,__METHOD__,'RtnData:' .$rtnData->message);
-	    WPBackItUp_LoggerV2::log_info($events_logname,__METHOD__,'End');
+	    WPBackItUp_Logger::log_info($events_logname,__METHOD__,'RtnData:' .$rtnData->message);
+	    WPBackItUp_Logger::log_info($events_logname,__METHOD__,'End');
         echo json_encode($rtnData);
         exit;
     }
@@ -706,7 +713,7 @@ class WPBackitup_Admin {
 		$job_type=WPBackItUp_Job::BACKUP;
 
 		$events_logname=sprintf('debug_%s_tasks',$job_type); //Set Log name
-		WPBackItUp_LoggerV2::log_info($events_logname,$process_id, sprintf('(%s) Begin Cancel Backup',$job_type));
+		WPBackItUp_Logger::log_info($events_logname,$process_id, sprintf('(%s) Begin Cancel Backup',$job_type));
 
         $response = new stdClass();
         $response->success=false; //default to error
@@ -717,14 +724,14 @@ class WPBackitup_Admin {
         } else {
             $job = WPBackItUp_Job::get_job_by_id($job_id);
             if (false!==$job) {
-                WPBackItUp_LoggerV2::log_info($events_logname,$process_id, sprintf('(%s) Job found:',var_export($job,true)));
+                WPBackItUp_Logger::log_info($events_logname,$process_id, sprintf('(%s) Job found:',var_export($job,true)));
                 $job->setStatus(WPBackItUp_Job::CANCELLED);
 
                 $response->success=true;
                 $response->message = __('Backup Cancelled', 'wp-backitup');
             } else{
                 $response->message=__('Backup job not found', 'wp-backitup');
-                WPBackItUp_LoggerV2::log_info($events_logname,$process_id, sprintf('(%s) No jobs found.',$job_type));
+                WPBackItUp_Logger::log_info($events_logname,$process_id, sprintf('(%s) No jobs found.',$job_type));
             }
         }
 
@@ -742,7 +749,7 @@ class WPBackitup_Admin {
         @session_write_close();
 
 	    $events_logname='debug_events';
-	    WPBackItUp_LoggerV2::log_info($events_logname,__METHOD__, 'Ajax Run task Fired.');
+	    WPBackItUp_Logger::log_info($events_logname,__METHOD__, 'Ajax Run task Fired.');
 
 
 	    $job_id = $_REQUEST['job_id'];
@@ -764,7 +771,7 @@ class WPBackitup_Admin {
         if (! self::is_authorized()) exit('Access denied.');
 
         $events_logname='debug_events';
-        WPBackItUp_LoggerV2::log_info($events_logname,__METHOD__, 'User Permissions: ' .current_user_can( 'manage_options' ));
+        WPBackItUp_Logger::log_info($events_logname,__METHOD__, 'User Permissions: ' .current_user_can( 'manage_options' ));
 
         //Check permissions
         if ( current_user_can( 'manage_options' ) ) {
@@ -796,7 +803,7 @@ class WPBackitup_Admin {
         if (! self::is_authorized()) exit('Access denied.');
 
 	    $events_logname='debug_events';
-	    WPBackItUp_LoggerV2::log_info($events_logname,__METHOD__, 'User Permissions: ' .current_user_can( 'manage_options' ));
+	    WPBackItUp_Logger::log_info($events_logname,__METHOD__, 'User Permissions: ' .current_user_can( 'manage_options' ));
 
         //Check permissions
         if ( current_user_can( 'manage_options' ) ) {
@@ -956,8 +963,8 @@ class WPBackitup_Admin {
             $backup_folder_path =  WPBACKITUP__BACKUP_PATH .'/' . $backup_folder_name;
             $DLT_backup_folder_path = WPBACKITUP__BACKUP_PATH .'/DLT_' . $backup_folder_name .'_' . current_time( 'timestamp' );
 
-            WPBackItUp_LoggerV2::log_info($delete_logname,__METHOD__, 'From:'.$backup_folder_path );
-            WPBackItUp_LoggerV2::log_info($delete_logname,__METHOD__, 'To:'.$DLT_backup_folder_path );
+            WPBackItUp_Logger::log_info($delete_logname,__METHOD__, 'From:'.$backup_folder_path );
+            WPBackItUp_Logger::log_info($delete_logname,__METHOD__, 'To:'.$DLT_backup_folder_path );
 
             //Mark the folder deleted so cleanup will handle
             if (file_exists ($backup_folder_path)) {
@@ -968,14 +975,14 @@ class WPBackitup_Admin {
 
                 $file_system = new WPBackItUp_FileSystem($delete_logname);
                 if (! $file_system->rename_file($backup_folder_path,$DLT_backup_folder_path)){
-                    WPBackItUp_LoggerV2::log_error($delete_logname,__METHOD__, 'Folder was not renamed');
+                    WPBackItUp_Logger::log_error($delete_logname,__METHOD__, 'Folder was not renamed');
                     exit('Backup NOT deleted');
                 }
             }else{
-                WPBackItUp_LoggerV2::log_error($delete_logname,__METHOD__, 'Folder not found:'. $backup_folder_path);
+                WPBackItUp_Logger::log_error($delete_logname,__METHOD__, 'Folder not found:'. $backup_folder_path);
             }
         } else{
-            WPBackItUp_LoggerV2::log_error($delete_logname,__METHOD__, 'Job not found:'. $job_id);
+            WPBackItUp_Logger::log_error($delete_logname,__METHOD__, 'Job not found:'. $job_id);
         }
 
         exit('deleted successfully');
@@ -1008,15 +1015,15 @@ class WPBackitup_Admin {
              */
 
 	        $debug_logname='wpb_debug';
-	        WPBackItUp_LoggerV2::log_info($debug_logname,__METHOD__, 'Posted Fields');
-	        WPBackItUp_LoggerV2::log($debug_logname, $_POST['data']); //License will not be in this array
+	        WPBackItUp_Logger::log_info($debug_logname,__METHOD__, 'Posted Fields');
+	        WPBackItUp_Logger::log($debug_logname, $_POST['data']); //License will not be in this array
 
 	        $wpbackitup_license = new WPBackItUp_License();
             foreach( $_POST['data'] as $key => $val ) {
                 $posted_value = $this->_sanitize($val);
                 //If license updated then validate
                 if (!empty($key) && $key=='license_key') {
-	                WPBackItUp_LoggerV2::log_info($debug_logname,__METHOD__, 'License Posted:' .$posted_value);
+	                WPBackItUp_Logger::log_info($debug_logname,__METHOD__, 'License Posted:' .$posted_value);
 	                $wpbackitup_license->update_license_options($posted_value);
                 }
                 else {
@@ -1062,6 +1069,8 @@ class WPBackitup_Admin {
                     exit;
                   }
                 }
+
+                // Todo: Refactor all common validation into a method. Make it more readable.
 
                 //** VALIDATE single file backupset **//
                 if(empty($data['single_file_backupset']))
@@ -1109,6 +1118,20 @@ class WPBackitup_Admin {
                 if(empty($data['backup_dbtables_batch_size']) || !is_numeric($data['backup_dbtables_batch_size']))
                 {
                     $data['backup_dbtables_batch_size'] = $this->defaults['backup_dbtables_batch_size'];
+                    set_transient('batch_size_settings-error-number', __('Please enter a number', $this->namespace), 60);
+                }
+
+                //** Validate backup_sql_merge_batch_size *//
+                if(empty($data['backup_sql_merge_batch_size']) || !is_numeric($data['backup_sql_merge_batch_size']))
+                {
+                    $data['backup_sql_merge_batch_size'] = $this->defaults['backup_sql_merge_batch_size'];
+                    set_transient('batch_size_settings-error-number', __('Please enter a number', $this->namespace), 60);
+                }
+
+                //** Validate backup_sql_batch_size *//
+                if(empty($data['backup_sql_batch_size']) || !is_numeric($data['backup_sql_batch_size']))
+                {
+                    $data['backup_sql_batch_size'] = $this->defaults['backup_sql_batch_size'];
                     set_transient('batch_size_settings-error-number', __('Please enter a number', $this->namespace), 60);
                 }
 
@@ -1174,7 +1197,7 @@ class WPBackitup_Admin {
                 // Update the options value with the data submitted
                 foreach( $data as $key => $val ) {
                     $this->set_option($key, $val);
-	                WPBackItUp_LoggerV2::log_info($debug_logname,__METHOD__, 'Updated Option: ' .$key .':' .$val);
+	                WPBackItUp_Logger::log_info($debug_logname,__METHOD__, 'Updated Option: ' .$key .':' .$val);
                 }
             }
 
@@ -1195,14 +1218,14 @@ class WPBackitup_Admin {
 
 		$url= str_replace('&s=1','',$_REQUEST['_wp_http_referer']);
 		$support_logname='debug_support';
-		WPBackItUp_LoggerV2::log_sysinfo($support_logname);
-		WPBackItUp_LoggerV2::log_info($support_logname,__METHOD__, 'Send Support Request');
+		WPBackItUp_Logger::log_sysinfo($support_logname);
+		WPBackItUp_Logger::log_info($support_logname,__METHOD__, 'Send Support Request');
 
 		$error=false;
 		if( wp_verify_nonce( $_REQUEST['_wpnonce'], "{$this->namespace}-support-form" ) ) {
 
-			WPBackItUp_LoggerV2::log_info($support_logname,__METHOD__, 'Send support request');
-			WPBackItUp_LoggerV2::log($support_logname, $_POST);
+			WPBackItUp_Logger::log_info($support_logname,__METHOD__, 'Send support request');
+			WPBackItUp_Logger::log($support_logname, $_POST);
 
 			//save the email in place of transient
 			$this->set_support_email($_POST['support_email']);
@@ -1268,7 +1291,7 @@ class WPBackitup_Admin {
 
 					//copy/replace WP debug file
 					$wpdebug_file_path = WPBACKITUP__CONTENT_PATH . '/debug.log';
-					WPBackItUp_LoggerV2::log_info($support_logname,__METHOD__, 'Copy WP Debug: ' .$wpdebug_file_path);
+					WPBackItUp_Logger::log_info($support_logname,__METHOD__, 'Copy WP Debug: ' .$wpdebug_file_path);
 					if (file_exists($wpdebug_file_path)) {
 						copy( $wpdebug_file_path, $logs_path .'/wpdebug.log' );
 					}
@@ -1337,8 +1360,8 @@ class WPBackitup_Admin {
              */
 
 	        $registration_logname='debug_registration';
-	        WPBackItUp_LoggerV2::log_info($registration_logname,__METHOD__, 'Register WPBackItUp');
-	        WPBackItUp_LoggerV2::log($registration_logname,$_POST);
+	        WPBackItUp_Logger::log_info($registration_logname,__METHOD__, 'Register WPBackItUp');
+	        WPBackItUp_Logger::log($registration_logname,$_POST);
 
             //First lets check the license
             $val = $_POST['license_key'];
@@ -1347,13 +1370,13 @@ class WPBackitup_Admin {
 	        $wpbackitup_license = new WPBackItUp_License();
 
             //activate the license if entered
-	        WPBackItUp_LoggerV2::log_info($registration_logname,__METHOD__, 'Activate License');
+	        WPBackItUp_Logger::log_info($registration_logname,__METHOD__, 'Activate License');
 	        $wpbackitup_license->update_license_options($license_key);
 
             //LITE users only
             if ('0' == $wpbackitup_license->get_license_type()) {
 
-	            WPBackItUp_LoggerV2::log_info($registration_logname,__METHOD__, 'Register WPBackItUp LITE');
+	            WPBackItUp_Logger::log_info($registration_logname,__METHOD__, 'Register WPBackItUp LITE');
 
                 $val           = $_POST['license_email'];
                 $license_email = $this->_sanitize( $val );
@@ -1379,10 +1402,10 @@ class WPBackitup_Admin {
 
                     $registration_response = $wpbackitup_license->register_lite($form_data);
                     if ( false===$registration_response ) {
-                        WPBackItUp_LoggerV2::log_error($registration_logname,__METHOD__, 'Unable to register using SSL - attempting NONSSL' );
+                        WPBackItUp_Logger::log_error($registration_logname,__METHOD__, 'Unable to register using SSL - attempting NONSSL' );
                         //try without SSL
                         if ( false===$wpbackitup_license->register_lite($form_data,false) ) {
-                            WPBackItUp_LoggerV2::log_error($registration_logname,__METHOD__, 'Unable to register using SSL' );
+                            WPBackItUp_Logger::log_error($registration_logname,__METHOD__, 'Unable to register using SSL' );
                         }
                     }
                 }
@@ -1440,6 +1463,15 @@ class WPBackitup_Admin {
     public function backup_dbtables_batch_size(){
         return $this->get('backup_dbtables_batch_size');
     }
+
+    public function backup_sql_merge_batch_size(){
+        return $this->get('backup_sql_merge_batch_size');
+    }
+
+    public function backup_sql_batch_size(){
+        return $this->get('backup_sql_batch_size');
+    }
+
 	public function backup_plugins_batch_size(){
 		return $this->get('backup_plugins_batch_size');
 	}
@@ -1936,30 +1968,30 @@ class WPBackitup_Admin {
 	public static function is_authorized(){
 
 		$permission_logname='debug_permissions';
-		WPBackItUp_LoggerV2::log_info($permission_logname,__METHOD__, 'Begin');
+		WPBackItUp_Logger::log_info($permission_logname,__METHOD__, 'Begin');
 
-		WPBackItUp_LoggerV2::log_info($permission_logname,__METHOD__, 'User Permissions: ' .current_user_can( 'manage_options' ));
+		WPBackItUp_Logger::log_info($permission_logname,__METHOD__, 'User Permissions: ' .current_user_can( 'manage_options' ));
 
 		if (defined('DOING_CRON')) {
-			WPBackItUp_LoggerV2::log_info($permission_logname,__METHOD__, 'Doing CRON Constant: ' . DOING_CRON );
+			WPBackItUp_Logger::log_info($permission_logname,__METHOD__, 'Doing CRON Constant: ' . DOING_CRON );
  		} else {
-			WPBackItUp_LoggerV2::log_info($permission_logname,__METHOD__, 'DOING_CRON - NOT defined');
+			WPBackItUp_Logger::log_info($permission_logname,__METHOD__, 'DOING_CRON - NOT defined');
 		}
 
 		if (defined('XMLRPC_REQUEST')) {
-			WPBackItUp_LoggerV2::log_info($permission_logname,__METHOD__, 'XMLRPC_REQUEST Constant: ' .XMLRPC_REQUEST );
+			WPBackItUp_Logger::log_info($permission_logname,__METHOD__, 'XMLRPC_REQUEST Constant: ' .XMLRPC_REQUEST );
 		} else {
-			WPBackItUp_LoggerV2::log_info($permission_logname,__METHOD__, 'XMLRPC_REQUEST  - NOT defined ');
+			WPBackItUp_Logger::log_info($permission_logname,__METHOD__, 'XMLRPC_REQUEST  - NOT defined ');
 		}
 
 		//Check User Permissions or CRON
 		if (!current_user_can( 'manage_options' )
 		    && (!defined('DOING_CRON') || !DOING_CRON)){
-			WPBackItUp_LoggerV2::log_info($permission_logname,__METHOD__, 'End - NOT AUTHORIZED');
+			WPBackItUp_Logger::log_info($permission_logname,__METHOD__, 'End - NOT AUTHORIZED');
 			return false;
 		}
 
-		WPBackItUp_LoggerV2::log_info($permission_logname,__METHOD__, 'End - SUCCESS');
+		WPBackItUp_Logger::log_info($permission_logname,__METHOD__, 'End - SUCCESS');
 		return true;
 	}
 
@@ -2096,7 +2128,7 @@ class WPBackitup_Admin {
 		$process_id = uniqid();
 
 		$events_logname=sprintf('debug_run_tasks'); //Set Log name
-        WPBackItUp_LoggerV2::log_info($events_logname,$process_id, sprintf('(%s) Begin', 'DD'));
+        WPBackItUp_Logger::log_info($events_logname,$process_id, sprintf('(%s) Begin', 'DD'));
 
         $response = new stdClass();
         $response->success=false; //default to error
@@ -2105,35 +2137,35 @@ class WPBackitup_Admin {
             $current_job = WPBackItUp_Job::get_job_by_id($job_id);
             $job_type= $current_job->getJobType();
             $job_run_type= $current_job->getJobRunType();
-            WPBackItUp_LoggerV2::log_info($events_logname,$process_id, sprintf('(%s) Begin:%s-%s',$job_id,$job_type,$job_run_type));
+            WPBackItUp_Logger::log_info($events_logname,$process_id, sprintf('(%s) Begin:%s-%s',$job_id,$job_type,$job_run_type));
 
             if (false!==$current_job) {
-                WPBackItUp_LoggerV2::log_info($events_logname,$process_id, sprintf('Job found:(%s)',var_export($current_job,true)));
+                WPBackItUp_Logger::log_info($events_logname,$process_id, sprintf('Job found:(%s)',var_export($current_job,true)));
 
                 //IF job is active or queued then proceed
                 if (WPBackItUp_Job::ACTIVE ==$current_job->getJobStatus() || WPBackItUp_Job::QUEUED==$current_job->getJobStatus() ){
 
                     //if job lock acquired run tasks
                     if (true===$current_job->get_lock('job_lock')) {
-                        WPBackItUp_LoggerV2::log_info( $events_logname, $process_id, sprintf('(%s) Job Lock Acquired.',$job_type));
+                        WPBackItUp_Logger::log_info( $events_logname, $process_id, sprintf('(%s) Job Lock Acquired.',$job_type));
 
                         //Try Run Next Task in stack
                         $current_task = $current_job->get_next_task();
-                        WPBackItUp_LoggerV2::log_info( $events_logname, $process_id, sprintf( '(%s) TASK INFO:', $job_type ) );
-                        WPBackItUp_LoggerV2::log_info( $events_logname, $process_id, var_export( $current_task, true ) );
+                        WPBackItUp_Logger::log_info( $events_logname, $process_id, sprintf( '(%s) TASK INFO:', $job_type ) );
+                        WPBackItUp_Logger::log_info( $events_logname, $process_id, var_export( $current_task, true ) );
                         if ( null != $current_task && false !== $current_task ) {
-                            WPBackItUp_LoggerV2::log_info( $events_logname, $process_id, sprintf( '(%s) Available Task Found: %s', $job_type, $current_task->getTaskId() ) );
+                            WPBackItUp_Logger::log_info( $events_logname, $process_id, sprintf( '(%s) Available Task Found: %s', $job_type, $current_task->getTaskId() ) );
 
                             $current_task->increment_retry_count();
 
                             //Was there an error on the previous run
                             if ( WPBackItUp_Job::ERROR == $current_task->getStatus() ) {
                                 //Log error but error handling should happen in include
-                                WPBackItUp_LoggerV2::log_error( $events_logname, $process_id, sprintf( '(%s) Error Found Previous run: %s', $job_type, $current_task->getTaskId() ) );
+                                WPBackItUp_Logger::log_error( $events_logname, $process_id, sprintf( '(%s) Error Found Previous run: %s', $job_type, $current_task->getTaskId() ) );
                             }
 
                             //Run the task
-                            WPBackItUp_LoggerV2::log_info( $events_logname, $process_id, sprintf( '(%s) Try Run Task: %s', $job_type, $current_task->getTaskId() ));
+                            WPBackItUp_Logger::log_info( $events_logname, $process_id, sprintf( '(%s) Try Run Task: %s', $job_type, $current_task->getTaskId() ));
 
                             $this->backup_type = $job_run_type;
                             $job_include_path  = sprintf( WPBACKITUP__PLUGIN_PATH . '/lib/includes/job_%s.php', $job_type );
@@ -2141,30 +2173,30 @@ class WPBackitup_Admin {
                             //error_log('run script');
                             require_once( $job_include_path ); //Run tasks from job file
 
-                            WPBackItUp_LoggerV2::log_info( $events_logname, $process_id, sprintf( '(%s) End Try Run Task:%s', $job_type, $current_task->getTaskId() ) );
+                            WPBackItUp_Logger::log_info( $events_logname, $process_id, sprintf( '(%s) End Try Run Task:%s', $job_type, $current_task->getTaskId() ) );
                         } else {
-                            WPBackItUp_LoggerV2::log_info( $events_logname, $process_id, sprintf( '(%s)No available tasks found.', $job_type ));
+                            WPBackItUp_Logger::log_info( $events_logname, $process_id, sprintf( '(%s)No available tasks found.', $job_type ));
                             return;
                         }
 
                         $current_job->release_lock();
-                        WPBackItUp_LoggerV2::log_info($events_logname,$process_id ,sprintf('(%s)Lock Released.',$job_type));
+                        WPBackItUp_Logger::log_info($events_logname,$process_id ,sprintf('(%s)Lock Released.',$job_type));
 
                     } else {
-                        WPBackItUp_LoggerV2::log_info($events_logname,$process_id, sprintf('(%s) Job Lock NOT Acquired.',$job_type));
+                        WPBackItUp_Logger::log_info($events_logname,$process_id, sprintf('(%s) Job Lock NOT Acquired.',$job_type));
                     }
                 }else {
-                    WPBackItUp_LoggerV2::log_info($events_logname,$process_id, sprintf('(%s) Job not active or queued status:',$job_type));
+                    WPBackItUp_Logger::log_info($events_logname,$process_id, sprintf('(%s) Job not active or queued status:',$job_type));
                 }
 
             } else {
-                WPBackItUp_LoggerV2::log_info($events_logname,$process_id, sprintf('(%s) No jobs found.',$job_type));
+                WPBackItUp_Logger::log_info($events_logname,$process_id, sprintf('(%s) No jobs found.',$job_type));
             }
 
         }
 
         // $job type could cause error if there is no $job_id
-		WPBackItUp_LoggerV2::log_info($events_logname,$process_id, sprintf('(%s) End',$job_type));
+		WPBackItUp_Logger::log_info($events_logname,$process_id, sprintf('(%s) End',$job_type));
 	}
 
 

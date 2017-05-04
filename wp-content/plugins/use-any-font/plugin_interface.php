@@ -47,24 +47,6 @@ if ($uaf_disbale_editor_font_list_value != 1):
 	add_filter('tiny_mce_before_init', 'uaf_mce_before_init' );
 endif;
 
-// ADD FONTS to DIVI editor font List
-add_filter('et_websafe_fonts', 'uaf_send_fonts_divi_list',10,2);
-function uaf_send_fonts_divi_list($fonts){
-    $fontsRawData 	= get_option('uaf_font_data');
-	$fontsData		= json_decode($fontsRawData, true);
-	$fonts_uaf		= array();
-	if (!empty($fontsData)):
-		foreach ($fontsData as $key=>$fontData):
-			$fonts_uaf[$fontData['font_name']] = array(
-				'styles' 		=> '400',
-				'character_set' => 'cyrillic,greek,latin',
-				'type'			=> 'serif'
-			);	
-		endforeach;
-	endif;
-  	return array_merge($fonts_uaf,$fonts);
-}
-
 function uaf_client_css() {
 	$uaf_upload 	= wp_upload_dir();
 	$uaf_upload_url = set_url_scheme($uaf_upload['baseurl']);
@@ -109,8 +91,8 @@ function uaf_activate(){
 
 function uaf_update_check() { // MUST CHANGE WITH EVERY VERSION
     $uaf_version_check = get_option('uaf_current_version');
-	if ($uaf_version_check != '4.7.1'):
-		update_option('uaf_current_version', '4.7.1');
+	if ($uaf_version_check != '4.7.2'):
+		update_option('uaf_current_version', '4.7.2');
 		if ($uaf_version_check < 4.0):
 			uaf_create_folder();
 			uaf_move_file_to_newPath();

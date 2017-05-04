@@ -6,7 +6,7 @@
  * */
 defined('ABSPATH') or die();
 global $FileManager;
-$language_settings = unserialize(stripslashes($FileManager->options->options['file_manager_settings']['language']));
+$language_settings = unserialize(stripslashes($FileManager->options['file_manager_settings']['language']));
 if($language_settings['code'] != 'LANG'){
 	$language_code = $language_settings['code'];
 	$lang_file_url = $language_settings['file-url'];
@@ -33,8 +33,9 @@ PLUGINS_URL = '<?php echo plugins_url();?>';
 jQuery(document).ready(function(){
 	jQuery('#file-manager').elfinder({
 		url: ajaxurl,
-		customData:{action: 'connector'},
+		customData:{action: 'connector', file_manager_security_token: '<?php echo wp_create_nonce( "file-manager-security-token" ); ?>'},
 		lang: '<?php if( isset($language_code) ) echo $language_code?>',
+		requestType: 'post',
 	});
 });
 

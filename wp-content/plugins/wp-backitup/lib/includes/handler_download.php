@@ -24,13 +24,13 @@ while (@ob_end_clean());
 @ini_set('zlib.output_compression', 'Off');
 $download_logname='debug_download';
 
-WPBackItUp_LoggerV2::log($download_logname,$_REQUEST);
+WPBackItUp_Logger::log($download_logname,$_REQUEST);
 
 if ( isset($_REQUEST['_wpnonce']) && !empty($_REQUEST['_wpnonce'])
     && isset($_REQUEST['backup_file']) && !empty($_REQUEST['backup_file']) ) {
 
     if ( wp_verify_nonce( $_REQUEST['_wpnonce'], WPBACKITUP__NAMESPACE . '-download_backup' ) ) {
-	    WPBackItUp_LoggerV2::log_info($download_logname,__METHOD__,'nonce verified' );
+	    WPBackItUp_Logger::log_info($download_logname,__METHOD__,'nonce verified' );
 
         //strip off the suffix IF one exists
         $folder_name = rtrim( $_REQUEST['backup_file'], '.zip' );
@@ -71,11 +71,11 @@ if ( isset($_REQUEST['_wpnonce']) && !empty($_REQUEST['_wpnonce'])
         if (isset($_REQUEST['download_logs']) && $_REQUEST['download_logs'] == '1') {
             $log_filename       = $_REQUEST['backup_file'];
             $backup_path        = WPBACKITUP__LOGS_PATH . '/'. $log_filename;
-            WPBackItUp_LoggerV2::log_info($download_logname,__METHOD__,'Backup file path:' . $backup_path );    
+            WPBackItUp_Logger::log_info($download_logname,__METHOD__,'Backup file path:' . $backup_path );
         }else{
             $backup_filename    = $_REQUEST['backup_file'];            
             $backup_path        = WPBACKITUP__BACKUP_PATH . '/' . $folder_name . '/' . $backup_filename;
-            WPBackItUp_LoggerV2::log_info($download_logname,__METHOD__,'Backup file path:' . $backup_path );    
+            WPBackItUp_Logger::log_info($download_logname,__METHOD__,'Backup file path:' . $backup_path );
         }
 
         if ( (!empty($backup_filename) || !empty($log_filename) ) && file_exists( $backup_path ) ) {
@@ -88,7 +88,7 @@ if ( isset($_REQUEST['_wpnonce']) && !empty($_REQUEST['_wpnonce'])
             if ($handle !== false) {
                 //Have the headers already been sent for some reason
                 if (headers_sent()) {
-                    WPBackItUp_LoggerV2::log_error($download_logname,__METHOD__,'Headers already sent.' );
+                    WPBackItUp_Logger::log_error($download_logname,__METHOD__,'Headers already sent.' );
                 }
 
                 //Output Headers
@@ -111,20 +111,20 @@ if ( isset($_REQUEST['_wpnonce']) && !empty($_REQUEST['_wpnonce'])
                 }
 
                 fclose($handle);
-                WPBackItUp_LoggerV2::log_info($download_logname,__METHOD__,'Download complete' );
+                WPBackItUp_Logger::log_info($download_logname,__METHOD__,'Download complete' );
                 exit();
 
             } else {
-	            WPBackItUp_LoggerV2::log_error($download_logname,__METHOD__,'File Not found' );
+	            WPBackItUp_Logger::log_error($download_logname,__METHOD__,'File Not found' );
             }
         } else {
-	        WPBackItUp_LoggerV2::log_error($download_logname,__METHOD__,'Backup file doesnt exist:' . $backup_path );
+	        WPBackItUp_Logger::log_error($download_logname,__METHOD__,'Backup file doesnt exist:' . $backup_path );
         }
     } else {
-	    WPBackItUp_LoggerV2::log_error($download_logname,__METHOD__,'Bad Nonce');
+	    WPBackItUp_Logger::log_error($download_logname,__METHOD__,'Bad Nonce');
     }
 } else {
-	WPBackItUp_LoggerV2::log_error($download_logname,__METHOD__,'Form data missing');
+	WPBackItUp_Logger::log_error($download_logname,__METHOD__,'Form data missing');
 }
 
 //Return empty file

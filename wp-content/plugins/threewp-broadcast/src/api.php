@@ -98,7 +98,7 @@ class api
 		@brief		Convenience method to return an array of blog IDs on which the post has children.
 		@since		2015-06-25 16:32:56
 	**/
-	private function _get_post_children( $post_id )
+	public function _get_post_children( $post_id )
 	{
 		$r = [];
 

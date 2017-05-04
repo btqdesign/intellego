@@ -47,7 +47,7 @@ class FMLanguage{
 		
 		global $FileManager;
 		
-		$elfinder_files = scandir( $FileManager->path('elFinder/js/i18n') );
+		$elfinder_files = scandir( plugin_dir_path( __FILE__ ) . ".." . DS . ".." . DS . "elFinder" . DS . "js" . DS . "i18n" );
 		for($I = 2, $lang = array(); $I < count($elfinder_files); $I++){
 			
 			$file_name = $elfinder_files[$I];

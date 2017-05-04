@@ -137,8 +137,12 @@ abstract class FM_BootStart{
 		$this->php_ini_settings();
 
 		// Loading Options
-
-		$this->options = new FM_OptionsManager($this->name);
+		// Options
+		$this->options = get_option($this->prefix);
+		if(empty($this->options)) $this->options = array();
+		register_shutdown_function(array(&$this, 'save_options'));
+		
+		//auto::  $this->options = new FM_OptionsManager($this->name);
 		
 		// Creating upload folder.
 	   	$this->upload_folder();
@@ -311,18 +315,6 @@ abstract class FM_BootStart{
 		$this->render('', 'admin' . DS . 'settings');
 		
 	}
-	
-	/**
-	 *
-	 * Absolute path finder
-	 *
-	 * @param string $relative_path relative path to the this plugin root folder.
-	 * */
-	 public function path($relative_path){
-
-		return ABSPATH.'wp-content' . DS . 'plugins' . DS . $this->prefix. DS .$relative_path;
-
-	 }
 
 	/**
 	 *
@@ -473,7 +465,7 @@ abstract class FM_BootStart{
 
 		}
 
-		include( $this->path( 'views' . DS . $view_file ) );
+		include( plugin_dir_path( __FILE__ ) . ".." . DS . "views" . DS . $view_file);
 
 	 }
 
@@ -513,6 +505,15 @@ abstract class FM_BootStart{
 		$string = strtolower($string);
 		return $string;
 		
+	}
+	
+	/**
+	 * 
+	 * @function save_options
+	 * 
+	 * */
+	public function save_options(){
+		update_option($this->prefix, $this->options);
 	}
 }
 

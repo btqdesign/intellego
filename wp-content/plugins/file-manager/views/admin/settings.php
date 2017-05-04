@@ -1,15 +1,20 @@
 <?php 
 if(!defined('ABSPATH')) die();
 global $FileManager;
-//auto::  pr($FileManager->options->options['file_manager_settings']);
+
 // Settings processing
 if( isset( $_POST ) && !empty( $_POST ) ){
 	
-	$FileManager->options->options['file_manager_settings'] = $_POST;
+	if( ! wp_verify_nonce( $_POST['file-manager-settings-security-token'] ,'file-manager-settings-security-token') || !current_user_can( 'manage_options' ) ) wp_die();
+	
+	if($_POST['show_url_path'] == 'show' || $_POST['show_url_path'] == 'hide' ) $FileManager->options['file_manager_settings']['show_url_path'] = $_POST['show_url_path']; 
+	
+	$FileManager->options['file_manager_settings']['language'] = sanitize_text_field($_POST['language']);
+	
 	
 }
 
-//~ $FileManager->pr($FileManager->options->options['file_manager_settings']);
+//~ $FileManager->pr($FileManager->options['file_manager_settings']);
 
 $admin_page_url = admin_url()."admin.php?page={$FileManager->prefix}";
 
@@ -50,16 +55,16 @@ global $fm_languages;
 			<h2>Settings</h2>
 		
 			<form action='' method='post' class='fmp-settings-form'>
-				
+					<input type='hidden' name='file-manager-settings-security-token' value='<?php echo wp_create_nonce('file-manager-settings-security-token'); ?>'>
 					<table>
 						<tr>
 							<td><h4>URL and Path</h4></td>
 							<td>
 								<label for='show_url_path_id'> Show </label>
-								<input type='radio' name='show_url_path' id='show_url_path_id' value='show' <?php  if( isset( $FileManager->options->options['file_manager_settings']['show_url_path'] ) && !empty( $FileManager->options->options['file_manager_settings']['show_url_path'] ) && $FileManager->options->options['file_manager_settings']['show_url_path'] == 'show' ) echo 'checked'; ?>/>
+								<input type='radio' name='show_url_path' id='show_url_path_id' value='show' <?php  if( isset( $FileManager->options['file_manager_settings']['show_url_path'] ) && !empty( $FileManager->options['file_manager_settings']['show_url_path'] ) && $FileManager->options['file_manager_settings']['show_url_path'] == 'show' ) echo 'checked'; ?>/>
 								
 								<label for='hide_url_path_id'> Hide </label>
-								<input type='radio' name='show_url_path' id='hide_url_path_id' value='hide' <?php  if( isset( $FileManager->options->options['file_manager_settings']['show_url_path'] ) && !empty( $FileManager->options->options['file_manager_settings']['show_url_path'] ) && $FileManager->options->options['file_manager_settings']['show_url_path'] == 'hide' ) echo 'checked'; ?>/>
+								<input type='radio' name='show_url_path' id='hide_url_path_id' value='hide' <?php  if( isset( $FileManager->options['file_manager_settings']['show_url_path'] ) && !empty( $FileManager->options['file_manager_settings']['show_url_path'] ) && $FileManager->options['file_manager_settings']['show_url_path'] == 'hide' ) echo 'checked'; ?>/>
 							</td>
 						</tr>
 						<tr>
@@ -67,7 +72,7 @@ global $fm_languages;
 							<td>
 								<?php 
 									$lang = $fm_languages->available_languages(); 
-									$language_code = unserialize(stripslashes($FileManager->options->options['file_manager_settings']['language'])); 
+									$language_code = unserialize(stripslashes($FileManager->options['file_manager_settings']['language'])); 
 									$language_code = $language_code['code'];
 									
 								?>

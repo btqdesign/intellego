@@ -100,11 +100,13 @@ class blog
 
 	public function switch_to()
 	{
+		_deprecated_function( __FUNCTION__, '4.7', 'switch_to_blog( $blog->id )' );
 		switch_to_blog( $this->id );
 	}
 
 	public function switch_from()
 	{
+		_deprecated_function( __FUNCTION__, '4.7', 'restore_current_blog()' );
 		restore_current_blog();
 	}
 

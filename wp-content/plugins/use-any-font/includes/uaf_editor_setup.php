@@ -1,4 +1,6 @@
 <?php
+
+// DEFAULT WORDPRESS EDITOR
 function uaf_mce_before_init( $init_array ) {
 	$theme_advanced_fonts = '';
 	$fontsRawData 	= get_option('uaf_font_data');
@@ -17,4 +19,38 @@ function wp_editor_fontsize_filter( $options ) {
 	array_unshift( $options, 'fontsizeselect');
 	array_unshift( $options, 'fontselect');
 	return $options;
+}
+
+// DIVI CUSTOMIZER AND BUILDER
+
+add_filter('et_websafe_fonts', 'uaf_send_fonts_divi_list',10,2);
+function uaf_send_fonts_divi_list($fonts){
+    $fontsRawData 	= get_option('uaf_font_data');
+	$fontsData		= json_decode($fontsRawData, true);
+	$fonts_uaf		= array();
+	if (!empty($fontsData)):
+		foreach ($fontsData as $key=>$fontData):
+			$fonts_uaf[$fontData['font_name']] = array(
+				'styles' 		=> '400',
+				'character_set' => 'cyrillic,greek,latin',
+				'type'			=> 'serif'
+			);	
+		endforeach;
+	endif;
+  	return array_merge($fonts_uaf,$fonts);
+}
+
+// SITE ORIGIN BUILDER
+
+add_filter('siteorigin_widgets_font_families', 'uaf_send_fonts_siteorigin_list',10,2);
+function uaf_send_fonts_siteorigin_list($fonts){
+    $fontsRawData 	= get_option('uaf_font_data');
+	$fontsData		= json_decode($fontsRawData, true);
+	$fonts_uaf		= array();
+	if (!empty($fontsData)):
+		foreach ($fontsData as $key=>$fontData):
+			$fonts_uaf[$fontData['font_name']] = $fontData['font_name'];
+		endforeach;
+	endif;
+  	return array_merge($fonts_uaf,$fonts);
 }

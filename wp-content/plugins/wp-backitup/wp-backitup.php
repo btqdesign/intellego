@@ -6,7 +6,7 @@
  * Description: Backup your content, settings, themes, plugins and media in just a few simple clicks.
  * Author: WPBackItUp
  * Author URI: https://www.wpbackitup.com
- * Version: 1.14.2
+ * Version: 1.14.4
  * Text Domain: wp-backitup
  * Domain Path: /languages
  *
@@ -34,7 +34,7 @@ define( 'WPBACKITUP__CLASSNAMESPACE', 'WPBackItUp' );
 
 define( 'WPBACKITUP__MAJOR_VERSION', 1);
 define( 'WPBACKITUP__MINOR_VERSION', 14);
-define( 'WPBACKITUP__MAINTENANCE_VERSION', 2); //Dont forget to update version in header on WP release
+define( 'WPBACKITUP__MAINTENANCE_VERSION', 4); //Dont forget to update version in header on WP release
 define( 'WPBACKITUP__BUILD_VERSION', 0); //Used for hotfix releases
 
 define( 'WPBACKITUP__VERSION',sprintf("%d.%d.%d.%d", WPBACKITUP__MAJOR_VERSION, WPBACKITUP__MINOR_VERSION,WPBACKITUP__MAINTENANCE_VERSION,WPBACKITUP__BUILD_VERSION));
@@ -100,6 +100,8 @@ define( 'WPBACKITUP__PLUGINS_BATCH_SIZE', 5000); //~100kb each = 5000*100 = 5000
 define( 'WPBACKITUP__OTHERS_BATCH_SIZE', 500); //~100kb each = 5000*100 = 500000 kb = 500 mb
 define( 'WPBACKITUP__UPLOADS_BATCH_SIZE', 500); //anyones guess here
 define( 'WPBACKITUP__DATABASE_BATCH_SIZE', 10000);
+define( 'WPBACKITUP__SQL_MERGE_BATCH_SIZE', 10000);
+define( 'WPBACKITUP__SQL_BATCH_SIZE', 10000);
 
 //activation hooks
 register_activation_hook( __FILE__, array( 'WPBackitup_Admin', 'activate' ) );

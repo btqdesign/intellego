@@ -38,35 +38,35 @@ class WPBackItUp_Task_Processor extends WPBackItUp_Background_Process {
 	protected function task( $item ) {
 		$logname = 'debug_task_processor';
 
-		WPBackItUp_LoggerV2::log_info($logname,__METHOD__,'Task Processor Event:'. var_export( $item, true ) );
+		WPBackItUp_Logger::log_info($logname,__METHOD__,'Task Processor Event:'. var_export( $item, true ) );
 
 		try {
 
 			if (empty($item)){
-				WPBackItUp_LoggerV2::log_error($logname,__METHOD__,'NO item passed to task processor.');
+				WPBackItUp_Logger::log_error($logname,__METHOD__,'NO item passed to task processor.');
 				return false;
 			}
 
 			$item_parts = explode('_',$item);
 			if (false===$item_parts){
-				WPBackItUp_LoggerV2::log_error($logname,__METHOD__,'NO job id passed to task processor.');
+				WPBackItUp_Logger::log_error($logname,__METHOD__,'NO job id passed to task processor.');
 				return false;
 			}
 
 			$job_id = end($item_parts);
 			if (empty($job_id)){
-				WPBackItUp_LoggerV2::log_error($logname,__METHOD__,'NO JOB ID found.');
+				WPBackItUp_Logger::log_error($logname,__METHOD__,'NO JOB ID found.');
 				return false;
 			}
 
 			//Get the job info
 			$job = WPBackItUp_Job::get_job_by_id($job_id);
 			if (false===$job){
-				WPBackItUp_LoggerV2::log_error($logname,__METHOD__,'NO JOB found:'.$job_id);
+				WPBackItUp_Logger::log_error($logname,__METHOD__,'NO JOB found:'.$job_id);
 				return false;
 			}
 
-			WPBackItUp_LoggerV2::log_info($logname,__METHOD__, sprintf('Job found:(%s)',var_export($job,true)));
+			WPBackItUp_Logger::log_info($logname,__METHOD__, sprintf('Job found:(%s)',var_export($job,true)));
 
 			//If job is active or queued then fire task
 			if (WPBackItUp_Job::ACTIVE == $job->getJobStatus() || WPBackItUp_Job::QUEUED == $job->getJobStatus()) {
@@ -93,22 +93,22 @@ class WPBackItUp_Task_Processor extends WPBackItUp_Background_Process {
 					);
 
 
-					WPBackItUp_LoggerV2::log_info($logname,__METHOD__,'Before Fire Action:wp-backitup_run_task');
+					WPBackItUp_Logger::log_info($logname,__METHOD__,'Before Fire Action:wp-backitup_run_task');
 
 					$url  = add_query_arg( $query_args, admin_url( 'admin-ajax.php' ));
-					WPBackItUp_LoggerV2::log_info($logname,__METHOD__, sprintf('Request: %s ',var_export($url,true)));
+					WPBackItUp_Logger::log_info($logname,__METHOD__, sprintf('Request: %s ',var_export($url,true)));
 
 					$response =  wp_remote_post( esc_url_raw( $url ), $post_args );
-					WPBackItUp_LoggerV2::log_info($logname,__METHOD__, sprintf('Remote Get Response:: %s ',var_export($response,true)));
+					WPBackItUp_Logger::log_info($logname,__METHOD__, sprintf('Remote Get Response:: %s ',var_export($response,true)));
 
 					if( is_wp_error( $response ) ) { //timeout error is ok
-						WPBackItUp_LoggerV2::log_info($logname,__METHOD__, sprintf('Error on Remote Post Request:: %s ',var_export($response,true)));
+						WPBackItUp_Logger::log_info($logname,__METHOD__, sprintf('Error on Remote Post Request:: %s ',var_export($response,true)));
 					}
 
-					WPBackItUp_LoggerV2::log_info($logname,__METHOD__, sprintf('Wait %s seconds.',WPBACKITUP__TASK_WAIT_SECONDS));
+					WPBackItUp_Logger::log_info($logname,__METHOD__, sprintf('Wait %s seconds.',WPBACKITUP__TASK_WAIT_SECONDS));
 					sleep(WPBACKITUP__TASK_WAIT_SECONDS);//wait N seconds then check again
 
-					WPBackItUp_LoggerV2::log_info($logname,__METHOD__,'After Fire Action:wp-backitup_run_task');
+					WPBackItUp_Logger::log_info($logname,__METHOD__,'After Fire Action:wp-backitup_run_task');
 					return $item;
 				}
 
@@ -116,40 +116,40 @@ class WPBackItUp_Task_Processor extends WPBackItUp_Background_Process {
 
 				//get task info
 				$task = $job->get_next_task();
-				WPBackItUp_LoggerV2::log_info( $logname, __METHOD__, sprintf( '(%s) Task Found: %s', $job->getJobType(), var_export($task,true)));
+				WPBackItUp_Logger::log_info( $logname, __METHOD__, sprintf( '(%s) Task Found: %s', $job->getJobType(), var_export($task,true)));
 				if ( false === $task ) {
 					//no tasks ready for processing
 					//If task is still processing, will timeout in 1 minutes
 					//review get_next_task to understand timeout/error
 					$wait_seconds= 2;
-					WPBackItUp_LoggerV2::log_info($logname,__METHOD__, sprintf('No task ready for processing. Wait %s seconds.',$wait_seconds));
+					WPBackItUp_Logger::log_info($logname,__METHOD__, sprintf('No task ready for processing. Wait %s seconds.',$wait_seconds));
 					sleep($wait_seconds);//wait 5 seconds then check again
 					return $item;
 				}
 
 				//Was there an error on the previous run
 				if ( WPBackItUp_Job::ERROR == $task->getStatus() ) {
-					WPBackItUp_LoggerV2::log_error($logname,__METHOD__,'Previous Task Error.');
+					WPBackItUp_Logger::log_error($logname,__METHOD__,'Previous Task Error.');
 					return false;
 				}
 
 				//Get task Name + add wpb prefix for hook
 				$hook_name = 'wpbackitup_' . $task->getTaskName();
 
-				WPBackItUp_LoggerV2::log_info($logname,__METHOD__,sprintf('Before Fire Action:(%s)%s',$job_id,$hook_name));
+				WPBackItUp_Logger::log_info($logname,__METHOD__,sprintf('Before Fire Action:(%s)%s',$job_id,$hook_name));
 				$task->increment_retry_count();
 				do_action( $hook_name, $task );// RUN TASK
-				WPBackItUp_LoggerV2::log_info($logname,__METHOD__, sprintf('After Fire Action:(%s)%s',$job_id ,$hook_name));
+				WPBackItUp_Logger::log_info($logname,__METHOD__, sprintf('After Fire Action:(%s)%s',$job_id ,$hook_name));
 
 				return $item;
 
 			} else {
-				WPBackItUp_LoggerV2::log_info($logname,__METHOD__,'Job Completed:' . $job_id);
+				WPBackItUp_Logger::log_info($logname,__METHOD__,'Job Completed:' . $job_id);
 				return false; //job has completed
 			}
 
 		} catch (Exception $e) {
-			WPBackItUp_LoggerV2::log_error($logname,__METHOD__, $e->getMessage());
+			WPBackItUp_Logger::log_error($logname,__METHOD__, $e->getMessage());
 			return false;
 		}
 	}
